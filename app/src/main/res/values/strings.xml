@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">NovelReader</string>
+    <string name="nav_item_library">Library</string>
+    <string name="nav_item_updates">Updates</string>
+    <string name="nav_item_history">History</string>
+    <string name="nav_item_sources">Explore</string>
+    <string name="nav_item_others">Others</string>
 </resources>

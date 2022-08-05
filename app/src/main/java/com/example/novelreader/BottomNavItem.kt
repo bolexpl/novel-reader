@@ -1,10 +1,10 @@
 package com.example.novelreader
 
-sealed class BottomNavItem(var title:String, var icon:Int, var screen_route:String){
+sealed class BottomNavItem(var title:Int, var icon:Int, var screen_route:String) {
 
-    object Home : BottomNavItem("Home", R.drawable.ic_home,"home")
-    object MyNetwork: BottomNavItem("My Network",R.drawable.ic_my_network,"my_network")
-    object AddPost: BottomNavItem("Post",R.drawable.ic_post,"add_post")
-    object Notification: BottomNavItem("Notification",R.drawable.ic_notification,"notification")
-    object Jobs: BottomNavItem("Jobs",R.drawable.ic_job,"jobs")
+    object Library : BottomNavItem(R.string.nav_item_library, R.drawable.ic_book,"library")
+    object Updates : BottomNavItem(R.string.nav_item_updates, R.drawable.ic_new_release,"updates")
+    object History : BottomNavItem(R.string.nav_item_history, R.drawable.ic_history,"history")
+    object Explore : BottomNavItem(R.string.nav_item_sources, R.drawable.ic_compas,"explore")
+    object Others : BottomNavItem(R.string.nav_item_others, R.drawable.ic_dots,"others")
 }
