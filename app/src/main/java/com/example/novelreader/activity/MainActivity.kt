@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -30,10 +31,15 @@ import com.example.novelreader.BottomNavItem
 import com.example.novelreader.screen.LibraryScreen
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.screen.*
+import com.example.novelreader.viewmodel.LibraryViewModel
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel by viewModels<LibraryViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             EBookReaderTheme {
                 Surface(
@@ -41,6 +47,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     MainScreenView()
+                    viewModel.getBody()
                 }
             }
         }
