@@ -11,19 +11,25 @@ import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
+import androidx.compose.runtime.remember
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 
 
 class LibraryViewModel : ViewModel() {
 
-    var errorMessage: String by mutableStateOf("")
+    var title: String by mutableStateOf("")
 
-    fun getBody() {
+    fun update() {
+        title = "2"
         viewModelScope.launch {
-            val apiService = ApiService.getInstance()
-            try {
-                val response = apiService.getResponseBody()
 
-                val html = response.string()
+            title = "3"
+
+            /*
+            val apiService = ApiService.getInstance()
+            val response = apiService.getContent()
+                val html = response
 
                 val doc: Document = Jsoup.parse(html)
 //                val title = doc.select("#main > .post > div.entry-content > h2 > a").html()
@@ -38,11 +44,7 @@ class LibraryViewModel : ViewModel() {
 
                 Log.d("retro", title.toString())
                 Log.d("retro", content.toString())
-
-
-            } catch (e: Exception) {
-                errorMessage = e.message.toString()
-            }
+             */
         }
     }
 }

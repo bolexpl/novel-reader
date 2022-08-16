@@ -47,7 +47,6 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     MainScreenView()
-                    viewModel.getBody()
                 }
             }
         }

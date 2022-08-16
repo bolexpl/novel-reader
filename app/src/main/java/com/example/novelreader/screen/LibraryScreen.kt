@@ -6,28 +6,35 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.novelreader.viewmodel.LibraryViewModel
 
 @Composable
-fun LibraryScreen() {
+fun LibraryScreen(viewModel: LibraryViewModel = viewModel()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.background)
             .wrapContentSize(Alignment.Center)
     ) {
+        // TODO text nie reaguje na zmiany textu
+
         Text(
-            text = "Library Screen",
+            text = viewModel.title,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colors.primary,
             modifier = Modifier.align(Alignment.CenterHorizontally),
             textAlign = TextAlign.Center,
             fontSize = 20.sp
         )
+        viewModel.update()
+
+
     }
 }
