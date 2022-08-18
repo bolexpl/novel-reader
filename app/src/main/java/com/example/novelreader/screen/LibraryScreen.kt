@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -23,8 +25,6 @@ fun LibraryScreen(viewModel: LibraryViewModel = viewModel()) {
             .background(MaterialTheme.colors.background)
             .wrapContentSize(Alignment.Center)
     ) {
-        // TODO text nie reaguje na zmiany textu
-
         Text(
             text = viewModel.title,
             fontWeight = FontWeight.Bold,
@@ -33,8 +33,14 @@ fun LibraryScreen(viewModel: LibraryViewModel = viewModel()) {
             textAlign = TextAlign.Center,
             fontSize = 20.sp
         )
-        viewModel.update()
 
-
+        Text(
+            text = viewModel.body,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colors.primary,
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            textAlign = TextAlign.Center,
+            fontSize = 20.sp
+        )
     }
 }

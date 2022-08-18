@@ -1,6 +1,7 @@
 package com.example.novelreader.viewmodel
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,39 +13,40 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class LibraryViewModel : ViewModel() {
 
-    var title: String by mutableStateOf("")
+    var title by mutableStateOf("")
+    var body by mutableStateOf("")
+
+    var error by mutableStateOf("")
+
+    init {
+        update()
+    }
 
     fun update() {
-        title = "2"
         viewModelScope.launch {
 
-            title = "3"
-
-            /*
             val apiService = ApiService.getInstance()
-            val response = apiService.getContent()
-                val html = response
+            val html = apiService.getContent()
 
-                val doc: Document = Jsoup.parse(html)
-//                val title = doc.select("#main > .post > div.entry-content > h2 > a").html()
-                val title = doc.select(".entry-title")
-                    .first()
-                    .html()
-//                    .replace("&nbsp;", " ")
-                val content = doc.select(".entry-content")
-                    .first()
-                    .html()
-//                    .replace("&nbsp;", " ")
-
-                Log.d("retro", title.toString())
-                Log.d("retro", content.toString())
-             */
+//            val doc: Document = Jsoup.parse(html)
+//            val title = doc.select(".entry-title")
+//                .first()
+//                ?.html()
+//            val content = doc.select(".entry-content")
+//                .first()
+//                ?.html()
+//
+//            Log.d("retro", title.toString())
+//            Log.d("retro", content.toString())
         }
     }
 }
