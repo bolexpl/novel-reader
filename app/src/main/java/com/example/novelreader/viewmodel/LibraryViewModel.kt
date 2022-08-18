@@ -1,7 +1,5 @@
 package com.example.novelreader.viewmodel
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,21 +9,12 @@ import com.example.novelreader.ApiService
 import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.jsoup.select.Elements
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class LibraryViewModel : ViewModel() {
 
     var title by mutableStateOf("")
+    var html by mutableStateOf("")
     var body by mutableStateOf("")
-
-    var error by mutableStateOf("")
 
     init {
         update()
@@ -35,18 +24,31 @@ class LibraryViewModel : ViewModel() {
         viewModelScope.launch {
 
             val apiService = ApiService.getInstance()
-            val html = apiService.getContent()
+            val response = apiService.getChapter()
 
-//            val doc: Document = Jsoup.parse(html)
-//            val title = doc.select(".entry-title")
-//                .first()
-//                ?.html()
-//            val content = doc.select(".entry-content")
-//                .first()
-//                ?.html()
-//
-//            Log.d("retro", title.toString())
-//            Log.d("retro", content.toString())
+            val doc: Document = Jsoup.parse(response)
+
+            val t = doc.select(".entry-title")
+                .first()
+                ?.html()
+                ?.replace("&nbsp;"," ")
+
+            val c = doc.select(".entry-content")
+                .first()
+
+            val b = StringBuilder()
+            for (p in c?.select("p")!!) {
+                val tmp = p.text()
+                tmp.replace("&nbsp;"," ")
+                tmp.replace("<br>","\n")
+                tmp.replace("<br/>","\n")
+                b.append(tmp)
+                b.append(System.getProperty("line.separator"))
+            }
+
+            title = t.toString()
+            html = c.toString()
+            body = b.toString()
         }
     }
 }

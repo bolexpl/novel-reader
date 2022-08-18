@@ -10,7 +10,7 @@ import retrofit2.http.GET
 interface ApiService {
 
     @GET("/2020/06/27/forbidden-master-part-3-chapter-64/")
-    suspend fun getContent(): Call<String>
+    suspend fun getChapter(): String
 
     companion object {
         private var instance: ApiService? = null
