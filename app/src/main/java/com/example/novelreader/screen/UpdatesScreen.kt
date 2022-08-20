@@ -22,7 +22,7 @@ fun UpdatesScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colors.background)
             .wrapContentSize(Alignment.Center)
     ) {
 //        Text(

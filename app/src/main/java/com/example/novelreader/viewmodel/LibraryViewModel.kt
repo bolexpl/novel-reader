@@ -4,12 +4,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.novelreader.ApiService
 import com.example.novelreader.Paragraph
+import com.example.novelreader.paragraphToAnnotatedString
 import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -42,16 +42,6 @@ class LibraryViewModel : ViewModel() {
 
             title = t.toString()
 
-//            val b = StringBuilder()
-//            for (p in c?.select("p")!!) {
-//                val tmp = p.text()
-//                tmp.replace("&nbsp;"," ")
-//                tmp.replace("<br>","\n")
-//                tmp.replace("<br/>","\n")
-//                b.append(tmp)
-//                b.append(System.getProperty("line.separator"))
-//            }
-
             clean(content.toString())
         }
     }
@@ -61,12 +51,8 @@ class LibraryViewModel : ViewModel() {
 
         val jsoup = Jsoup.parse(html)
 
-        for((i, p) in jsoup.select("p").withIndex()){
-            list.add(Paragraph(
-                i,
-                p.text(),
-                false,
-            ))
+        for ((i, p) in jsoup.select("p").withIndex()) {
+            list.add(Paragraph(i, p.html(), p, paragraphToAnnotatedString(p)))
         }
 
 //        list.add(Paragraph(1, "aaa", false))

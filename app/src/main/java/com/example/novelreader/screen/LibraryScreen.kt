@@ -11,11 +11,17 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.novelreader.paragraphToAnnotatedString
 import com.example.novelreader.viewmodel.LibraryViewModel
 
 @Composable
@@ -38,13 +44,16 @@ fun LibraryScreen(viewModel: LibraryViewModel = viewModel()) {
         }
 
         items(viewModel.list) { el ->
-            Text(
-                text = el.text!!,
-                color = MaterialTheme.colors.primary,
-                textAlign = TextAlign.Left,
-                fontSize = 20.sp,
-                modifier = Modifier.padding(vertical = 20.dp)
-            )
+//            Text(
+//                text = el.text!!,
+//                color = MaterialTheme.colors.primary,
+//                textAlign = TextAlign.Left,
+//                fontSize = 20.sp,
+//                modifier = Modifier.padding(vertical = 20.dp)
+//            )
+
+            if (el.html != null)
+                Text(text = paragraphToAnnotatedString(el.element!!))
         }
     }
 }
