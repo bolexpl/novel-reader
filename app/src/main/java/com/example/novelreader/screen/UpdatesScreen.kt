@@ -25,26 +25,13 @@ fun UpdatesScreen() {
             .background(MaterialTheme.colors.background)
             .wrapContentSize(Alignment.Center)
     ) {
-//        Text(
-//            text = "Updates Screen",
-//            fontWeight = FontWeight.Bold,
-//            color = MaterialTheme.colors.primary,
-//            modifier = Modifier.align(Alignment.CenterHorizontally),
-//            textAlign = TextAlign.Center,
-//            fontSize = 20.sp
-//        )
-        SpannableText()
+        Text(
+            text = "Updates Screen",
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colors.primary,
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            textAlign = TextAlign.Center,
+            fontSize = 20.sp
+        )
     }
-}
-
-@Composable
-fun SpannableText() {
-    val annotatedString = buildAnnotatedString {
-        append("I have read")
-        withStyle(style = SpanStyle(Color.Blue)) {
-            append(" Terms and Condition")
-        }
-    }
-
-    Text(text = annotatedString)
 }
