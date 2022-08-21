@@ -4,15 +4,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.novelreader.ApiService
+import com.example.novelreader.HtmlConverter
 import com.example.novelreader.Paragraph
-import com.example.novelreader.paragraphToAnnotatedString
 import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.sp
 
 class LibraryViewModel : ViewModel() {
 
@@ -30,14 +34,14 @@ class LibraryViewModel : ViewModel() {
             val apiService = ApiService.getInstance()
             val response = apiService.getChapter()
 
-            val doc: Document = Jsoup.parse(response)
+            val jsoup: Document = Jsoup.parse(response)
 
-            val t = doc.select(".entry-title")
+            val t = jsoup.select(".entry-title")
                 .first()
                 ?.html()
                 ?.replace("&nbsp;", " ")
 
-            val content = doc.select(".entry-content")
+            val content = jsoup.select(".entry-content")
                 .first()
 
             title = t.toString()
@@ -51,12 +55,33 @@ class LibraryViewModel : ViewModel() {
 
         val jsoup = Jsoup.parse(html)
 
-        for ((i, p) in jsoup.select("p").withIndex()) {
-            list.add(Paragraph(i, p.html(), p, paragraphToAnnotatedString(p)))
-        }
+        val title = jsoup.select("h2").first()
+        if (title != null)
+            list.add(
+                Paragraph(
+                    0,
+                    title.html(),
+                    title,
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontSize = 27.sp)) {
+                            append(HtmlConverter.paragraphToAnnotatedString(title))
+                        }
+                    }
+                )
+            )
 
-//        list.add(Paragraph(1, "aaa", false))
-//        list.add(Paragraph(2, "bbb", false))
-//        list.add(Paragraph(3, "ccc", false))
+        for ((i, p) in jsoup.select("p").withIndex()) {
+
+            if (i == 0) continue
+
+            list.add(
+                Paragraph(
+                    i,
+                    p.html(),
+                    p,
+                    HtmlConverter.paragraphToAnnotatedString(p)
+                )
+            )
+        }
     }
 }

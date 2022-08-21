@@ -12,9 +12,4 @@ data class Paragraph(
     val annotatedString: AnnotatedString? = null
 )
 
-fun paragraphToAnnotatedString(element: Element): AnnotatedString {
-    return buildAnnotatedString {
-        append(element.text())
-    }
-}
 
