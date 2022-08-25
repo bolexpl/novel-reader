@@ -72,7 +72,9 @@ private fun TopBar() {
 @Composable
 private fun SourceItem(text: String) {
     Divider(color = MaterialTheme.colors.primaryVariant)
-    Row {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text(
             text = text,
             fontSize = 20.sp,
@@ -85,5 +87,8 @@ private fun SourceItem(text: String) {
                 )
         )
         // TODO dodać przycisk
+        Button(onClick = {}){
+            Text("asdasdad")
+        }
     }
 }
