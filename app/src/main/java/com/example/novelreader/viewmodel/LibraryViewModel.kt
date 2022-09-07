@@ -1,48 +1,87 @@
 package com.example.novelreader.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.novelreader.ApiService
+import com.example.novelreader.HtmlConverter
+import com.example.novelreader.Paragraph
 import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.jsoup.select.Elements
-
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.sp
 
 class LibraryViewModel : ViewModel() {
 
-    var errorMessage: String by mutableStateOf("")
+    var title by mutableStateOf("")
 
-    fun getBody() {
+    var list = mutableStateListOf<Paragraph>()
+
+    init {
+        update()
+    }
+
+    fun update() {
         viewModelScope.launch {
+
             val apiService = ApiService.getInstance()
-            try {
-                val response = apiService.getResponseBody()
+            val response = apiService.getChapter()
 
-                val html = response.string()
+            val jsoup: Document = Jsoup.parse(response)
 
-                val doc: Document = Jsoup.parse(html)
-//                val title = doc.select("#main > .post > div.entry-content > h2 > a").html()
-                val title = doc.select(".entry-title")
-                    .first()
-                    .html()
-//                    .replace("&nbsp;", " ")
-                val content = doc.select(".entry-content")
-                    .first()
-                    .html()
-//                    .replace("&nbsp;", " ")
+            val t = jsoup.select(".entry-title")
+                .first()
+                ?.html()
+                ?.replace("&nbsp;", " ")
 
-                Log.d("retro", title.toString())
-                Log.d("retro", content.toString())
+            val content = jsoup.select(".entry-content")
+                .first()
 
+            title = t.toString()
 
-            } catch (e: Exception) {
-                errorMessage = e.message.toString()
-            }
+            clean(content.toString())
+        }
+    }
+
+    private fun clean(html: String) {
+        list.clear()
+
+        val jsoup = Jsoup.parse(html)
+
+        val title = jsoup.select("h2").first()
+        if (title != null)
+            list.add(
+                Paragraph(
+                    0,
+                    title.html(),
+                    title,
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontSize = 27.sp)) {
+                            append(HtmlConverter.paragraphToAnnotatedString(title))
+                        }
+                    }
+                )
+            )
+
+        for ((i, p) in jsoup.select("p").withIndex()) {
+
+            if (i == 0) continue
+
+            list.add(
+                Paragraph(
+                    i,
+                    p.html(),
+                    p,
+                    HtmlConverter.paragraphToAnnotatedString(p)
+                )
+            )
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.novelreader.activity
+package com.example.novelreader
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.novelreader.BottomNavItem
@@ -34,8 +35,6 @@ import com.example.novelreader.screen.*
 import com.example.novelreader.viewmodel.LibraryViewModel
 
 class MainActivity : ComponentActivity() {
-
-    private val viewModel by viewModels<LibraryViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +46,6 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     MainScreenView()
-                    viewModel.getBody()
                 }
             }
         }
@@ -129,7 +127,7 @@ fun BottomNavigation(navController: NavController) {
 }
 
 @Composable
-fun NavigationGraph(navController: NavHostController) {
+fun NavigationGraph(navController: NavHostController, viewModel: LibraryViewModel = viewModel()) {
     NavHost(navController, startDestination = BottomNavItem.Library.screen_route) {
         composable(BottomNavItem.Library.screen_route) {
             LibraryScreen()

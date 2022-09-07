@@ -1,7 +1,6 @@
 package com.example.novelreader
 
 import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -10,11 +9,8 @@ import retrofit2.http.GET
 
 interface ApiService {
 
-//    @GET("/2020/06/27/forbidden-master-part-3-chapter-64/")
-//    suspend fun getString(): ResponseBody
-
     @GET("/2020/06/27/forbidden-master-part-3-chapter-64/")
-    suspend fun getResponseBody(): ResponseBody
+    suspend fun getChapter(): String
 
     companion object {
         private var instance: ApiService? = null
