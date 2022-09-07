@@ -1,4 +1,4 @@
-package com.example.novelreader.screens
+package com.example.novelreader.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -14,7 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun HomeScreen() {
+fun HistoryScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -22,7 +22,7 @@ fun HomeScreen() {
             .wrapContentSize(Alignment.Center)
     ) {
         Text(
-            text = "Home Screen",
+            text = "History Screen",
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colors.primary,
             modifier = Modifier.align(Alignment.CenterHorizontally),
