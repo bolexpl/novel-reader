@@ -1,4 +1,4 @@
-package com.example.novelreader
+package com.example.novelreader.model
 
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString

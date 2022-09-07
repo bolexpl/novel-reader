@@ -100,7 +100,7 @@ private fun SourceItem(
             },
             modifier = Modifier.padding(20.dp)
         ) {
-            Text(stringResource(id = R.string.label_newest))
+            Text(stringResource(id = R.string.label_latest))
         }
     }
 }
