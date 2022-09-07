@@ -1,23 +1,27 @@
 package com.example.novelreader.screen
 
 import android.content.res.Configuration
-import android.inputmethodservice.Keyboard
+import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.novelreader.R
 import com.example.novelreader.ui.theme.EBookReaderTheme
 
 @Composable
 fun SourcesScreen() {
+    var selectedIndex by remember { mutableStateOf(-1) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -28,10 +32,20 @@ fun SourcesScreen() {
         Scaffold(topBar = { TopBar() }) {
             LazyColumn {
                 item {
-                    SourceItem("Sad translations")
+                    SourceItem("Sad translations", selectedIndex, 0) { x ->
+                        selectedIndex = if (selectedIndex != x)
+                            x
+                        else
+                            -1
+                    }
                 }
                 item {
-                    SourceItem("Novelki.pl")
+                    SourceItem("Novelki.pl", selectedIndex, 1) { x ->
+                        selectedIndex = if (selectedIndex != x)
+                            x
+                        else
+                            -1
+                    }
                 }
             }
         }
@@ -70,25 +84,40 @@ private fun TopBar() {
 }
 
 @Composable
-private fun SourceItem(text: String) {
+private fun SourceItem(
+    text: String,
+    selectedIndex: Int,
+    messageId: Int,
+    callback: (x: Int) -> Unit
+) {
+    val mContext = LocalContext.current
+
     Divider(color = MaterialTheme.colors.primaryVariant)
     Row(
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .selectable(selected = selectedIndex == messageId,
+                onClick = {
+                    callback(messageId)
+                    Toast
+                        .makeText(mContext, "All", Toast.LENGTH_LONG)
+                        .show()
+                }),
     ) {
         Text(
             text = text,
             fontSize = 20.sp,
-            modifier = Modifier
-                .padding(
-                    start = 20.dp,
-                    top = 20.dp,
-                    end = 20.dp,
-                    bottom = 20.dp
-                )
+            modifier = Modifier.padding(20.dp)
         )
-        // TODO dodać przycisk
-        Button(onClick = {}){
-            Text("asdasdad")
+        Button(
+            onClick = {
+                Toast.makeText(mContext, "Newest", Toast.LENGTH_LONG).show()
+            },
+            modifier = Modifier.padding(20.dp)
+        ) {
+            Text(stringResource(id = R.string.label_newest))
         }
     }
 }
