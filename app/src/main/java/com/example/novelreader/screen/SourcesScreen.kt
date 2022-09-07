@@ -20,32 +20,19 @@ import com.example.novelreader.ui.theme.EBookReaderTheme
 
 @Composable
 fun SourcesScreen() {
-    var selectedIndex by remember { mutableStateOf(-1) }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.background)
             .wrapContentSize(Alignment.Center)
     ) {
-
         Scaffold(topBar = { TopBar() }) {
             LazyColumn {
                 item {
-                    SourceItem("Sad translations", selectedIndex, 0) { x ->
-                        selectedIndex = if (selectedIndex != x)
-                            x
-                        else
-                            -1
-                    }
+                    SourceItem("Sad translations")
                 }
                 item {
-                    SourceItem("Novelki.pl", selectedIndex, 1) { x ->
-                        selectedIndex = if (selectedIndex != x)
-                            x
-                        else
-                            -1
-                    }
+                    SourceItem("Novelki.pl")
                 }
             }
         }
@@ -86,9 +73,6 @@ private fun TopBar() {
 @Composable
 private fun SourceItem(
     text: String,
-    selectedIndex: Int,
-    messageId: Int,
-    callback: (x: Int) -> Unit
 ) {
     val mContext = LocalContext.current
 
@@ -98,11 +82,10 @@ private fun SourceItem(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .selectable(selected = selectedIndex == messageId,
+            .selectable(selected = false,
                 onClick = {
-                    callback(messageId)
                     Toast
-                        .makeText(mContext, "All", Toast.LENGTH_LONG)
+                        .makeText(mContext, "All", Toast.LENGTH_SHORT)
                         .show()
                 }),
     ) {
@@ -113,7 +96,7 @@ private fun SourceItem(
         )
         Button(
             onClick = {
-                Toast.makeText(mContext, "Newest", Toast.LENGTH_LONG).show()
+                Toast.makeText(mContext, "Newest", Toast.LENGTH_SHORT).show()
             },
             modifier = Modifier.padding(20.dp)
         ) {
