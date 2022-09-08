@@ -23,9 +23,7 @@ class LibraryViewModel : ViewModel() {
 
     var list = mutableStateListOf<Paragraph>()
 
-    init {
-        update()
-    }
+    init { update() }
 
     fun update() {
         viewModelScope.launch {

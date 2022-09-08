@@ -8,4 +8,5 @@ ekran wszystkich tytułów
 ekran czytnika
 ekran ustawień
 lista źródeł
+sqlite
 

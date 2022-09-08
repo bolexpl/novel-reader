@@ -1,5 +1,6 @@
 package com.example.novelreader.screen
 
+import android.content.Context
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -16,27 +17,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.novelreader.MainNavItem
 import com.example.novelreader.R
 import com.example.novelreader.source.Sources
 import com.example.novelreader.ui.theme.EBookReaderTheme
-
-@Composable
-fun SourcesScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colors.background)
-            .wrapContentSize(Alignment.Center)
-    ) {
-        Scaffold(topBar = { TopBar() }) {
-            LazyColumn {
-                items(Sources.list){source ->
-                    SourceItem(source.getName())
-                }
-            }
-        }
-    }
-}
 
 @Preview(name = "Light", showBackground = true)
 @Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -46,7 +31,29 @@ fun SourcesScreenPreview() {
         Surface(
             color = MaterialTheme.colors.background
         ) {
-            SourcesScreen()
+            SourcesScreen(navController = NavController(LocalContext.current))
+        }
+    }
+}
+
+@Composable
+fun SourcesScreen(navController: NavController) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.background)
+            .wrapContentSize(Alignment.Center)
+    ) {
+        Scaffold(topBar = { TopBar() }) {
+            LazyColumn {
+                items(Sources.list) { source ->
+                    SourceItem(source.getName(), onClickAll = {
+                        navController.navigate(MainNavItem.AllTitlesScreen)
+                    }, onClickLatest = {
+                        navController.navigate(MainNavItem.LatestTitlesScreen)
+                    })
+                }
+            }
         }
     }
 }
@@ -72,8 +79,10 @@ private fun TopBar() {
 @Composable
 private fun SourceItem(
     text: String,
+    onClickAll: (Context) -> Unit = {},
+    onClickLatest: (Context) -> Unit = {}
 ) {
-    val mContext = LocalContext.current
+    val context = LocalContext.current
 
     Divider(color = MaterialTheme.colors.primaryVariant)
     Row(
@@ -81,12 +90,7 @@ private fun SourceItem(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .selectable(selected = false,
-                onClick = {
-                    Toast
-                        .makeText(mContext, "All", Toast.LENGTH_SHORT)
-                        .show()
-                }),
+            .selectable(selected = false, onClick = { onClickAll(context) }),
     ) {
         Text(
             text = text,
@@ -94,9 +98,7 @@ private fun SourceItem(
             modifier = Modifier.padding(20.dp)
         )
         Button(
-            onClick = {
-                Toast.makeText(mContext, "Newest", Toast.LENGTH_SHORT).show()
-            },
+            onClick = { onClickLatest(context) },
             modifier = Modifier.padding(20.dp)
         ) {
             Text(stringResource(id = R.string.label_latest))

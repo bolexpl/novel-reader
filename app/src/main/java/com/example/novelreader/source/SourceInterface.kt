@@ -14,4 +14,6 @@ interface SourceInterface {
     fun getAllTitles(): List<String>
 
     fun getChapters(title: Title): List<Chapter>
+
+    fun getSettings(): List<SourceSetting>
 }
