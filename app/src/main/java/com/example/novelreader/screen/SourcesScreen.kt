@@ -22,6 +22,7 @@ import com.example.novelreader.MainNavItem
 import com.example.novelreader.R
 import com.example.novelreader.source.Sources
 import com.example.novelreader.ui.theme.EBookReaderTheme
+import com.example.novelreader.view.TopBar
 
 @Preview(name = "Light", showBackground = true)
 @Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -44,7 +45,7 @@ fun SourcesScreen(navController: NavController) {
             .background(MaterialTheme.colors.background)
             .wrapContentSize(Alignment.Center)
     ) {
-        Scaffold(topBar = { TopBar() }) {
+        Scaffold(topBar = { TopBar("Sources list") }) {
             LazyColumn {
                 items(Sources.list) { source ->
                     SourceItem(source.getName(), onClickAll = {
@@ -55,24 +56,6 @@ fun SourcesScreen(navController: NavController) {
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun TopBar() {
-    Surface(
-        modifier = Modifier.padding(
-            start = 10.dp,
-            top = 20.dp,
-            end = 10.dp,
-            bottom = 20.dp,
-        ),
-        color = MaterialTheme.colors.background
-    ) {
-        Text(
-            text = "Source list",
-            style = MaterialTheme.typography.h5
-        )
     }
 }
 
