@@ -5,15 +5,11 @@ import com.example.novelreader.model.Title
 
 interface SourceInterface {
 
-    fun getId(): Int
+    val id: Long
 
-    fun getName(): String
+    val name: String
 
-    fun getLatestTitles(): List<String>
+    suspend fun getTitleDetails(manga: Title): Title
 
-    fun getAllTitles(): List<String>
-
-    fun getChapters(title: Title): List<Chapter>
-
-    fun getSettings(): List<SourceSetting>
+    suspend fun getChapterList(manga: Title): List<Chapter>
 }

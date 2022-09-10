@@ -6,10 +6,10 @@ import androidx.navigation.NavController
 import com.example.novelreader.view.BackButtonTitleBar
 
 @Composable
-fun LatestScreenView(mainNavController: NavController) {
+fun LatestTitlesScreenView(mainNavController: NavController) {
     Scaffold(topBar = { BackButtonTitleBar(mainNavController = mainNavController, "Novelki") }) {
         // TODO pobranie danych
-        Text("dół")
+        Text("latest")
     }
 }
 

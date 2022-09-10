@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val mainNavController = rememberNavController()
                     Scaffold {
-                        NavigationGraph(mainNavController = mainNavController)
+                        MainNavigationGraph(mainNavController = mainNavController)
                     }
                 }
             }
@@ -36,17 +36,18 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun NavigationGraph(mainNavController: NavHostController) {
-    // TODO podmiana ekranu
+private fun MainNavigationGraph(mainNavController: NavHostController) {
+
     NavHost(mainNavController, startDestination = MainNavItem.MainScreen) {
         composable(MainNavItem.MainScreen) {
-            MainScreenView(mainNavController)
+            MainScreenView(mainNavController = mainNavController)
         }
         composable(MainNavItem.AllTitlesScreen) {
-            Text("All")
+            AllTitlesScreenView(mainNavController = mainNavController)
         }
         composable(MainNavItem.LatestTitlesScreen) {
-            LatestScreenView(mainNavController)
+            LatestTitlesScreenView(mainNavController = mainNavController)
         }
     }
 }
+

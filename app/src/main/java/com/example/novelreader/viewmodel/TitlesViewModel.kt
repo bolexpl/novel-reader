@@ -4,11 +4,13 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.example.novelreader.model.Title
 
-class TitlesViewModel(val x: Int): ViewModel() {
+class TitlesViewModel: ViewModel() {
 
     var list = mutableStateListOf<Title>()
 
-    fun updateAllTitles() {
+    fun fetchAllTitles() {
+    }
 
+    fun fetchLatestTitles() {
     }
 }

@@ -14,6 +14,6 @@ fun AllTitlesScreenView(mainNavController: NavController) {
 
     Scaffold(topBar = { BackButtonTitleBar(mainNavController = mainNavController, "Novelki") }) {
         // TODO pobranie danych
-        Text("dół")
+        Text("all")
     }
 }

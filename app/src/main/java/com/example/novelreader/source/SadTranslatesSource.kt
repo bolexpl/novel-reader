@@ -4,15 +4,15 @@ import com.example.novelreader.model.Chapter
 import com.example.novelreader.model.Title
 import com.example.novelreader.viewmodel.TitlesViewModel
 
-class NovelkiSource: SourceInterface{
+class SadTranslatesSource : SourceInterface {
 
     var viewModel: TitlesViewModel? = null
 
     override val id: Long
-        get() = 1
+        get() = 2
 
     override val name: String
-        get() = "Novelki.pl"
+        get() = "Sad Translates"
 
     override suspend fun getTitleDetails(manga: Title): Title {
         TODO("Not yet implemented")

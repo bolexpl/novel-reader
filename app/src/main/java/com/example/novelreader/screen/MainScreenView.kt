@@ -2,6 +2,7 @@ package com.example.novelreader.screen
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -12,7 +13,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -21,7 +21,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.novelreader.BottomNavItem
 import com.example.novelreader.ui.theme.EBookReaderTheme
-import com.example.novelreader.viewmodel.LibraryViewModel
 
 @Preview(name = "Light", showBackground = true)
 @Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -40,7 +39,16 @@ private fun DefaultPreview() {
 fun MainScreenView(mainNavController: NavController) {
     val navController = rememberNavController()
     Scaffold(bottomBar = { BottomNavigation(navController = navController) }) {
-        NavigationGraph(navController = navController, mainNavController = mainNavController)
+//        Column{
+//            Text(state.name)
+//            Button(onClick = {
+//                state.name = "dwa"
+//            }) {
+//                Text("zmień")
+//            }
+//        }
+
+//        NavigationGraph(navController = navController, mainNavController = mainNavController)
     }
 }
 
