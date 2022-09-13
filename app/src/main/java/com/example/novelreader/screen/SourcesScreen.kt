@@ -48,7 +48,7 @@ fun SourcesScreen(navController: NavController) {
         Scaffold(topBar = { TopBar("Sources list") }) {
             LazyColumn {
                 items(Sources.list) { source ->
-                    SourceItem(source.getName(), onClickAll = {
+                    SourceItem(source.name, onClickAll = {
                         navController.navigate(MainNavItem.AllTitlesScreen)
                     }, onClickLatest = {
                         navController.navigate(MainNavItem.LatestTitlesScreen)

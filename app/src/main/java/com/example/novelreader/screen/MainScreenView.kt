@@ -48,7 +48,7 @@ fun MainScreenView(mainNavController: NavController) {
 //            }
 //        }
 
-//        NavigationGraph(navController = navController, mainNavController = mainNavController)
+        NavigationGraph(navController = navController, mainNavController = mainNavController)
     }
 }
 
