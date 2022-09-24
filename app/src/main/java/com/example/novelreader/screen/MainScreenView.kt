@@ -39,15 +39,6 @@ private fun DefaultPreview() {
 fun MainScreenView(mainNavController: NavController) {
     val navController = rememberNavController()
     Scaffold(bottomBar = { BottomNavigation(navController = navController) }) {
-//        Column{
-//            Text(state.name)
-//            Button(onClick = {
-//                state.name = "dwa"
-//            }) {
-//                Text("zmień")
-//            }
-//        }
-
         NavigationGraph(navController = navController, mainNavController = mainNavController)
     }
 }
@@ -56,7 +47,6 @@ fun MainScreenView(mainNavController: NavController) {
 private fun NavigationGraph(
     mainNavController: NavController,
     navController: NavHostController,
-
 ) {
     NavHost(navController, startDestination = BottomNavItem.Library.screen_route) {
         composable(BottomNavItem.Library.screen_route) {
