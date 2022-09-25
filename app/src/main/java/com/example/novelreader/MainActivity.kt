@@ -52,7 +52,7 @@ private fun MainNavigationGraph(
         composable(MainNavItem.MainScreen) {
             MainScreenView(
                 mainNavController = mainNavController,
-                repos = mainViewModel.sources
+                repos = mainViewModel.repos
             )
         }
         composable(MainNavItem.AllTitlesScreen) {
@@ -61,7 +61,7 @@ private fun MainNavigationGraph(
                 mainNavController = mainNavController,
                 novelListState = novelListState,
                 onButtonClick = { s ->
-                    novelListState.sourceName = s
+                    mainViewModel.setTwo(s)
                 }
             )
         }

@@ -14,15 +14,13 @@ class MainViewModel(
     private val savedState: SavedStateHandle = SavedStateHandle()
 ) : ViewModel() {
 
-    val sources: Map<Int, RepositoryInterface> = emptyMap()
-
     var novelListState: NovelListState by mutableStateOf(NovelListState())
         private set
 
     var novelScreenState: NovelScreenState by mutableStateOf(NovelScreenState())
         private set
 
-    private val repos: MutableMap<Int, RepositoryInterface> = mutableMapOf()
+    val repos: MutableMap<Int, RepositoryInterface> = mutableMapOf()
 
     init {
         addRepo(SadsTranslatesRepository())
@@ -32,7 +30,7 @@ class MainViewModel(
         repos[r.id] = r
     }
 
-    fun setTwo() {
-        novelListState.sourceName = "dwa"
+    fun setTwo(s:String) {
+        novelListState.sourceName = s
     }
 }
