@@ -43,13 +43,12 @@ class LibraryViewModel : ViewModel() {
 
             title = t.toString()
 
-            clean(content.toString())
+            list.clear()
+            fillList(content.toString())
         }
     }
 
-    private fun clean(html: String) {
-        list.clear()
-
+    private fun fillList(html: String) {
         val jsoup = Jsoup.parse(html)
 
         val title = jsoup.select("h2").first()

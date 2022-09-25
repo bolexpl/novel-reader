@@ -13,6 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -20,7 +21,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.novelreader.BottomNavItem
+import com.example.novelreader.source.RepositoryInterface
+import com.example.novelreader.source.SadsTranslatesRepository
 import com.example.novelreader.ui.theme.EBookReaderTheme
+import com.example.novelreader.viewmodel.MainViewModel
 
 @Preview(name = "Light", showBackground = true)
 @Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -30,16 +34,22 @@ private fun DefaultPreview() {
         Surface(
             color = MaterialTheme.colors.background
         ) {
-            MainScreenView(NavController(LocalContext.current))
+            MainScreenView(NavController(LocalContext.current), mapOf(
+                Pair(1, SadsTranslatesRepository())
+            ))
         }
     }
 }
 
 @Composable
-fun MainScreenView(mainNavController: NavController) {
+fun MainScreenView(mainNavController: NavController, repos: Map<Int, RepositoryInterface>) {
     val navController = rememberNavController()
     Scaffold(bottomBar = { BottomNavigation(navController = navController) }) {
-        NavigationGraph(navController = navController, mainNavController = mainNavController)
+        NavigationGraph(
+            navController = navController,
+            mainNavController = mainNavController,
+            repos = repos
+        )
     }
 }
 
@@ -47,6 +57,7 @@ fun MainScreenView(mainNavController: NavController) {
 private fun NavigationGraph(
     mainNavController: NavController,
     navController: NavHostController,
+    repos: Map<Int, RepositoryInterface>
 ) {
     NavHost(navController, startDestination = BottomNavItem.Library.screen_route) {
         composable(BottomNavItem.Library.screen_route) {
@@ -59,7 +70,7 @@ private fun NavigationGraph(
             HistoryScreen()
         }
         composable(BottomNavItem.Explore.screen_route) {
-            SourcesScreen(mainNavController)
+            SourcesScreen(mainNavController, repos)
         }
         composable(BottomNavItem.Others.screen_route) {
             OthersScreen()

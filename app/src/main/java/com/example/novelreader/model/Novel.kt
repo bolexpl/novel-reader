@@ -1,6 +1,6 @@
 package com.example.novelreader.model
 
-data class Title(
+data class Novel(
     val id: Int,
     val title: String,
     val cover: String,

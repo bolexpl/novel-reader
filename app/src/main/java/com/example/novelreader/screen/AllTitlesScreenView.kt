@@ -1,19 +1,32 @@
 package com.example.novelreader.screen
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.Button
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.navigation.NavController
+import com.example.novelreader.state.NovelListState
 import com.example.novelreader.view.BackButtonTitleBar
-import com.example.novelreader.viewmodel.TitlesViewModel
 
 @Composable
-fun AllTitlesScreenView(mainNavController: NavController) {
-    val viewModel: TitlesViewModel = viewModel()
-
+fun AllTitlesScreenView(
+    mainNavController: NavController,
+    novelListState: NovelListState,
+    onButtonClick: (String) -> Unit = {}
+) {
     Scaffold(topBar = { BackButtonTitleBar(mainNavController = mainNavController, "Novelki") }) {
         // TODO pobranie danych
-        Text("all")
+        // TODO przetestować zmianę napisu
+
+        Column {
+            Text(novelListState.sourceName)
+            Button(onClick = {
+                onButtonClick("trzy")
+            }) {
+                Text("Zmień na trzy")
+            }
+        }
     }
 }
