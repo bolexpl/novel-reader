@@ -33,7 +33,8 @@ fun SourcesScreenPreview() {
         ) {
             SourcesScreen(
                 navController = NavController(LocalContext.current),
-                repos = emptyMap()
+                repos = emptyMap(),
+                onSourceClick = {}
             )
         }
     }
@@ -42,7 +43,8 @@ fun SourcesScreenPreview() {
 @Composable
 fun SourcesScreen(
     navController: NavController,
-    repos: Map<Int, RepositoryInterface>
+    repos: Map<Int, RepositoryInterface>,
+    onSourceClick: (Int) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -54,8 +56,11 @@ fun SourcesScreen(
             LazyColumn {
                 items(items = repos.toList()) { pair ->
                     SourceItem(pair.second.name, onClickAll = {
+                        onSourceClick(pair.first)
                         navController.navigate(MainNavItem.AllTitlesScreen)
+
                     }, onClickLatest = {
+                        onSourceClick(pair.first)
                         navController.navigate(MainNavItem.LatestTitlesScreen)
                     })
                 }

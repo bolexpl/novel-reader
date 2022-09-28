@@ -46,23 +46,24 @@ private fun MainNavigationGraph(
     mainViewModel: MainViewModel = viewModel()
 ) {
     val novelListState = mainViewModel.novelListState
-//    val novelScreenState = mainViewModel.novelScreenState
 
     NavHost(mainNavController, startDestination = MainNavItem.MainScreen) {
         composable(MainNavItem.MainScreen) {
             MainScreenView(
                 mainNavController = mainNavController,
-                repos = mainViewModel.repos
+                repos = mainViewModel.repos,
+                onSourceClick = { index ->
+                    mainViewModel.setCurrentRepo(index)
+                    mainViewModel.updateNovelList()
+                    mainViewModel.refreshNovelList()
+                }
             )
         }
         composable(MainNavItem.AllTitlesScreen) {
 
             AllTitlesScreenView(
                 mainNavController = mainNavController,
-                novelListState = novelListState,
-                onButtonClick = { s ->
-                    mainViewModel.setTwo(s)
-                }
+                novelListState = novelListState
             )
         }
         composable(MainNavItem.LatestTitlesScreen) {

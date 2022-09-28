@@ -28,7 +28,7 @@ class LibraryViewModel : ViewModel() {
     fun update() {
         viewModelScope.launch {
 
-            val apiService = ApiService.getInstance()
+            val apiService = ApiService.getInstance("https://sads07.wordpress.com")
             val response = apiService.getChapter()
 
             val jsoup: Document = Jsoup.parse(response)

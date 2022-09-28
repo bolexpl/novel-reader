@@ -9,9 +9,9 @@ interface RepositoryInterface {
 
     val name: String
 
-    fun getNovelList(): List<Novel>
+    suspend fun getNovelList(): List<Novel>
 
-    fun getNovelDetails(novel: Novel): Novel
+    suspend fun getNovelDetails(novel: Novel): Novel
 
-    fun getChapters(novel: Novel): List<Chapter>
+    suspend fun getChapters(novel: Novel): List<Chapter>
 }

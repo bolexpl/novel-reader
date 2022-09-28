@@ -34,21 +34,30 @@ private fun DefaultPreview() {
         Surface(
             color = MaterialTheme.colors.background
         ) {
-            MainScreenView(NavController(LocalContext.current), mapOf(
-                Pair(1, SadsTranslatesRepository())
-            ))
+            MainScreenView(
+                NavController(LocalContext.current),
+                mapOf(
+                    Pair(1, SadsTranslatesRepository())
+                ),
+                onSourceClick = {}
+            )
         }
     }
 }
 
 @Composable
-fun MainScreenView(mainNavController: NavController, repos: Map<Int, RepositoryInterface>) {
+fun MainScreenView(
+    mainNavController: NavController,
+    repos: Map<Int, RepositoryInterface>,
+    onSourceClick: (Int)->Unit
+) {
     val navController = rememberNavController()
     Scaffold(bottomBar = { BottomNavigation(navController = navController) }) {
         NavigationGraph(
             navController = navController,
             mainNavController = mainNavController,
-            repos = repos
+            repos = repos,
+            onSourceClick = onSourceClick
         )
     }
 }
@@ -57,7 +66,8 @@ fun MainScreenView(mainNavController: NavController, repos: Map<Int, RepositoryI
 private fun NavigationGraph(
     mainNavController: NavController,
     navController: NavHostController,
-    repos: Map<Int, RepositoryInterface>
+    repos: Map<Int, RepositoryInterface>,
+    onSourceClick: (Int) -> Unit
 ) {
     NavHost(navController, startDestination = BottomNavItem.Library.screen_route) {
         composable(BottomNavItem.Library.screen_route) {
@@ -70,7 +80,7 @@ private fun NavigationGraph(
             HistoryScreen()
         }
         composable(BottomNavItem.Explore.screen_route) {
-            SourcesScreen(mainNavController, repos)
+            SourcesScreen(mainNavController, repos, onSourceClick)
         }
         composable(BottomNavItem.Others.screen_route) {
             OthersScreen()
