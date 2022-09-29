@@ -1,6 +1,5 @@
 package com.example.novelreader.source
 
-import android.util.Log
 import com.example.novelreader.ApiService
 import com.example.novelreader.model.Chapter
 import com.example.novelreader.model.Novel
@@ -24,14 +23,17 @@ class SadsTranslatesRepository : RepositoryInterface {
 
         val jsoup: Document = Jsoup.parse(response)
 
-        val t = jsoup
-            .select(".entry-content>ul:nth-of-type(1)>li>a, .entry-content>ul:nth-of-type(2)>li>a")
+        val links = jsoup
+            .select(".entry-content>ul:nth-of-type(1)>li>a, " +
+                    ".entry-content>ul:nth-of-type(2)>li>a")
 
-        // TODO parse html
-        Log.d("", t.toString())
+        val list = mutableListOf<Novel>()
 
+        for ((i, el) in links.withIndex()) {
+            list.add(Novel(i, el.text(), el.attr("href")))
+        }
 
-        return emptyList()
+        return list
     }
 
     override suspend fun getNovelDetails(novel: Novel): Novel {
@@ -39,6 +41,10 @@ class SadsTranslatesRepository : RepositoryInterface {
     }
 
     override suspend fun getChapters(novel: Novel): List<Chapter> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getCover(novel: Novel): Novel {
         TODO("Not yet implemented")
     }
 }

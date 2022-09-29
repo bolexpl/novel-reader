@@ -23,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.novelreader.BottomNavItem
 import com.example.novelreader.source.RepositoryInterface
 import com.example.novelreader.source.SadsTranslatesRepository
+import com.example.novelreader.state.NovelListState
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.viewmodel.MainViewModel
 
@@ -49,7 +50,7 @@ private fun DefaultPreview() {
 fun MainScreenView(
     mainNavController: NavController,
     repos: Map<Int, RepositoryInterface>,
-    onSourceClick: (Int)->Unit
+    onSourceClick: (Int) -> Unit
 ) {
     val navController = rememberNavController()
     Scaffold(bottomBar = { BottomNavigation(navController = navController) }) {

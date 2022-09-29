@@ -14,4 +14,6 @@ interface RepositoryInterface {
     suspend fun getNovelDetails(novel: Novel): Novel
 
     suspend fun getChapters(novel: Novel): List<Chapter>
+
+    suspend fun getCover(novel: Novel): Novel
 }
