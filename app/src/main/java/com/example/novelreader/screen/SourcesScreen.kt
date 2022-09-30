@@ -2,7 +2,6 @@ package com.example.novelreader.screen
 
 import android.content.Context
 import android.content.res.Configuration
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.novelreader.MainNavItem
 import com.example.novelreader.R
-import com.example.novelreader.source.Sources
+import com.example.novelreader.source.RepositoryInterface
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.view.TopBar
 
@@ -32,13 +31,21 @@ fun SourcesScreenPreview() {
         Surface(
             color = MaterialTheme.colors.background
         ) {
-            SourcesScreen(navController = NavController(LocalContext.current))
+            SourcesScreen(
+                navController = NavController(LocalContext.current),
+                repos = emptyMap(),
+                onSourceClick = {}
+            )
         }
     }
 }
 
 @Composable
-fun SourcesScreen(navController: NavController) {
+fun SourcesScreen(
+    navController: NavController,
+    repos: Map<Int, RepositoryInterface>,
+    onSourceClick: (Int) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -47,10 +54,13 @@ fun SourcesScreen(navController: NavController) {
     ) {
         Scaffold(topBar = { TopBar("Sources list") }) {
             LazyColumn {
-                items(Sources.list) { source ->
-                    SourceItem(source.name, onClickAll = {
+                items(items = repos.toList()) { pair ->
+                    SourceItem(pair.second.name, onClickAll = {
+                        onSourceClick(pair.first)
                         navController.navigate(MainNavItem.AllTitlesScreen)
+
                     }, onClickLatest = {
+                        onSourceClick(pair.first)
                         navController.navigate(MainNavItem.LatestTitlesScreen)
                     })
                 }

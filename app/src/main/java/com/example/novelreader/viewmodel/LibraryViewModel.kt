@@ -28,7 +28,7 @@ class LibraryViewModel : ViewModel() {
     fun update() {
         viewModelScope.launch {
 
-            val apiService = ApiService.getInstance()
+            val apiService = ApiService.getInstance("https://sads07.wordpress.com")
             val response = apiService.getChapter()
 
             val jsoup: Document = Jsoup.parse(response)
@@ -43,13 +43,12 @@ class LibraryViewModel : ViewModel() {
 
             title = t.toString()
 
-            clean(content.toString())
+            list.clear()
+            fillList(content.toString())
         }
     }
 
-    private fun clean(html: String) {
-        list.clear()
-
+    private fun fillList(html: String) {
         val jsoup = Jsoup.parse(html)
 
         val title = jsoup.select("h2").first()
