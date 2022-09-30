@@ -9,12 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.novelreader.R
 import com.example.novelreader.model.Novel
 import com.example.novelreader.state.NovelListState
 import com.example.novelreader.ui.theme.EBookReaderTheme
@@ -57,7 +59,18 @@ fun NovelItem(novel: Novel) {
                 contentScale = ContentScale.FillWidth,
                 alignment = Alignment.Center
             ),
-            modifier = Modifier.width(60.dp)
+            modifier = Modifier.width(60.dp),
+            previewPlaceholder = R.drawable.novel_no_cover
+        )
+
+        GlideImage(
+            previewPlaceholder = R.drawable.novel_no_cover,
+            imageOptions = ImageOptions(
+                contentScale = ContentScale.FillWidth,
+                alignment = Alignment.Center
+            ),
+            modifier = Modifier.width(60.dp),
+            imageModel = ""
         )
 
 //        Image(
