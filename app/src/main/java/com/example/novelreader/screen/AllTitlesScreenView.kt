@@ -1,29 +1,24 @@
 package com.example.novelreader.screen
 
 import android.content.res.Configuration
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.novelreader.R
 import com.example.novelreader.model.Novel
 import com.example.novelreader.state.NovelListState
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.view.BackButtonTitleBar
+import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
 fun AllTitlesScreenView(
@@ -52,11 +47,16 @@ fun NovelItem(novel: Novel) {
         horizontalArrangement = Arrangement.Start,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.novel_no_cover),
-            contentDescription = stringResource(R.string.cover_desc),
-            modifier = Modifier.width(50.dp)
-        )
+
+        val image = "https://sads07.files.wordpress.com/2019/11/818ay2fgbal._ac_sl1500_.jpg?w=720"
+
+        GlideImage(imageModel = image)
+
+//        Image(
+//            painter = painterResource(id = R.drawable.novel_no_cover),
+//            contentDescription = stringResource(R.string.cover_desc),
+//            modifier = Modifier.width(50.dp)
+//        )
 
         Text(
             text = novel.title,
