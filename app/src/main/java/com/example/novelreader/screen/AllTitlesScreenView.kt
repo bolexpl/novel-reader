@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -18,6 +19,7 @@ import com.example.novelreader.model.Novel
 import com.example.novelreader.state.NovelListState
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.view.BackButtonTitleBar
+import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
@@ -30,8 +32,8 @@ fun AllTitlesScreenView(
             mainNavController = mainNavController,
             novelListState.sourceName
         )
-    }) {
-        LazyColumn {
+    }) { padding ->
+        LazyColumn(modifier = Modifier.padding(padding)) {
             items(novelListState.novels) { novel ->
                 NovelItem(novel = novel)
             }
@@ -49,8 +51,14 @@ fun NovelItem(novel: Novel) {
     ) {
 
         val image = "https://sads07.files.wordpress.com/2019/11/818ay2fgbal._ac_sl1500_.jpg?w=720"
-
-        GlideImage(imageModel = image)
+        GlideImage(
+            imageModel = image,
+            imageOptions = ImageOptions(
+                contentScale = ContentScale.FillWidth,
+                alignment = Alignment.Center
+            ),
+            modifier = Modifier.width(60.dp)
+        )
 
 //        Image(
 //            painter = painterResource(id = R.drawable.novel_no_cover),
