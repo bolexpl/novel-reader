@@ -3,9 +3,11 @@ package com.example.novelreader.viewmodel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.novelreader.model.Novel
 import com.example.novelreader.source.RepositoryInterface
 import com.example.novelreader.source.SadsTranslatesRepository
 import com.example.novelreader.state.NovelScreenState
@@ -53,6 +55,16 @@ class MainViewModel(
 
                 val novels = curr.getNovelList()
                 novelListState = novelListState.copy(novels = novels)
+            }
+        }
+    }
+
+    fun refreshNovelCover(n: Novel) {
+        val curr = currentRepo
+
+        curr?.let {
+            viewModelScope.launch {
+                n.cover = curr.getCover(n)
             }
         }
     }

@@ -63,6 +63,9 @@ private fun MainNavigationGraph(
                     mainViewModel.setCurrentRepo(index)
                     mainViewModel.updateNovelList()
                     mainViewModel.refreshNovelList()
+                    mainViewModel.novelListState.novels.forEachIndexed { _, novel ->
+                        mainViewModel.refreshNovelCover(novel)
+                    }
                 }
             )
         }

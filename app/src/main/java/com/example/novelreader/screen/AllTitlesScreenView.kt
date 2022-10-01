@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -22,7 +23,9 @@ import com.example.novelreader.state.NovelListState
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.view.BackButtonTitleBar
 import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.components.rememberImageComponent
 import com.skydoves.landscapist.glide.GlideImage
+import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 
 @Composable
 fun AllTitlesScreenView(
@@ -59,7 +62,16 @@ fun NovelItem(novel: Novel) {
                 alignment = Alignment.Center
             ),
             modifier = Modifier.width(60.dp),
-            previewPlaceholder = R.drawable.novel_no_cover
+            previewPlaceholder = R.drawable.novel_no_cover,
+            component = rememberImageComponent{
+                +ShimmerPlugin(
+                    baseColor = Color.DarkGray,
+                    highlightColor = Color.LightGray
+                )
+            },
+            failure = {
+                Text(text = "Image request failed.")
+            }
         )
 
         Text(

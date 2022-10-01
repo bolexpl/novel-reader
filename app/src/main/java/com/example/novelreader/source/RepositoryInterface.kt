@@ -15,5 +15,5 @@ interface RepositoryInterface {
 
     suspend fun getChapters(novel: Novel): List<Chapter>
 
-    suspend fun getCover(novel: Novel): Novel
+    suspend fun getCover(novel: Novel): String
 }
