@@ -52,9 +52,8 @@ fun NovelItem(novel: Novel) {
         modifier = Modifier.fillMaxWidth()
     ) {
 
-        val image = "https://sads07.files.wordpress.com/2019/11/818ay2fgbal._ac_sl1500_.jpg?w=720"
         GlideImage(
-            imageModel = image,
+            imageModel = novel.cover,
             imageOptions = ImageOptions(
                 contentScale = ContentScale.FillWidth,
                 alignment = Alignment.Center
@@ -62,12 +61,6 @@ fun NovelItem(novel: Novel) {
             modifier = Modifier.width(60.dp),
             previewPlaceholder = R.drawable.novel_no_cover
         )
-
-//        Image(
-//            painter = painterResource(id = R.drawable.novel_no_cover),
-//            contentDescription = stringResource(R.string.cover_desc),
-//            modifier = Modifier.width(50.dp)
-//        )
 
         Text(
             text = novel.title,
@@ -82,7 +75,7 @@ fun NovelItem(novel: Novel) {
 @Preview(name = "Light", showBackground = true)
 @Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun AllTitlesScreenPreview() {
+private fun AllTitlesScreenPreview() {
     EBookReaderTheme {
         Surface(
             color = MaterialTheme.colors.background

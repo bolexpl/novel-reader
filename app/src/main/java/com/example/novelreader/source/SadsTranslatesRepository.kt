@@ -1,5 +1,6 @@
 package com.example.novelreader.source
 
+import android.util.Log
 import com.example.novelreader.ApiService
 import com.example.novelreader.model.Chapter
 import com.example.novelreader.model.Novel
@@ -24,13 +25,16 @@ class SadsTranslatesRepository : RepositoryInterface {
         val jsoup: Document = Jsoup.parse(response)
 
         val links = jsoup
-            .select(".entry-content>ul:nth-of-type(1)>li>a, " +
-                    ".entry-content>ul:nth-of-type(2)>li>a")
+            .select(
+                ".entry-content>ul:nth-of-type(1)>li>a, " +
+                        ".entry-content>ul:nth-of-type(2)>li>a"
+            )
 
         val list = mutableListOf<Novel>()
 
         for ((i, el) in links.withIndex()) {
-            list.add(Novel(i, el.text(), el.attr("href")))
+            val n = Novel(i, el.text(), el.attr("href"))
+            list.add(getCover(n))
         }
 
         return list
@@ -45,6 +49,13 @@ class SadsTranslatesRepository : RepositoryInterface {
     }
 
     override suspend fun getCover(novel: Novel): Novel {
-        TODO("Not yet implemented")
+        val response = apiService.getFromUrl(novel.url.replace("$baseUrl/", ""))
+        val jsoup: Document = Jsoup.parse(response)
+
+        val url = jsoup
+            .select("figure.size-large>img")
+            .attr("src")
+
+        return novel.copy(cover = url)
     }
 }

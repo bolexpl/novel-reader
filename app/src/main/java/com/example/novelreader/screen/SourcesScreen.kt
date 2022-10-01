@@ -26,7 +26,7 @@ import com.example.novelreader.view.TopBar
 @Preview(name = "Light", showBackground = true)
 @Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun SourcesScreenPreview() {
+private fun SourcesScreenPreview() {
     EBookReaderTheme {
         Surface(
             color = MaterialTheme.colors.background
