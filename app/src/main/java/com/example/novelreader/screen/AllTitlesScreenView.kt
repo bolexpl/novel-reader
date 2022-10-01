@@ -63,16 +63,6 @@ fun NovelItem(novel: Novel) {
             previewPlaceholder = R.drawable.novel_no_cover
         )
 
-        GlideImage(
-            previewPlaceholder = R.drawable.novel_no_cover,
-            imageOptions = ImageOptions(
-                contentScale = ContentScale.FillWidth,
-                alignment = Alignment.Center
-            ),
-            modifier = Modifier.width(60.dp),
-            imageModel = ""
-        )
-
 //        Image(
 //            painter = painterResource(id = R.drawable.novel_no_cover),
 //            contentDescription = stringResource(R.string.cover_desc),
