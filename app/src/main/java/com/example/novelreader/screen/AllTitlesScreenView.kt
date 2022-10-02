@@ -24,7 +24,7 @@ fun AllTitlesScreenView(
     Scaffold(topBar = {
         BackButtonTitleBar(
             mainNavController = mainNavController,
-            title = "Wszystkie: $sourceName"
+            title = sourceName
         )
     }) { padding ->
         LazyColumn(modifier = Modifier.padding(padding)) {
