@@ -1,12 +1,10 @@
 package com.example.novelreader.viewmodel
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.novelreader.model.Novel
 import com.example.novelreader.source.RepositoryInterface
 import com.example.novelreader.source.SadsTranslatesRepository
@@ -18,11 +16,11 @@ class MainViewModel(
     private val savedState: SavedStateHandle = SavedStateHandle()
 ) : ViewModel() {
 
-    var novelListState: NovelListState by mutableStateOf(NovelListState())
-        private set
+    private val _sourceName: MutableLiveData<String> = MutableLiveData()
+    private val _novelList: MutableLiveData<List<Novel>> = MutableLiveData()
 
-    var novelScreenState: NovelScreenState by mutableStateOf(NovelScreenState())
-        private set
+    val sourceName: LiveData<String> get() = _sourceName
+    val novelList: LiveData<List<Novel>> get() = _novelList
 
     val repos: MutableMap<Int, RepositoryInterface> = mutableMapOf()
 
