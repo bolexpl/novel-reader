@@ -1,4 +1,4 @@
-package com.example.novelreader.source
+package com.example.novelreader.repository
 
 data class RepositorySetting(
     val settingName: String,

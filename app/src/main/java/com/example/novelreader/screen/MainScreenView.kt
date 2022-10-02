@@ -2,7 +2,6 @@ package com.example.novelreader.screen
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
@@ -15,7 +14,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -23,11 +21,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.novelreader.BottomNavItem
-import com.example.novelreader.source.RepositoryInterface
-import com.example.novelreader.source.SadsTranslatesRepository
-import com.example.novelreader.state.NovelListState
+import com.example.novelreader.repository.RepositoryInterface
+import com.example.novelreader.repository.SadsTranslatesRepository
 import com.example.novelreader.ui.theme.EBookReaderTheme
-import com.example.novelreader.viewmodel.MainViewModel
 
 @Preview(name = "Light", showBackground = true)
 @Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -42,7 +38,7 @@ private fun DefaultPreview() {
                 mapOf(
                     Pair(1, SadsTranslatesRepository())
                 ),
-                onSourceClick = {}
+                onSourceClick = { _,_-> }
             )
         }
     }
@@ -52,7 +48,7 @@ private fun DefaultPreview() {
 fun MainScreenView(
     mainNavController: NavController,
     repos: Map<Int, RepositoryInterface>,
-    onSourceClick: (Int) -> Unit
+    onSourceClick: (Int, Boolean) -> Unit
 ) {
     val navController = rememberNavController()
     Scaffold(bottomBar = { BottomNavigation(navController = navController) }) {
@@ -72,7 +68,7 @@ private fun NavigationGraph(
     navController: NavHostController,
     repos: Map<Int, RepositoryInterface>,
     padding: PaddingValues,
-    onSourceClick: (Int) -> Unit
+    onSourceClick: (Int, Boolean) -> Unit
 ) {
     NavHost(
         navController = navController,

@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.novelreader.MainNavItem
 import com.example.novelreader.R
-import com.example.novelreader.source.RepositoryInterface
+import com.example.novelreader.repository.RepositoryInterface
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.view.TopBar
 
@@ -34,7 +34,7 @@ private fun SourcesScreenPreview() {
             SourcesScreen(
                 navController = NavController(LocalContext.current),
                 repos = emptyMap(),
-                onSourceClick = {}
+                onSourceClick = {_,_->}
             )
         }
     }
@@ -44,7 +44,7 @@ private fun SourcesScreenPreview() {
 fun SourcesScreen(
     navController: NavController,
     repos: Map<Int, RepositoryInterface>,
-    onSourceClick: (Int) -> Unit
+    onSourceClick: (Int, Boolean) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -53,16 +53,18 @@ fun SourcesScreen(
             .wrapContentSize(Alignment.Center)
     ) {
         Scaffold(topBar = { TopBar("Sources list") }) {
-            LazyColumn {
+            LazyColumn(modifier = Modifier.padding(it)) {
                 items(items = repos.toList()) { pair ->
-                    SourceItem(pair.second.name, onClickAll = {
-                        onSourceClick(pair.first)
-                        navController.navigate(MainNavItem.AllTitlesScreen)
+                    SourceItem(
+                        pair.second.name,
+                        onClickAll = {
+                            onSourceClick(pair.first, false)
+                            navController.navigate(MainNavItem.AllTitlesScreen)
 
-                    }, onClickLatest = {
-                        onSourceClick(pair.first)
-                        navController.navigate(MainNavItem.LatestTitlesScreen)
-                    })
+                        }, onClickLatest = {
+                            onSourceClick(pair.first, true)
+                            navController.navigate(MainNavItem.LatestTitlesScreen)
+                        })
                 }
             }
         }

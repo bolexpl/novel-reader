@@ -57,13 +57,10 @@ private fun MainNavigationGraph(
             MainScreenView(
                 mainNavController = mainNavController,
                 repos = mainViewModel.repos,
-                onSourceClick = { index ->
+                onSourceClick = { index, newest ->
                     mainViewModel.setCurrentRepo(index)
-                    mainViewModel.updateNovelList()
-                    mainViewModel.refreshNovelList()
-//                    mainViewModel.novelList.forEachIndexed { _, novel ->
-//                        mainViewModel.refreshNovelCover(novel)
-//                    }
+                    mainViewModel.updateSourceName()
+                    mainViewModel.refreshNovelList(newest)
                 }
             )
         }
@@ -76,7 +73,9 @@ private fun MainNavigationGraph(
         }
         composable(MainNavItem.LatestTitlesScreen) {
             LatestTitlesScreenView(
-                mainNavController = mainNavController
+                mainNavController = mainNavController,
+                sourceName = mainViewModel.sourceName,
+                novelList = mainViewModel.novelList
             )
         }
     }
