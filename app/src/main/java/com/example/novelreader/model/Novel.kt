@@ -4,5 +4,5 @@ data class Novel(
     val id: Int,
     val title: String,
     val url: String,
-    var cover: String? = null
+    var cover: String = ""
 )

@@ -72,9 +72,7 @@ private fun MainNavigationGraph(
                 mainNavController = mainNavController,
                 sourceName = mainViewModel.sourceName,
                 novelList = mainViewModel.novelList
-            ){
-                mainViewModel.refreshCoverList()
-            }
+            )
         }
         composable(MainNavItem.LatestTitlesScreen) {
             LatestTitlesScreenView(

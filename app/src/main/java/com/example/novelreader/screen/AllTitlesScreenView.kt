@@ -32,10 +32,8 @@ import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 fun AllTitlesScreenView(
     mainNavController: NavController = rememberNavController(),
     sourceName: String,
-    novelList: List<Novel>,
-    onLoad: () -> Unit = {}
+    novelList: List<Novel>
 ) {
-    if (novelList.isNotEmpty()) onLoad()
     Scaffold(topBar = {
         BackButtonTitleBar(
             mainNavController = mainNavController,
@@ -106,8 +104,7 @@ private fun AllTitlesScreenPreview() {
             )
             AllTitlesScreenView(
                 sourceName = "Nazwa",
-                novelList = list,
-                onLoad = {}
+                novelList = list
             )
         }
     }

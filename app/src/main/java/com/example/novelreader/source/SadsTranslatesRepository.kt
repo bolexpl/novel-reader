@@ -32,7 +32,8 @@ class SadsTranslatesRepository : RepositoryInterface {
         val list = mutableListOf<Novel>()
 
         for ((i, el) in links.withIndex()) {
-            list.add(Novel(i, el.text(), el.attr("href")))
+            val url = el.attr("href")
+            list.add(Novel(i, el.text(), url, getCover(url)))
         }
 
         return list
@@ -46,8 +47,8 @@ class SadsTranslatesRepository : RepositoryInterface {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getCover(novel: Novel): String {
-        val response = apiService.getFromUrl(novel.url.replace("$baseUrl/", ""))
+    override suspend fun getCover(url: String): String {
+        val response = apiService.getFromUrl(url.replace("$baseUrl/", ""))
         val jsoup: Document = Jsoup.parse(response)
 
         return jsoup

@@ -24,9 +24,8 @@ class MainViewModel : ViewModel() {
 //    }
 
     var sourceName by mutableStateOf("")
-        private set
+
     var novelList: MutableList<Novel> = mutableStateListOf()
-        private set
 
     val repos: MutableMap<Int, RepositoryInterface> = mutableMapOf()
 
@@ -55,21 +54,6 @@ class MainViewModel : ViewModel() {
         curr?.let {
             viewModelScope.launch {
                 novelList.addAll(curr.getNovelList())
-            }
-        }
-    }
-
-    fun refreshCoverList() {
-        val curr = currentRepo
-        // TODO
-    }
-
-    fun refreshNovelCover(n: Novel) {
-        val curr = currentRepo
-
-        curr?.let {
-            viewModelScope.launch {
-                n.cover = curr.getCover(n)
             }
         }
     }
