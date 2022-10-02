@@ -12,23 +12,28 @@ import com.example.novelreader.state.NovelScreenState
 import com.example.novelreader.state.NovelListState
 import kotlinx.coroutines.launch
 
-class MainViewModel(
-    private val savedState: SavedStateHandle = SavedStateHandle()
-) : ViewModel() {
+class MainViewModel : ViewModel() {
 
-    private val _sourceName: MutableLiveData<String> = MutableLiveData()
-    private val _novelList: MutableLiveData<List<Novel>> = MutableLiveData()
+//    fun purchaseIngredient(storageItem: StorageItem) {
+//        storageItems = storageItems.map { item ->
+//            if(item == storageItem)
+//                item.copy(stock = item.stock + 1)
+//            else
+//                item
+//        }
+//    }
 
-    val sourceName: LiveData<String> get() = _sourceName
-    val novelList: LiveData<List<Novel>> get() = _novelList
+    var sourceName by mutableStateOf("")
+        private set
+    var novelList: MutableList<Novel> = mutableStateListOf()
+        private set
 
     val repos: MutableMap<Int, RepositoryInterface> = mutableMapOf()
 
     private var currentRepo: RepositoryInterface? by mutableStateOf(null)
 
     init {
-        val r = SadsTranslatesRepository()
-        addRepo(r)
+        addRepo(SadsTranslatesRepository())
     }
 
     private fun addRepo(r: RepositoryInterface) {
@@ -41,20 +46,22 @@ class MainViewModel(
 
     fun updateNovelList() {
         currentRepo?.let {
-            novelListState = novelListState.copy(sourceName = it.name)
+            sourceName = it.name
         }
     }
 
     fun refreshNovelList() {
         val curr = currentRepo
-
         curr?.let {
             viewModelScope.launch {
-
-                val novels = curr.getNovelList()
-                novelListState = novelListState.copy(novels = novels)
+                novelList.addAll(curr.getNovelList())
             }
         }
+    }
+
+    fun refreshCoverList() {
+        val curr = currentRepo
+        // TODO
     }
 
     fun refreshNovelCover(n: Novel) {

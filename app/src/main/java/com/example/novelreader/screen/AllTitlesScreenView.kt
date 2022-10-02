@@ -1,6 +1,7 @@
 package com.example.novelreader.screen
 
 import android.content.res.Configuration
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -30,16 +31,19 @@ import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 @Composable
 fun AllTitlesScreenView(
     mainNavController: NavController = rememberNavController(),
-    novelListState: NovelListState
+    sourceName: String,
+    novelList: List<Novel>,
+    onLoad: () -> Unit = {}
 ) {
+    if (novelList.isNotEmpty()) onLoad()
     Scaffold(topBar = {
         BackButtonTitleBar(
             mainNavController = mainNavController,
-            novelListState.sourceName
+            title = sourceName
         )
     }) { padding ->
         LazyColumn(modifier = Modifier.padding(padding)) {
-            items(novelListState.novels) { novel ->
+            items(novelList) { novel ->
                 NovelItem(novel = novel)
             }
         }
@@ -63,14 +67,17 @@ fun NovelItem(novel: Novel) {
             ),
             modifier = Modifier.width(60.dp),
             previewPlaceholder = R.drawable.novel_no_cover,
-            component = rememberImageComponent{
+            component = rememberImageComponent {
                 +ShimmerPlugin(
                     baseColor = Color.DarkGray,
                     highlightColor = Color.LightGray
                 )
             },
             failure = {
-                Text(text = "Image request failed.")
+                Image(
+                    painter = painterResource(id = R.drawable.novel_no_cover),
+                    contentDescription = ""
+                )
             }
         )
 
@@ -92,14 +99,15 @@ private fun AllTitlesScreenPreview() {
         Surface(
             color = MaterialTheme.colors.background
         ) {
-            val state = NovelListState()
-            state.novels = listOf(
+            val list = listOf(
                 Novel(0, "Forbidden Master", ""),
                 Novel(1, "Classroom of the Elite", ""),
                 Novel(2, "Kakegurui", "")
             )
             AllTitlesScreenView(
-                novelListState = state
+                sourceName = "Nazwa",
+                novelList = list,
+                onLoad = {}
             )
         }
     }

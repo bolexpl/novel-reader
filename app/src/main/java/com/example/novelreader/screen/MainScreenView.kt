@@ -3,6 +3,8 @@ package com.example.novelreader.screen
 import android.content.res.Configuration
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -58,6 +60,7 @@ fun MainScreenView(
             navController = navController,
             mainNavController = mainNavController,
             repos = repos,
+            padding = it,
             onSourceClick = onSourceClick
         )
     }
@@ -68,9 +71,14 @@ private fun NavigationGraph(
     mainNavController: NavController,
     navController: NavHostController,
     repos: Map<Int, RepositoryInterface>,
+    padding: PaddingValues,
     onSourceClick: (Int) -> Unit
 ) {
-    NavHost(navController, startDestination = BottomNavItem.Library.screen_route) {
+    NavHost(
+        navController = navController,
+        startDestination = BottomNavItem.Library.screen_route,
+        modifier = Modifier.padding(padding)
+    ) {
         composable(BottomNavItem.Library.screen_route) {
             LibraryScreen()
         }

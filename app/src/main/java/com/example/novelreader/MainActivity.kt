@@ -48,8 +48,6 @@ private fun MainNavigationGraph(
     mainViewModel: MainViewModel = viewModel(),
     padding: PaddingValues
 ) {
-    val novelListState = mainViewModel.novelListState
-
     NavHost(
         mainNavController,
         startDestination = MainNavItem.MainScreen,
@@ -63,18 +61,20 @@ private fun MainNavigationGraph(
                     mainViewModel.setCurrentRepo(index)
                     mainViewModel.updateNovelList()
                     mainViewModel.refreshNovelList()
-                    mainViewModel.novelListState.novels.forEachIndexed { _, novel ->
-                        mainViewModel.refreshNovelCover(novel)
-                    }
+//                    mainViewModel.novelList.forEachIndexed { _, novel ->
+//                        mainViewModel.refreshNovelCover(novel)
+//                    }
                 }
             )
         }
         composable(MainNavItem.AllTitlesScreen) {
-
             AllTitlesScreenView(
                 mainNavController = mainNavController,
-                novelListState = novelListState
-            )
+                sourceName = mainViewModel.sourceName,
+                novelList = mainViewModel.novelList
+            ){
+                mainViewModel.refreshCoverList()
+            }
         }
         composable(MainNavItem.LatestTitlesScreen) {
             LatestTitlesScreenView(
