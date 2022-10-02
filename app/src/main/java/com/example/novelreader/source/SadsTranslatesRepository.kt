@@ -24,13 +24,16 @@ class SadsTranslatesRepository : RepositoryInterface {
         val jsoup: Document = Jsoup.parse(response)
 
         val links = jsoup
-            .select(".entry-content>ul:nth-of-type(1)>li>a, " +
-                    ".entry-content>ul:nth-of-type(2)>li>a")
+            .select(
+                ".entry-content>ul:nth-of-type(1)>li>a, " +
+                        ".entry-content>ul:nth-of-type(2)>li>a"
+            )
 
         val list = mutableListOf<Novel>()
 
         for ((i, el) in links.withIndex()) {
-            list.add(Novel(i, el.text(), el.attr("href")))
+            val url = el.attr("href")
+            list.add(Novel(i, el.text(), url, getCover(url)))
         }
 
         return list
@@ -44,7 +47,12 @@ class SadsTranslatesRepository : RepositoryInterface {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getCover(novel: Novel): Novel {
-        TODO("Not yet implemented")
+    override suspend fun getCover(url: String): String {
+        val response = apiService.getFromUrl(url.replace("$baseUrl/", ""))
+        val jsoup: Document = Jsoup.parse(response)
+
+        return jsoup
+            .select("figure.size-large>img")
+            .attr("src")
     }
 }

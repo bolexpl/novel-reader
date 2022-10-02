@@ -3,7 +3,9 @@ package com.example.novelreader
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -32,7 +34,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val mainNavController = rememberNavController()
                     Scaffold {
-                        MainNavigationGraph(mainNavController = mainNavController)
+                        MainNavigationGraph(mainNavController = mainNavController, padding = it)
                     }
                 }
             }
@@ -43,11 +45,14 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun MainNavigationGraph(
     mainNavController: NavHostController,
-    mainViewModel: MainViewModel = viewModel()
+    mainViewModel: MainViewModel = viewModel(),
+    padding: PaddingValues
 ) {
-    val novelListState = mainViewModel.novelListState
-
-    NavHost(mainNavController, startDestination = MainNavItem.MainScreen) {
+    NavHost(
+        mainNavController,
+        startDestination = MainNavItem.MainScreen,
+        modifier = Modifier.padding(padding)
+    ) {
         composable(MainNavItem.MainScreen) {
             MainScreenView(
                 mainNavController = mainNavController,
@@ -56,14 +61,17 @@ private fun MainNavigationGraph(
                     mainViewModel.setCurrentRepo(index)
                     mainViewModel.updateNovelList()
                     mainViewModel.refreshNovelList()
+//                    mainViewModel.novelList.forEachIndexed { _, novel ->
+//                        mainViewModel.refreshNovelCover(novel)
+//                    }
                 }
             )
         }
         composable(MainNavItem.AllTitlesScreen) {
-
             AllTitlesScreenView(
                 mainNavController = mainNavController,
-                novelListState = novelListState
+                sourceName = mainViewModel.sourceName,
+                novelList = mainViewModel.novelList
             )
         }
         composable(MainNavItem.LatestTitlesScreen) {

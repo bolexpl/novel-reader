@@ -1,34 +1,38 @@
 package com.example.novelreader.viewmodel
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.example.novelreader.model.Novel
 import com.example.novelreader.source.RepositoryInterface
 import com.example.novelreader.source.SadsTranslatesRepository
 import com.example.novelreader.state.NovelScreenState
 import com.example.novelreader.state.NovelListState
 import kotlinx.coroutines.launch
 
-class MainViewModel(
-    private val savedState: SavedStateHandle = SavedStateHandle()
-) : ViewModel() {
+class MainViewModel : ViewModel() {
 
-    var novelListState: NovelListState by mutableStateOf(NovelListState())
-        private set
+//    fun purchaseIngredient(storageItem: StorageItem) {
+//        storageItems = storageItems.map { item ->
+//            if(item == storageItem)
+//                item.copy(stock = item.stock + 1)
+//            else
+//                item
+//        }
+//    }
 
-    var novelScreenState: NovelScreenState by mutableStateOf(NovelScreenState())
-        private set
+    var sourceName by mutableStateOf("")
+
+    var novelList: MutableList<Novel> = mutableStateListOf()
 
     val repos: MutableMap<Int, RepositoryInterface> = mutableMapOf()
 
     private var currentRepo: RepositoryInterface? by mutableStateOf(null)
 
     init {
-        val r = SadsTranslatesRepository()
-        addRepo(r)
+        addRepo(SadsTranslatesRepository())
     }
 
     private fun addRepo(r: RepositoryInterface) {
@@ -41,18 +45,15 @@ class MainViewModel(
 
     fun updateNovelList() {
         currentRepo?.let {
-            novelListState = novelListState.copy(sourceName = it.name)
+            sourceName = it.name
         }
     }
 
     fun refreshNovelList() {
         val curr = currentRepo
-
         curr?.let {
             viewModelScope.launch {
-
-                val novels = curr.getNovelList()
-                novelListState = novelListState.copy(novels = novels)
+                novelList.addAll(curr.getNovelList())
             }
         }
     }

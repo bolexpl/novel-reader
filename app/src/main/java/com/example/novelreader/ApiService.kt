@@ -5,6 +5,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface ApiService {
 
@@ -13,6 +14,12 @@ interface ApiService {
 
     @GET("/projects/")
     suspend fun getNovelList(): String
+
+    @GET("/projects/{title}")
+    suspend fun getNovel(@Path("title") title: String): String
+
+    @GET("{url}")
+    suspend fun getFromUrl(@Path("url") url: String): String
 
     companion object {
         private var instance: ApiService? = null
