@@ -36,7 +36,7 @@ class SadsTranslatesRepository : RepositoryInterface {
         for ((i, el) in links.withIndex()) {
             val url = el.attr("href").replace(baseUrl, "")
             val n = Novel(i, el.text(), url)
-            n.coverUrl = getCover(n)
+            n.coverUrl = getCover(n).replace(baseUrl, "")
             list.add(n)
         }
 
@@ -46,21 +46,33 @@ class SadsTranslatesRepository : RepositoryInterface {
     override suspend fun getNewNovelList(): List<Novel> {
         val jsoup: Document = Jsoup.parse(apiService.getFromUrl(latestChaptersPath))
 
+        // pobieam adresy rozdziałów
         val headers = jsoup.select(".entry-title>a")
 
-        val chapterUrl = headers.map {
-            it.attr("href")
+        var titleUrls = headers.map {
+            getProjectUrlFromChapterUrl(it.attr("href"))
         }
 
-        val titleUrl = chapterUrl.map {
-            getTitleFromChapter(it)
+        titleUrls = titleUrls
+            .toSet()
+            .filter { it != "" }
+            .toList()
+            .map { it.replace(baseUrl, "") }
+
+        val novels = getAllNovelList()
+
+        val result = mutableListOf<Novel>()
+
+        for (u in titleUrls) {
+            for (n in novels) {
+                if (u == n.url) {
+                    result.add(n)
+                    break
+                }
+            }
         }
 
-        Log.d("myk", titleUrl.toString())
-
-        val list = mutableListOf<Novel>()
-
-        return list
+        return result
     }
 
     override suspend fun getNovelDetails(novel: Novel): Novel {
@@ -75,7 +87,7 @@ class SadsTranslatesRepository : RepositoryInterface {
         return getCover(novel.url)
     }
 
-    suspend fun getCover(novelUrl: String): String {
+    private suspend fun getCover(novelUrl: String): String {
         val response = apiService.getFromUrl(novelUrl)
         val jsoup: Document = Jsoup.parse(response)
 
@@ -84,12 +96,19 @@ class SadsTranslatesRepository : RepositoryInterface {
             .attr("src")
     }
 
-    private suspend fun getTitleFromChapter(chapterFullUrl: String) {
+    private suspend fun getProjectUrlFromChapterUrl(chapterFullUrl: String): String {
+
         val jsoup: Document = Jsoup.parse(
             apiService.getFromUrl(chapterFullUrl.replace(baseUrl, ""))
         )
 
-        val headers = jsoup.select(".entry-title>a")
+        val links = jsoup.select("div.entry-content>p>a")
 
+        for (l in links) {
+            if (l.text().equals("TOC")) {
+                return l.attr("href")
+            }
+        }
+        return ""
     }
 }
