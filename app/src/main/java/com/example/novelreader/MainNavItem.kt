@@ -2,9 +2,10 @@ package com.example.novelreader
 
 object MainNavItem {
 
-    val MainScreen = "main"
-    val ReaderScreen = "reader"
-    val AllTitlesScreen = "allTitles"
-    val LatestTitlesScreen = "latestTitles"
-    val SettingsScreen = "settings"
+    const val MainScreen = "main"
+    const val ReaderScreen = "reader"
+    const val DetailScreen = "detail"
+    const val AllTitlesScreen = "allTitles"
+    const val LatestTitlesScreen = "latestTitles"
+    const val SettingsScreen = "settings"
 }

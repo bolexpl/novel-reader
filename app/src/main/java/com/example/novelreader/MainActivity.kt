@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.novelreader.screen.AllTitlesScreenView
 import com.example.novelreader.screen.LatestTitlesScreenView
 import com.example.novelreader.screen.MainScreenView
+import com.example.novelreader.screen.TitleDetailsScreenView
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.viewmodel.MainViewModel
 
@@ -68,7 +69,10 @@ private fun MainNavigationGraph(
             AllTitlesScreenView(
                 mainNavController = mainNavController,
                 sourceName = mainViewModel.sourceName,
-                novelList = mainViewModel.novelList
+                novelList = mainViewModel.novelList,
+                onClick = { url ->
+                    mainViewModel.refreshNovelDetails(url)
+                }
             )
         }
         composable(MainNavItem.LatestTitlesScreen) {
@@ -76,6 +80,11 @@ private fun MainNavigationGraph(
                 mainNavController = mainNavController,
                 sourceName = mainViewModel.sourceName,
                 novelList = mainViewModel.novelList
+            )
+        }
+        composable(MainNavItem.DetailScreen) {
+            TitleDetailsScreenView(
+                novel = mainViewModel.novel
             )
         }
     }

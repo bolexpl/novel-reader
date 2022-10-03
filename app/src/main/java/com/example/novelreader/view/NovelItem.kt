@@ -1,6 +1,7 @@
 package com.example.novelreader.view
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
@@ -22,12 +23,17 @@ import com.skydoves.landscapist.glide.GlideImage
 import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 
 @Composable
-fun NovelItem(novel: Novel) {
+fun NovelItem(
+    novel: Novel,
+    onClick: (String) -> Unit = {}
+) {
     Divider(color = MaterialTheme.colors.primaryVariant)
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick(novel.url) }
     ) {
 
         GlideImage(

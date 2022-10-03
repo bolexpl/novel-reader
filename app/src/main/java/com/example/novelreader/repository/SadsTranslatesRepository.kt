@@ -1,11 +1,20 @@
 package com.example.novelreader.repository
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.sp
 import com.example.novelreader.ApiService
+import com.example.novelreader.HtmlConverter
 import com.example.novelreader.model.Chapter
 import com.example.novelreader.model.Novel
+import com.example.novelreader.model.Paragraph
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import kotlin.concurrent.timerTask
 
 class SadsTranslatesRepository : RepositoryInterface {
 
@@ -34,9 +43,9 @@ class SadsTranslatesRepository : RepositoryInterface {
         val list = mutableListOf<Novel>()
 
         for ((i, el) in links.withIndex()) {
-            val url = el.attr("href").replace(baseUrl, "")
+            val url = el.attr("href")
             val n = Novel(i, el.text(), url)
-            n.coverUrl = getCover(n).replace(baseUrl, "")
+            n.coverUrl = getCover(n.url)
             list.add(n)
         }
 
@@ -45,8 +54,6 @@ class SadsTranslatesRepository : RepositoryInterface {
 
     override suspend fun getNewNovelList(): List<Novel> {
         val jsoup: Document = Jsoup.parse(apiService.getFromUrl(latestChaptersPath))
-
-        // pobieam adresy rozdziałów
         val headers = jsoup.select(".entry-title>a")
 
         var titleUrls = headers.map {
@@ -57,7 +64,7 @@ class SadsTranslatesRepository : RepositoryInterface {
             .toSet()
             .filter { it != "" }
             .toList()
-            .map { it.replace(baseUrl, "") }
+            .map { it }
 
         val novels = getAllNovelList()
 
@@ -75,20 +82,8 @@ class SadsTranslatesRepository : RepositoryInterface {
         return result
     }
 
-    override suspend fun getNovelDetails(novel: Novel): Novel {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getChapters(novel: Novel): List<Chapter> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getCover(novel: Novel): String {
-        return getCover(novel.url)
-    }
-
-    private suspend fun getCover(novelUrl: String): String {
-        val response = apiService.getFromUrl(novelUrl)
+    override suspend fun getCover(novelUrl: String): String {
+        val response = apiService.getFromUrl(toUrn(novelUrl))
         val jsoup: Document = Jsoup.parse(response)
 
         return jsoup
@@ -96,19 +91,55 @@ class SadsTranslatesRepository : RepositoryInterface {
             .attr("src")
     }
 
+    override suspend fun getNovelDetails(novelUrl: String): Novel {
+        val jsoup: Document = Jsoup.parse(apiService.getFromUrl(toUrn(novelUrl)))
+
+//        TODO chapterList
+
+        val description = getDescriptionFromHtml(jsoup)
+
+        return Novel(
+            id = 1,
+            title = jsoup.select(".entry-title").text(),
+            url = novelUrl,
+            coverUrl = jsoup.select("figure.size-large>img").attr("src"),
+            description = description
+        )
+    }
+
+    override suspend fun getChapters(novelUrl: String): List<Chapter> {
+        TODO("Not yet implemented")
+    }
+
     private suspend fun getProjectUrlFromChapterUrl(chapterFullUrl: String): String {
 
         val jsoup: Document = Jsoup.parse(
-            apiService.getFromUrl(chapterFullUrl.replace(baseUrl, ""))
+            apiService.getFromUrl(toUrn(chapterFullUrl))
         )
 
-        val links = jsoup.select("div.entry-content>p>a")
+        val links = jsoup.select("div.entry-content>p>a:nth-of-type(1)").first()
 
-        for (l in links) {
-            if (l.text().equals("TOC")) {
-                return l.attr("href")
-            }
+        return links?.attr("href").toString()
+    }
+
+    private fun toUrn(url: String): String {
+        return url.replace(baseUrl, "")
+    }
+
+    private fun getDescriptionFromHtml(jsoup: Document): MutableList<Paragraph> {
+        // TODO test
+        val list = mutableListOf<Paragraph>()
+
+        val content = jsoup.select(".entry-content").first()
+
+        content!!.children().forEachIndexed { i, p ->
+            list.add(Paragraph(i, p.html(), p, HtmlConverter.paragraphToAnnotatedString(p)))
         }
-        return ""
+
+        return list
+    }
+
+    private fun getChaptersFromHtml(jsoup: Document): MutableList<Chapter> {
+        TODO("not yet")
     }
 }

@@ -1,11 +1,11 @@
 package com.example.novelreader.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.*
+import com.example.novelreader.model.Chapter
 import com.example.novelreader.model.Novel
 import com.example.novelreader.repository.RepositoryInterface
 import com.example.novelreader.repository.SadsTranslatesRepository
@@ -13,11 +13,15 @@ import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
 
+    val repos: MutableMap<Int, RepositoryInterface> = mutableMapOf()
+
     var sourceName by mutableStateOf("")
 
     var novelList: MutableList<Novel> = mutableStateListOf()
 
-    val repos: MutableMap<Int, RepositoryInterface> = mutableMapOf()
+    var novel by mutableStateOf<Novel?>(null)
+
+    var chapterList: MutableList<Chapter> = mutableStateListOf()
 
     private var currentRepo: RepositoryInterface? by mutableStateOf(null)
 
@@ -49,6 +53,16 @@ class MainViewModel : ViewModel() {
                 }else{
                     novelList.addAll(curr.getAllNovelList())
                 }
+            }
+        }
+    }
+
+    fun refreshNovelDetails(novelUrl: String) {
+        val curr = currentRepo
+        curr?.let {
+            viewModelScope.launch {
+                novel = curr.getNovelDetails(novelUrl)
+                chapterList = novel!!.chapterList
             }
         }
     }
