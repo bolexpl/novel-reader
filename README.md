@@ -2,8 +2,7 @@
 Android app for reading novels.
 
 TODO:
-latest chapters screen
-all titles screen
+novel details and chapter list screen
 chapter reader screen
 settings screen
 save to favourites
@@ -15,6 +14,7 @@ Sads Translates:
 get novel details
 get chapter list
 get chapter
+shorts
 
 Novelki.pl:
 login
