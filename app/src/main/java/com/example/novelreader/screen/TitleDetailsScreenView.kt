@@ -5,8 +5,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.novelreader.model.Novel
+import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
 fun TitleDetailsScreenView(
@@ -14,23 +16,24 @@ fun TitleDetailsScreenView(
     novel: Novel?
 ) {
     if (novel == null) {
-        Text("pusto")
+        Text("")
     } else {
-        Column {
-            // cover
+        // cover
 //            Text(text = novel.title)
-            LazyColumn {
-                items(novel.description){ el->
-                    Text(el.annotatedString)
-                }
+        LazyColumn {
+            item {
+                GlideImage(imageModel = novel.coverUrl)
             }
-            // TODO
+            items(novel.description) { el ->
+                Text(el.annotatedString, fontSize = 20.sp)
+            }
+        }
+        // TODO
 //            LazyColumn {
 //                items(novel.chapterList){ el->
 //                    Text(el.title)
 //                }
 //            }
-        }
     }
 }
 

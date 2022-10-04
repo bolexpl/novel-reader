@@ -38,12 +38,14 @@ class MainViewModel : ViewModel() {
     }
 
     fun updateSourceName() {
+        sourceName = ""
         currentRepo?.let {
             sourceName = it.name
         }
     }
 
     fun refreshNovelList(newest: Boolean) {
+        novelList = mutableStateListOf()
         val curr = currentRepo
         curr?.let {
             viewModelScope.launch {
@@ -58,6 +60,8 @@ class MainViewModel : ViewModel() {
     }
 
     fun refreshNovelDetails(novelUrl: String) {
+        novel = null
+        chapterList = mutableStateListOf()
         val curr = currentRepo
         curr?.let {
             viewModelScope.launch {

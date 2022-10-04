@@ -1,7 +1,13 @@
 package com.example.novelreader.repository
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.sp
 import com.example.novelreader.ApiService
 import com.example.novelreader.HtmlConverter
 import com.example.novelreader.model.Chapter
@@ -9,6 +15,8 @@ import com.example.novelreader.model.Novel
 import com.example.novelreader.model.Paragraph
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
+import org.jsoup.nodes.TextNode
 
 class SadsTranslatesRepository : RepositoryInterface {
 
@@ -101,7 +109,16 @@ class SadsTranslatesRepository : RepositoryInterface {
     }
 
     override suspend fun getChapters(novelUrl: String): List<Chapter> {
-        TODO("Not yet implemented")
+        return getChaptersFromHtml(
+            Jsoup.parse(
+                apiService.getFromUrl(
+                    novelUrl.replace(
+                        baseUrl,
+                        ""
+                    )
+                )
+            )
+        )
     }
 
     private suspend fun getProjectUrlFromChapterUrl(chapterFullUrl: String): String {
@@ -119,16 +136,22 @@ class SadsTranslatesRepository : RepositoryInterface {
         // TODO test
         val list = mutableListOf<Paragraph>()
 
-        val content = jsoup.select(".entry-content").first()
+        val content = jsoup.select(".entry-content>p.has-drop-cap").first() ?: return list
 
-        content!!.children().forEachIndexed { i, p ->
-            list.add(Paragraph(i, p.html(), p, HtmlConverter.paragraphToAnnotatedString(p)))
+        for ((i, el) in content.childNodes().withIndex()) {
+            if (el is TextNode) {
+                list.add(Paragraph(i, el.text(), AnnotatedString(el.text())))
+            } else if (el is Element) {
+                list.add(Paragraph(i, el.text(), HtmlConverter.paragraphToAnnotatedString(el)))
+            }
         }
 
         return list
     }
 
     private fun getChaptersFromHtml(jsoup: Document): MutableList<Chapter> {
+
+        // TODO illustrations chapter
 
         val list = mutableStateListOf<Chapter>()
         val elements = jsoup.select("details>p>a, .entry-content > p > a")
