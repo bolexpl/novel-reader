@@ -1,6 +1,9 @@
 package com.example.novelreader.model
 
+import androidx.compose.runtime.mutableStateListOf
+
 data class Chapter(
-    val title: String,
-    val content: List<Paragraph>
+    var title: String = "",
+    var url: String = "",
+    var content: MutableList<Paragraph> = mutableStateListOf()
 )

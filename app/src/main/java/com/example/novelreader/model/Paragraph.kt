@@ -8,8 +8,8 @@ import org.jsoup.nodes.Element
 data class Paragraph(
     val number: Int,
     val html: String? = null,
-    val element: Element?,
-    val annotatedString: AnnotatedString? = null
+//    val element: Element?,
+    val annotatedString: AnnotatedString = AnnotatedString("")
 )
 
 

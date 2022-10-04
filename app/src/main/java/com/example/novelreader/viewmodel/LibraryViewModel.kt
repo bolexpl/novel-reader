@@ -57,7 +57,6 @@ class LibraryViewModel : ViewModel() {
                 Paragraph(
                     0,
                     title.html(),
-                    title,
                     buildAnnotatedString {
                         withStyle(style = SpanStyle(fontSize = 27.sp)) {
                             append(HtmlConverter.paragraphToAnnotatedString(title))
@@ -74,7 +73,6 @@ class LibraryViewModel : ViewModel() {
                 Paragraph(
                     i,
                     p.html(),
-                    p,
                     HtmlConverter.paragraphToAnnotatedString(p)
                 )
             )

@@ -19,7 +19,8 @@ import com.example.novelreader.view.NovelItem
 fun AllTitlesScreenView(
     mainNavController: NavController = rememberNavController(),
     sourceName: String,
-    novelList: List<Novel>
+    novelList: List<Novel>,
+    onClick: (String) -> Unit = {}
 ) {
     Scaffold(topBar = {
         BackButtonTitleBar(
@@ -29,7 +30,7 @@ fun AllTitlesScreenView(
     }) { padding ->
         LazyColumn(modifier = Modifier.padding(padding)) {
             items(novelList) { novel ->
-                NovelItem(novel = novel)
+                NovelItem(novel = novel, onClick = onClick)
             }
         }
     }

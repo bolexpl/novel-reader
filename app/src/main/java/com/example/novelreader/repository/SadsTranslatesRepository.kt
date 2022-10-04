@@ -1,11 +1,16 @@
 package com.example.novelreader.repository
 
-import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.text.AnnotatedString
 import com.example.novelreader.ApiService
+import com.example.novelreader.HtmlConverter
 import com.example.novelreader.model.Chapter
 import com.example.novelreader.model.Novel
+import com.example.novelreader.model.Paragraph
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
+import org.jsoup.nodes.TextNode
 
 class SadsTranslatesRepository : RepositoryInterface {
 
@@ -34,9 +39,9 @@ class SadsTranslatesRepository : RepositoryInterface {
         val list = mutableListOf<Novel>()
 
         for ((i, el) in links.withIndex()) {
-            val url = el.attr("href").replace(baseUrl, "")
+            val url = el.attr("href")
             val n = Novel(i, el.text(), url)
-            n.coverUrl = getCover(n).replace(baseUrl, "")
+            n.coverUrl = getCover(n.url)
             list.add(n)
         }
 
@@ -45,8 +50,6 @@ class SadsTranslatesRepository : RepositoryInterface {
 
     override suspend fun getNewNovelList(): List<Novel> {
         val jsoup: Document = Jsoup.parse(apiService.getFromUrl(latestChaptersPath))
-
-        // pobieam adresy rozdziałów
         val headers = jsoup.select(".entry-title>a")
 
         var titleUrls = headers.map {
@@ -57,7 +60,7 @@ class SadsTranslatesRepository : RepositoryInterface {
             .toSet()
             .filter { it != "" }
             .toList()
-            .map { it.replace(baseUrl, "") }
+            .map { it }
 
         val novels = getAllNovelList()
 
@@ -75,25 +78,41 @@ class SadsTranslatesRepository : RepositoryInterface {
         return result
     }
 
-    override suspend fun getNovelDetails(novel: Novel): Novel {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getChapters(novel: Novel): List<Chapter> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getCover(novel: Novel): String {
-        return getCover(novel.url)
-    }
-
-    private suspend fun getCover(novelUrl: String): String {
-        val response = apiService.getFromUrl(novelUrl)
+    override suspend fun getCover(novelUrl: String): String {
+        val response = apiService.getFromUrl(novelUrl.replace(baseUrl, ""))
         val jsoup: Document = Jsoup.parse(response)
 
         return jsoup
             .select("figure.size-large>img")
             .attr("src")
+    }
+
+    override suspend fun getNovelDetails(novelUrl: String): Novel {
+        val jsoup: Document = Jsoup.parse(apiService.getFromUrl(novelUrl.replace(baseUrl, "")))
+
+        // TODO get full title
+
+        return Novel(
+            id = 1,
+            title = jsoup.select(".entry-title").text(),
+            url = novelUrl,
+            chapterList = getChaptersFromHtml(jsoup),
+            coverUrl = jsoup.select("figure.size-large>img").attr("src"),
+            description = getDescriptionFromHtml(jsoup)
+        )
+    }
+
+    override suspend fun getChapters(novelUrl: String): List<Chapter> {
+        return getChaptersFromHtml(
+            Jsoup.parse(
+                apiService.getFromUrl(
+                    novelUrl.replace(
+                        baseUrl,
+                        ""
+                    )
+                )
+            )
+        )
     }
 
     private suspend fun getProjectUrlFromChapterUrl(chapterFullUrl: String): String {
@@ -102,13 +121,40 @@ class SadsTranslatesRepository : RepositoryInterface {
             apiService.getFromUrl(chapterFullUrl.replace(baseUrl, ""))
         )
 
-        val links = jsoup.select("div.entry-content>p>a")
+        val links = jsoup.select("div.entry-content>p>a:nth-of-type(1)").first()
 
-        for (l in links) {
-            if (l.text().equals("TOC")) {
-                return l.attr("href")
+        return links?.attr("href").toString()
+    }
+
+    private fun getDescriptionFromHtml(jsoup: Document): MutableList<Paragraph> {
+        val list = mutableListOf<Paragraph>()
+
+        val content = jsoup.select(".entry-content>p.has-drop-cap").first() ?: return list
+
+        for ((i, el) in content.childNodes().withIndex()) {
+            if (el is TextNode) {
+                list.add(Paragraph(i, el.text(), AnnotatedString(el.text())))
+            } else if (el is Element) {
+                list.add(Paragraph(i, el.text(), HtmlConverter.paragraphToAnnotatedString(el)))
             }
         }
-        return ""
+
+        return list
+    }
+
+    private fun getChaptersFromHtml(jsoup: Document): MutableList<Chapter> {
+
+        // TODO add illustrations chapter
+
+        val list = mutableStateListOf<Chapter>()
+        val elements = jsoup.select("details>p>a, .entry-content > p > a")
+
+        elements.forEach { el ->
+            if (el.attr("href").contains(baseUrl)) {
+                list.add(Chapter(el.text(), el.attr("href").replace(baseUrl, "")))
+            }
+        }
+
+        return list
     }
 }
