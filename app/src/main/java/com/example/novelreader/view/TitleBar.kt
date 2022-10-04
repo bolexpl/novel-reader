@@ -13,9 +13,9 @@ fun TopBar(title: String) {
     Surface(
         modifier = Modifier.padding(
             start = 10.dp,
-            top = 30.dp,
+            top = 20.dp,
             end = 10.dp,
-            bottom = 30.dp,
+            bottom = 20.dp,
         ),
         color = MaterialTheme.colors.background
     ) {

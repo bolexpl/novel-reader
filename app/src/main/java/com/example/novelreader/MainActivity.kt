@@ -72,6 +72,7 @@ private fun MainNavigationGraph(
                 novelList = mainViewModel.novelList,
                 onClick = { url ->
                     mainNavController.navigate(MainNavItem.DetailScreen)
+                    mainViewModel.novel = null
                     mainViewModel.refreshNovelDetails(url)
                 }
             )
@@ -86,7 +87,10 @@ private fun MainNavigationGraph(
         composable(MainNavItem.DetailScreen) {
             TitleDetailsScreenView(
                 mainNavController = mainNavController,
-                novel = mainViewModel.novel
+                novel = mainViewModel.novel,
+                onRefresh = { url ->
+                    mainViewModel.refreshNovelDetails(url)
+                }
             )
         }
     }

@@ -60,7 +60,6 @@ class MainViewModel : ViewModel() {
     }
 
     fun refreshNovelDetails(novelUrl: String) {
-        novel = null
         chapterList = mutableStateListOf()
         val curr = currentRepo
         curr?.let {

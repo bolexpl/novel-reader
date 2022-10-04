@@ -1,13 +1,7 @@
 package com.example.novelreader.repository
 
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.sp
 import com.example.novelreader.ApiService
 import com.example.novelreader.HtmlConverter
 import com.example.novelreader.model.Chapter
@@ -133,7 +127,6 @@ class SadsTranslatesRepository : RepositoryInterface {
     }
 
     private fun getDescriptionFromHtml(jsoup: Document): MutableList<Paragraph> {
-        // TODO test
         val list = mutableListOf<Paragraph>()
 
         val content = jsoup.select(".entry-content>p.has-drop-cap").first() ?: return list
@@ -151,7 +144,7 @@ class SadsTranslatesRepository : RepositoryInterface {
 
     private fun getChaptersFromHtml(jsoup: Document): MutableList<Chapter> {
 
-        // TODO illustrations chapter
+        // TODO add illustrations chapter
 
         val list = mutableStateListOf<Chapter>()
         val elements = jsoup.select("details>p>a, .entry-content > p > a")
