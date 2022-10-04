@@ -9,7 +9,7 @@ data class Paragraph(
     val number: Int,
     val html: String? = null,
     val element: Element?,
-    val annotatedString: AnnotatedString? = null
+    val annotatedString: AnnotatedString = AnnotatedString("")
 )
 
 

@@ -2,11 +2,6 @@ package com.example.novelreader.repository
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.sp
 import com.example.novelreader.ApiService
 import com.example.novelreader.HtmlConverter
 import com.example.novelreader.model.Chapter
@@ -14,7 +9,6 @@ import com.example.novelreader.model.Novel
 import com.example.novelreader.model.Paragraph
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import kotlin.concurrent.timerTask
 
 class SadsTranslatesRepository : RepositoryInterface {
 
@@ -83,7 +77,7 @@ class SadsTranslatesRepository : RepositoryInterface {
     }
 
     override suspend fun getCover(novelUrl: String): String {
-        val response = apiService.getFromUrl(toUrn(novelUrl))
+        val response = apiService.getFromUrl(novelUrl.replace(baseUrl, ""))
         val jsoup: Document = Jsoup.parse(response)
 
         return jsoup
@@ -92,18 +86,17 @@ class SadsTranslatesRepository : RepositoryInterface {
     }
 
     override suspend fun getNovelDetails(novelUrl: String): Novel {
-        val jsoup: Document = Jsoup.parse(apiService.getFromUrl(toUrn(novelUrl)))
+        val jsoup: Document = Jsoup.parse(apiService.getFromUrl(novelUrl.replace(baseUrl, "")))
 
-//        TODO chapterList
-
-        val description = getDescriptionFromHtml(jsoup)
+        // TODO get full title
 
         return Novel(
             id = 1,
             title = jsoup.select(".entry-title").text(),
             url = novelUrl,
+            chapterList = getChaptersFromHtml(jsoup),
             coverUrl = jsoup.select("figure.size-large>img").attr("src"),
-            description = description
+            description = getDescriptionFromHtml(jsoup)
         )
     }
 
@@ -114,16 +107,12 @@ class SadsTranslatesRepository : RepositoryInterface {
     private suspend fun getProjectUrlFromChapterUrl(chapterFullUrl: String): String {
 
         val jsoup: Document = Jsoup.parse(
-            apiService.getFromUrl(toUrn(chapterFullUrl))
+            apiService.getFromUrl(chapterFullUrl.replace(baseUrl, ""))
         )
 
         val links = jsoup.select("div.entry-content>p>a:nth-of-type(1)").first()
 
         return links?.attr("href").toString()
-    }
-
-    private fun toUrn(url: String): String {
-        return url.replace(baseUrl, "")
     }
 
     private fun getDescriptionFromHtml(jsoup: Document): MutableList<Paragraph> {
@@ -140,6 +129,16 @@ class SadsTranslatesRepository : RepositoryInterface {
     }
 
     private fun getChaptersFromHtml(jsoup: Document): MutableList<Chapter> {
-        TODO("not yet")
+
+        val list = mutableStateListOf<Chapter>()
+        val elements = jsoup.select("details>p>a, .entry-content > p > a")
+
+        elements.forEach { el ->
+            if (el.attr("href").contains(baseUrl)) {
+                list.add(Chapter(el.text(), el.attr("href").replace(baseUrl, "")))
+            }
+        }
+
+        return list
     }
 }
