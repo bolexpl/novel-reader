@@ -1,5 +1,6 @@
 package com.example.novelreader.repository
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.text.AnnotatedString
 import com.example.novelreader.ApiService
@@ -63,7 +64,6 @@ class SadsTranslatesRepository : RepositoryInterface {
             .map { it }
 
         val novels = getAllNovelList()
-
         val result = mutableListOf<Novel>()
 
         for (u in titleUrls) {
@@ -117,11 +117,13 @@ class SadsTranslatesRepository : RepositoryInterface {
 
     private suspend fun getProjectUrlFromChapterUrl(chapterFullUrl: String): String {
 
+        Log.d("", chapterFullUrl)
+
         val jsoup: Document = Jsoup.parse(
             apiService.getFromUrl(chapterFullUrl.replace(baseUrl, ""))
         )
 
-        val links = jsoup.select("div.entry-content>p>a:nth-of-type(1)").first()
+        val links = jsoup.select("div.entry-content>p>a:nth-of-type(2)").first()
 
         return links?.attr("href").toString()
     }

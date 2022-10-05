@@ -30,6 +30,7 @@ import com.example.novelreader.model.Novel
 import com.example.novelreader.model.Paragraph
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.view.BackButtonTitleBar
+import com.example.novelreader.view.ProgressSpinner
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.skydoves.landscapist.ImageOptions
@@ -60,13 +61,7 @@ fun TitleDetailsScreenView(
     }
 
     if (novel == null) {
-        Row(
-            horizontalArrangement = Arrangement.Center, modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp)
-        ) {
-            CircularProgressIndicator()
-        }
+        ProgressSpinner()
     } else {
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing = refreshing),
