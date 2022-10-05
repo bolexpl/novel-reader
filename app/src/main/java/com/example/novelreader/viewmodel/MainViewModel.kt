@@ -1,5 +1,6 @@
 package com.example.novelreader.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +53,8 @@ class MainViewModel : ViewModel() {
                 novelList.clear()
                 if(newest){
                     novelList.addAll(curr.getNewNovelList())
+                    val nn = novelList
+                    Log.d("myk", nn.toString())
                 }else{
                     novelList.addAll(curr.getAllNovelList())
                 }

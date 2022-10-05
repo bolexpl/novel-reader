@@ -31,6 +31,7 @@ import com.example.novelreader.model.Paragraph
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.view.BackButtonTitleBar
 import com.example.novelreader.view.ChapterItem
+import com.example.novelreader.view.ProgressSpinner
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.skydoves.landscapist.ImageOptions
@@ -71,6 +72,7 @@ fun TitleDetailsScreenView(
             }
             BackButtonTitleBar(mainNavController = mainNavController, height = 50.dp)
         }
+//        ProgressSpinner()
     } else {
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing = refreshing),

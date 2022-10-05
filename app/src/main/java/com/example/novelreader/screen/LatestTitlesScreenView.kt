@@ -14,6 +14,7 @@ import com.example.novelreader.model.Novel
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.view.BackButtonTitleBar
 import com.example.novelreader.view.NovelItem
+import com.example.novelreader.view.ProgressSpinner
 
 @Composable
 fun LatestTitlesScreenView(
@@ -27,9 +28,13 @@ fun LatestTitlesScreenView(
             title = sourceName
         )
     }) { padding ->
-        LazyColumn(modifier = Modifier.padding(padding)) {
-            items(novelList) { novel ->
-                NovelItem(novel = novel)
+        if (novelList.isEmpty()) {
+            ProgressSpinner()
+        } else {
+            LazyColumn(modifier = Modifier.padding(padding)) {
+                items(novelList) { novel ->
+                    NovelItem(novel = novel)
+                }
             }
         }
     }
