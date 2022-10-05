@@ -30,6 +30,7 @@ import com.example.novelreader.model.Novel
 import com.example.novelreader.model.Paragraph
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.view.BackButtonTitleBar
+import com.example.novelreader.view.ChapterItem
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.skydoves.landscapist.ImageOptions
@@ -129,16 +130,15 @@ fun TitleDetailsScreenView(
 
                 // chapters
                 items(novel.chapterList) { el ->
-                    ChapterItem(item = el)
+                    ChapterItem(item = el, onItemClick = onItemClick)
+                }
+
+                item{
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }
     }
-}
-
-@Composable
-fun ChapterItem(item: Chapter) {
-    Text(item.title, fontSize = 20.sp)
 }
 
 @Composable
