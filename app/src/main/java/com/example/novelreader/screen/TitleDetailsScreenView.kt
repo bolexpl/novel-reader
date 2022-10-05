@@ -63,16 +63,10 @@ fun TitleDetailsScreenView(
 
     if (novel == null) {
         Column{
-            Row(
-                horizontalArrangement = Arrangement.Center, modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp)
-            ) {
-                CircularProgressIndicator()
-            }
             BackButtonTitleBar(mainNavController = mainNavController, height = 50.dp)
+            ProgressSpinner()
         }
-//        ProgressSpinner()
+
     } else {
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing = refreshing),
