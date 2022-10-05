@@ -22,17 +22,10 @@ fun ChapterItem(
 ) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
-//    val screenHeight = configuration.screenHeightDp
 
     Row(
         modifier = Modifier
-            .padding(
-                start = 10.dp,
-                end = 10.dp,
-                top = 5.dp,
-                bottom = 5.dp
-            )
-            .height(50.dp)
+            .height(70.dp)
             .clickable(onClick = { onItemClick() })
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
@@ -40,21 +33,35 @@ fun ChapterItem(
         Box(
             contentAlignment = Alignment.CenterStart,
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(
+                    start = 10.dp,
+                    end = 0.dp,
+                    top = 0.dp,
+                    bottom = 0.dp
+                )
                 .width(screenWidth.minus(70).dp),
         ) {
             Text(
                 text = item.title,
                 fontSize = 20.sp,
-                overflow = TextOverflow.Ellipsis,
-//                modifier = Modifier.fillMaxHeight(),
-//                textAlign = TextAlign.Center
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
-        Button(onClick = {
-
-        }, modifier = Modifier.width(35.dp)) {
-            Text(text = "p")
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(end = 10.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Button(
+                onClick = {},
+                modifier = Modifier.size(40.dp)
+//                    .width(35.dp)
+            ) {
+                Text(text = "p")
+            }
         }
     }
 }

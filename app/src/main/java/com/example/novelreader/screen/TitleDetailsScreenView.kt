@@ -61,12 +61,15 @@ fun TitleDetailsScreenView(
     }
 
     if (novel == null) {
-        Row(
-            horizontalArrangement = Arrangement.Center, modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp)
-        ) {
-            CircularProgressIndicator()
+        Column{
+            Row(
+                horizontalArrangement = Arrangement.Center, modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp)
+            ) {
+                CircularProgressIndicator()
+            }
+            BackButtonTitleBar(mainNavController = mainNavController, height = 50.dp)
         }
     } else {
         SwipeRefresh(
@@ -100,18 +103,20 @@ fun TitleDetailsScreenView(
 
                 // description
                 itemsIndexed(items = novel.description) { i, el ->
-                    if (descExpanded) {
-                        Text(
-                            text = el.annotatedString,
-                            fontSize = 20.sp,
-                            modifier = Modifier.clickable { descExpanded = false }
-                        )
-                    } else if (i == 0) {
-                        Text(
-                            text = el.annotatedString.plus(AnnotatedString("... Czytaj więcej")),
-                            fontSize = 20.sp,
-                            modifier = Modifier.clickable { descExpanded = true }
-                        )
+                    if (el.annotatedString.isNotEmpty()) {
+                        if (descExpanded) {
+                            Text(
+                                text = el.annotatedString,
+                                fontSize = 20.sp,
+                                modifier = Modifier.clickable { descExpanded = false }
+                            )
+                        } else if (i == 0) {
+                            Text(
+                                text = el.annotatedString.plus(AnnotatedString("... Czytaj więcej")),
+                                fontSize = 20.sp,
+                                modifier = Modifier.clickable { descExpanded = true }
+                            )
+                        }
                     }
                 }
 
@@ -133,7 +138,7 @@ fun TitleDetailsScreenView(
                     ChapterItem(item = el, onItemClick = onItemClick)
                 }
 
-                item{
+                item {
                     Spacer(modifier = Modifier.height(10.dp))
                 }
             }
@@ -188,7 +193,7 @@ private fun TitleDetailCover(coverUrl: String) {
                 contentScale = ContentScale.FillWidth,
                 alignment = Alignment.Center
             ),
-            modifier = Modifier.width(130.dp),
+            modifier = Modifier.width(130.dp).clickable { /* TODO click to zoom */ },
             previewPlaceholder = R.drawable.novel_no_cover,
             component = rememberImageComponent {
                 +ShimmerPlugin(
@@ -201,7 +206,7 @@ private fun TitleDetailCover(coverUrl: String) {
                     painter = painterResource(id = R.drawable.novel_no_cover),
                     contentDescription = "Cover"
                 )
-            }
+            },
         )
     }
 }
@@ -228,12 +233,12 @@ private fun TitleDetailsScreenPreview() {
 
             val chapterList = remember {
                 mutableStateListOf(
-                    Chapter(title = "Rozdział 1", url = ""),
-                    Chapter(title = "Rozdział 2", url = ""),
-                    Chapter(title = "Rozdział 3", url = ""),
-                    Chapter(title = "Rozdział 4", url = ""),
-                    Chapter(title = "Rozdział 5", url = ""),
-                    Chapter(title = "Rozdział 6", url = "")
+                    Chapter(title = "Chapter 1 – The Wall of Genius", url = ""),
+                    Chapter(title = "Chapter 2 – Father and Son", url = ""),
+                    Chapter(title = "Chapter 3 – Exclusive Maid", url = ""),
+                    Chapter(title = "Chapter 4 – The Demon King’s Magic", url = ""),
+                    Chapter(title = "Chapter 5 – Intermission (Father and Emperor)", url = ""),
+                    Chapter(title = "Chapter 10 – The World after the Demon King’s Fall", url = "")
                 )
             }
 
