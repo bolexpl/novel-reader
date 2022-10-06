@@ -9,9 +9,8 @@ save history
 expanding list after scrolling
 
 Sads Translates:
-get chapter
 shorts
-get illustration chapter
+get illustrations chapter
 
 Novelki.pl:
 login

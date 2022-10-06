@@ -94,9 +94,6 @@ class SadsTranslatesRepository : RepositoryInterface {
 
     override suspend fun getNovelDetails(novelUrl: String): Novel {
         val jsoup: Document = Jsoup.parse(apiService.getFromUrl(novelUrl.replace(baseUrl, "")))
-
-        // TODO get full title
-
         return Novel(
             id = 1,
             title = jsoup.select(".entry-title").text(),
@@ -121,8 +118,8 @@ class SadsTranslatesRepository : RepositoryInterface {
     }
 
     override suspend fun getChapterContent(chapterUrl: String): Chapter {
-        val apiService = ApiService.getInstance("https://sads07.wordpress.com")
-        val response = apiService.getChapter()
+        // change url
+        val response = apiService.getFromUrl(chapterUrl.replace(baseUrl, ""))
 
         val jsoup: Document = Jsoup.parse(response)
 
@@ -181,7 +178,7 @@ class SadsTranslatesRepository : RepositoryInterface {
 
         elements.forEach { el ->
             if (el.attr("href").contains(baseUrl)) {
-                list.add(Chapter(el.text(), el.attr("href").replace(baseUrl, "")))
+                list.add(Chapter(el.text(), el.attr("href")))
             }
         }
 
