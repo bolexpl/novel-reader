@@ -2,7 +2,7 @@
 Android app for reading novels.
 
 TODO:
-chapter reader screen
+reader illustrations
 settings screen
 save to favourites
 save history

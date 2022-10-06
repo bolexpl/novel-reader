@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.novelreader.HtmlConverter
+import com.example.novelreader.MainNavItem
 import com.example.novelreader.R
 import com.example.novelreader.model.Chapter
 import com.example.novelreader.model.Novel
@@ -49,7 +50,7 @@ fun TitleDetailsScreenView(
     novel: Novel?,
     onRefresh: (String) -> Unit = {},
     onFavourite: (String) -> Unit = {},
-    onItemClick: () -> Unit = {},
+    onItemClick: (String) -> Unit = {},
 ) {
     var descExpanded: Boolean by remember { mutableStateOf(false) }
     var refreshing by remember { mutableStateOf(false) }
@@ -62,7 +63,7 @@ fun TitleDetailsScreenView(
     }
 
     if (novel == null) {
-        Column{
+        Column {
             BackButtonTitleBar(mainNavController = mainNavController, height = 50.dp)
             ProgressSpinner()
         }
@@ -131,7 +132,12 @@ fun TitleDetailsScreenView(
 
                 // chapters
                 items(novel.chapterList) { el ->
-                    ChapterItem(item = el, onItemClick = onItemClick)
+                    ChapterItem(item = el, onItemClick = {
+                        onItemClick(el.url)
+                        mainNavController.navigate(MainNavItem.ReaderScreen)
+                    }, onFavourite = {
+                        onFavourite(el.url)
+                    })
                 }
 
                 item {
@@ -189,7 +195,9 @@ private fun TitleDetailCover(coverUrl: String) {
                 contentScale = ContentScale.FillWidth,
                 alignment = Alignment.Center
             ),
-            modifier = Modifier.width(130.dp).clickable { /* TODO click to zoom */ },
+            modifier = Modifier
+                .width(130.dp)
+                .clickable { /* TODO click to zoom */ },
             previewPlaceholder = R.drawable.novel_no_cover,
             component = rememberImageComponent {
                 +ShimmerPlugin(

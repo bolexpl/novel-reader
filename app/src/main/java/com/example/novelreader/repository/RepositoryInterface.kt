@@ -18,4 +18,6 @@ interface RepositoryInterface {
     suspend fun getChapters(novelUrl: String): List<Chapter>
 
     suspend fun getCover(novelUrl: String): String
+
+    suspend fun getChapterContent(chapterUrl: String): Chapter
 }
