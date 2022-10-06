@@ -18,8 +18,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.novelreader.viewmodel.LibraryViewModel
 
+
+// TODO delete
 @Composable
-fun ReaderScreen(viewModel: LibraryViewModel = viewModel()) {
+fun ReaderScreen(
+    viewModel: LibraryViewModel = viewModel()
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()

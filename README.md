@@ -2,7 +2,6 @@
 Android app for reading novels.
 
 TODO:
-refresh indicator
 chapter reader screen
 settings screen
 save to favourites
