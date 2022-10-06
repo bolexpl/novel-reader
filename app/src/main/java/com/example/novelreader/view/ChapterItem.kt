@@ -15,7 +15,8 @@ import com.example.novelreader.model.Chapter
 @Composable
 fun ChapterItem(
     item: Chapter,
-    onItemClick: () -> Unit = {}
+    onItemClick: () -> Unit = {},
+    onFavourite: ()->Unit = {}
 ) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
@@ -53,9 +54,8 @@ fun ChapterItem(
             contentAlignment = Alignment.Center,
         ) {
             Button(
-                onClick = {},
+                onClick = onFavourite,
                 modifier = Modifier.size(40.dp)
-//                    .width(35.dp)
             ) {
                 Text(text = "p")
             }

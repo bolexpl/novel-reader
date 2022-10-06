@@ -24,6 +24,8 @@ class MainViewModel : ViewModel() {
 
     var chapterList: MutableList<Chapter> = mutableStateListOf()
 
+    var chapter: Chapter? by mutableStateOf(null)
+
     private var currentRepo: RepositoryInterface? by mutableStateOf(null)
 
     init {
@@ -69,6 +71,16 @@ class MainViewModel : ViewModel() {
             viewModelScope.launch {
                 novel = curr.getNovelDetails(novelUrl)
                 chapterList = novel!!.chapterList
+            }
+        }
+    }
+
+    fun refreshChapterContent(chapterUrl: String) {
+        chapter = null
+        val curr = currentRepo
+        curr?.let {
+            viewModelScope.launch {
+                chapter = curr.getChapterContent(chapterUrl)
             }
         }
     }

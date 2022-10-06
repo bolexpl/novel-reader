@@ -2,17 +2,15 @@
 Android app for reading novels.
 
 TODO:
-refresh indicator
-chapter reader screen
+reader illustrations
 settings screen
 save to favourites
 save history
 expanding list after scrolling
 
 Sads Translates:
-get chapter
 shorts
-get illustration chapter
+get illustrations chapter
 
 Novelki.pl:
 login

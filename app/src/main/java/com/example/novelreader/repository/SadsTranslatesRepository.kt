@@ -2,7 +2,12 @@ package com.example.novelreader.repository
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.sp
 import com.example.novelreader.ApiService
 import com.example.novelreader.HtmlConverter
 import com.example.novelreader.model.Chapter
@@ -89,9 +94,6 @@ class SadsTranslatesRepository : RepositoryInterface {
 
     override suspend fun getNovelDetails(novelUrl: String): Novel {
         val jsoup: Document = Jsoup.parse(apiService.getFromUrl(novelUrl.replace(baseUrl, "")))
-
-        // TODO get full title
-
         return Novel(
             id = 1,
             title = jsoup.select(".entry-title").text(),
@@ -112,6 +114,31 @@ class SadsTranslatesRepository : RepositoryInterface {
                     )
                 )
             )
+        )
+    }
+
+    override suspend fun getChapterContent(chapterUrl: String): Chapter {
+        // change url
+        val response = apiService.getFromUrl(chapterUrl.replace(baseUrl, ""))
+
+        val jsoup: Document = Jsoup.parse(response)
+
+        val t = jsoup.select(".entry-title")
+            .first()
+            ?.html()
+            ?.replace("&nbsp;", " ")
+
+        val content = jsoup.select(".entry-content")
+            .first()
+
+        val title = t.toString()
+
+        val list = parseParagraphs(content.toString())
+
+        return Chapter(
+            title = title,
+            url = chapterUrl,
+            content = list
         )
     }
 
@@ -146,15 +173,47 @@ class SadsTranslatesRepository : RepositoryInterface {
 
     private fun getChaptersFromHtml(jsoup: Document): MutableList<Chapter> {
 
-        // TODO add illustrations chapter
-
         val list = mutableStateListOf<Chapter>()
         val elements = jsoup.select("details>p>a, .entry-content > p > a")
 
         elements.forEach { el ->
             if (el.attr("href").contains(baseUrl)) {
-                list.add(Chapter(el.text(), el.attr("href").replace(baseUrl, "")))
+                list.add(Chapter(el.text(), el.attr("href")))
             }
+        }
+
+        return list
+    }
+
+    private fun parseParagraphs(html: String): MutableList<Paragraph> {
+        val list = mutableStateListOf<Paragraph>()
+        val jsoup = Jsoup.parse(html)
+
+        val title = jsoup.select("h2").first()
+        if (title != null)
+            list.add(
+                Paragraph(
+                    0,
+                    title.html(),
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontSize = 27.sp)) {
+                            append(HtmlConverter.paragraphToAnnotatedString(title))
+                        }
+                    }
+                )
+            )
+
+        for ((i, p) in jsoup.select("p").withIndex()) {
+
+            if (i == 0) continue
+
+            list.add(
+                Paragraph(
+                    i,
+                    p.html(),
+                    HtmlConverter.paragraphToAnnotatedString(p)
+                )
+            )
         }
 
         return list

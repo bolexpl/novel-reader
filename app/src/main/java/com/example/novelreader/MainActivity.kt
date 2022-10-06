@@ -16,10 +16,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.novelreader.screen.AllTitlesScreenView
-import com.example.novelreader.screen.LatestTitlesScreenView
-import com.example.novelreader.screen.MainScreenView
-import com.example.novelreader.screen.TitleDetailsScreenView
+import com.example.novelreader.screen.*
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.viewmodel.MainViewModel
 
@@ -90,7 +87,16 @@ private fun MainNavigationGraph(
                 novel = mainViewModel.novel,
                 onRefresh = { url ->
                     mainViewModel.refreshNovelDetails(url)
+                },
+                onItemClick = { chapterUrl ->
+                    mainViewModel.refreshChapterContent(chapterUrl = chapterUrl)
                 }
+            )
+        }
+        composable(MainNavItem.ReaderScreen) {
+            ReaderScreenView(
+                mainNavController = mainNavController,
+                chapter = mainViewModel.chapter
             )
         }
     }
