@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.novelreader.MainNavItem
 import com.example.novelreader.R
-import com.example.novelreader.repository.RepositoryInterface
+import com.example.novelreader.source.SourceInterface
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.view.TopBar
 
@@ -43,7 +43,7 @@ private fun SourcesScreenPreview() {
 @Composable
 fun SourcesScreen(
     navController: NavController,
-    repos: Map<Int, RepositoryInterface>,
+    repos: Map<Int, SourceInterface>,
     onSourceClick: (Int, Boolean) -> Unit
 ) {
     Column(

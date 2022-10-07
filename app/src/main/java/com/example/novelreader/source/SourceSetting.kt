@@ -1,6 +1,6 @@
-package com.example.novelreader.repository
+package com.example.novelreader.source
 
-data class RepositorySetting(
+data class SourceSetting(
     val settingName: String,
     val valueType: String = String::class.java.name,
     var stringVal: String? = null,

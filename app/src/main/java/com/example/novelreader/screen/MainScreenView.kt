@@ -21,8 +21,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.novelreader.BottomNavItem
-import com.example.novelreader.repository.RepositoryInterface
-import com.example.novelreader.repository.SadsTranslatesRepository
+import com.example.novelreader.source.SourceInterface
+import com.example.novelreader.source.SadsTranslatesSource
 import com.example.novelreader.ui.theme.EBookReaderTheme
 
 @Preview(name = "Light", showBackground = true)
@@ -36,7 +36,7 @@ private fun DefaultPreview() {
             MainScreenView(
                 NavController(LocalContext.current),
                 mapOf(
-                    Pair(1, SadsTranslatesRepository())
+                    Pair(1, SadsTranslatesSource())
                 ),
                 onSourceClick = { _,_-> }
             )
@@ -47,7 +47,7 @@ private fun DefaultPreview() {
 @Composable
 fun MainScreenView(
     mainNavController: NavController,
-    repos: Map<Int, RepositoryInterface>,
+    repos: Map<Int, SourceInterface>,
     onSourceClick: (Int, Boolean) -> Unit
 ) {
     val navController = rememberNavController()
@@ -66,7 +66,7 @@ fun MainScreenView(
 private fun NavigationGraph(
     mainNavController: NavController,
     navController: NavHostController,
-    repos: Map<Int, RepositoryInterface>,
+    repos: Map<Int, SourceInterface>,
     padding: PaddingValues,
     onSourceClick: (Int, Boolean) -> Unit
 ) {
