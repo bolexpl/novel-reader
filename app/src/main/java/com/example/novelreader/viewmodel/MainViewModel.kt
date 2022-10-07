@@ -8,13 +8,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.*
 import com.example.novelreader.model.Chapter
 import com.example.novelreader.model.Novel
-import com.example.novelreader.repository.RepositoryInterface
-import com.example.novelreader.repository.SadsTranslatesRepository
+import com.example.novelreader.source.SourceInterface
+import com.example.novelreader.source.SadsTranslatesSource
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
 
-    val repos: MutableMap<Int, RepositoryInterface> = mutableMapOf()
+    val repos: MutableMap<Int, SourceInterface> = mutableMapOf()
 
     var sourceName by mutableStateOf("")
 
@@ -26,13 +26,13 @@ class MainViewModel : ViewModel() {
 
     var chapter: Chapter? by mutableStateOf(null)
 
-    private var currentRepo: RepositoryInterface? by mutableStateOf(null)
+    private var currentRepo: SourceInterface? by mutableStateOf(null)
 
     init {
-        addRepo(SadsTranslatesRepository())
+        addRepo(SadsTranslatesSource())
     }
 
-    private fun addRepo(r: RepositoryInterface) {
+    private fun addRepo(r: SourceInterface) {
         repos[r.id] = r
     }
 

@@ -1,9 +1,9 @@
-package com.example.novelreader.repository
+package com.example.novelreader.source
 
 import com.example.novelreader.model.Chapter
 import com.example.novelreader.model.Novel
 
-interface RepositoryInterface {
+interface SourceInterface {
 
     val id: Int
 

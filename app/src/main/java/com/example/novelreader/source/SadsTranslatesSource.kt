@@ -1,8 +1,7 @@
-package com.example.novelreader.repository
+package com.example.novelreader.source
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -18,7 +17,7 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.TextNode
 
-class SadsTranslatesRepository : RepositoryInterface {
+class SadsTranslatesSource : SourceInterface {
 
     private val baseUrl = "https://sads07.wordpress.com"
 
