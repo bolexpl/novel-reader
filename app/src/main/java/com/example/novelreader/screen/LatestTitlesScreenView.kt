@@ -33,7 +33,13 @@ fun LatestTitlesScreenView(
         } else {
             LazyColumn(modifier = Modifier.padding(padding)) {
                 items(novelList) { novel ->
-                    NovelItem(novel = novel)
+                    NovelItem(
+                        novel = novel,
+                        onClick = {
+                            // TODO
+                        }, onLongPress = {
+                            // TODO
+                        })
                 }
             }
         }

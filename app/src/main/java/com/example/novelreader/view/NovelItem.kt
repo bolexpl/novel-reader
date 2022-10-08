@@ -1,8 +1,6 @@
 package com.example.novelreader.view
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
@@ -28,8 +26,8 @@ import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 @Composable
 fun NovelItem(
     novel: Novel,
-    onClick: (String) -> Unit = {},
-    onLongPress: (Novel) -> Unit = {}
+    onClick: (String) -> Unit,
+    onLongPress: (Novel) -> Unit
 ) {
     Divider(color = MaterialTheme.colors.primaryVariant)
     Row(
@@ -37,7 +35,6 @@ fun NovelItem(
         horizontalArrangement = Arrangement.Start,
         modifier = Modifier
             .fillMaxWidth()
-//            .clickable { onClick(novel.url) }
             .pointerInput(Unit) {
                 detectTapGestures(
                     onPress = { onClick(novel.url) },

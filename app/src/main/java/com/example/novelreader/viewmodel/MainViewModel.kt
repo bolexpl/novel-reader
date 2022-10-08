@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     val readAllData: LiveData<List<NameItem>>
+
     private val repository: NameRepository
 
     val sources: MutableMap<Int, SourceInterface> = mutableMapOf()
@@ -96,6 +97,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 chapter = curr.getChapterContent(chapterUrl)
             }
         }
+    }
+
+    fun addNovelToLibrary(novel: Novel) {
+        // TODO add to library
     }
 }
 

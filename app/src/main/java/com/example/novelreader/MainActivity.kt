@@ -1,5 +1,6 @@
 package com.example.novelreader
 
+import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,22 +18,33 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.novelreader.screen.*
+import com.example.novelreader.test.NameViewModel
+import com.example.novelreader.test.NameViewModelFactory
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.viewmodel.MainViewModel
+import com.example.novelreader.viewmodel.MainViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
+            val mainViewModel: MainViewModel = viewModel(
+                factory = MainViewModelFactory(application = application)
+            )
+            val mainNavController = rememberNavController()
+
             EBookReaderTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    val mainNavController = rememberNavController()
                     Scaffold {
-                        MainNavigationGraph(mainNavController = mainNavController, padding = it)
+                        MainNavigationGraph(
+                            mainNavController = mainNavController,
+                            padding = it,
+                            mainViewModel = mainViewModel
+                        )
                     }
                 }
             }
@@ -43,7 +55,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun MainNavigationGraph(
     mainNavController: NavHostController,
-    mainViewModel: MainViewModel = viewModel(),
+    mainViewModel: MainViewModel,
     padding: PaddingValues
 ) {
     NavHost(
@@ -54,7 +66,7 @@ private fun MainNavigationGraph(
         composable(MainNavItem.MainScreen) {
             MainScreenView(
                 mainNavController = mainNavController,
-                repos = mainViewModel.repos,
+                repos = mainViewModel.sources,
                 onSourceClick = { index, newest ->
                     mainViewModel.setCurrentRepo(index)
                     mainViewModel.updateSourceName()
@@ -71,6 +83,9 @@ private fun MainNavigationGraph(
                     mainNavController.navigate(MainNavItem.DetailScreen)
                     mainViewModel.novel = null
                     mainViewModel.refreshNovelDetails(url)
+                },
+                onLongPress = {
+                    mainViewModel.addNovelToLibrary(it)
                 }
             )
         }

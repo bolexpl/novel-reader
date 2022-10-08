@@ -9,16 +9,18 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "novel")
 data class Novel(
     @PrimaryKey(autoGenerate = true)
-    var id: Long = 0L,
+    var id: Int = 0,
     @ColumnInfo(name = "title")
     var title: String = "",
     @ColumnInfo(name = "url")
     var url: String = "",
     @ColumnInfo(name = "coverUrl")
     var coverUrl: String = "",
+    @ColumnInfo(name = "cover_filename")
+    var coverFileName: String? = null,
 
     @Ignore
-    var fromDatabase: Boolean = false,
+    var inDatabase: Boolean = false,
     @Ignore
     var description: MutableList<Paragraph> = mutableStateListOf(),
     @Ignore

@@ -1,6 +1,5 @@
 package com.example.novelreader.source
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -137,13 +136,12 @@ class SadsTranslatesSource : SourceInterface {
         return Chapter(
             title = title,
             url = chapterUrl,
-            content = list
+            content = list,
+            number = 1
         )
     }
 
     private suspend fun getProjectUrlFromChapterUrl(chapterFullUrl: String): String {
-
-        Log.d("", chapterFullUrl)
 
         val jsoup: Document = Jsoup.parse(
             apiService.getFromUrl(chapterFullUrl.replace(baseUrl, ""))
@@ -161,9 +159,21 @@ class SadsTranslatesSource : SourceInterface {
 
         for ((i, el) in content.childNodes().withIndex()) {
             if (el is TextNode) {
-                list.add(Paragraph(i, el.text(), AnnotatedString(el.text())))
+                list.add(
+                    Paragraph(
+                        number = i,
+                        html = el.text(),
+                        annotatedString = AnnotatedString(el.text())
+                    )
+                )
             } else if (el is Element) {
-                list.add(Paragraph(i, el.text(), HtmlConverter.paragraphToAnnotatedString(el)))
+                list.add(
+                    Paragraph(
+                        number = i,
+                        html = el.text(),
+                        annotatedString = HtmlConverter.paragraphToAnnotatedString(el)
+                    )
+                )
             }
         }
 
@@ -175,9 +185,9 @@ class SadsTranslatesSource : SourceInterface {
         val list = mutableStateListOf<Chapter>()
         val elements = jsoup.select("details>p>a, .entry-content > p > a")
 
-        elements.forEach { el ->
+        elements.forEachIndexed { index, el ->
             if (el.attr("href").contains(baseUrl)) {
-                list.add(Chapter(el.text(), el.attr("href")))
+                list.add(Chapter(title = el.text(), url = el.attr("href"), number = index))
             }
         }
 
@@ -192,9 +202,10 @@ class SadsTranslatesSource : SourceInterface {
         if (title != null)
             list.add(
                 Paragraph(
-                    0,
-                    title.html(),
-                    buildAnnotatedString {
+                    id = 0,
+                    number = 0,
+                    html = title.html(),
+                    annotatedString = buildAnnotatedString {
                         withStyle(style = SpanStyle(fontSize = 27.sp)) {
                             append(HtmlConverter.paragraphToAnnotatedString(title))
                         }
@@ -208,9 +219,10 @@ class SadsTranslatesSource : SourceInterface {
 
             list.add(
                 Paragraph(
-                    i,
-                    p.html(),
-                    HtmlConverter.paragraphToAnnotatedString(p)
+                    id = 0,
+                    number = i + 1,
+                    html = p.html(),
+                    annotatedString = HtmlConverter.paragraphToAnnotatedString(p)
                 )
             )
         }

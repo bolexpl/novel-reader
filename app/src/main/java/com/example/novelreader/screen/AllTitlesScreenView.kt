@@ -21,7 +21,8 @@ fun AllTitlesScreenView(
     mainNavController: NavController = rememberNavController(),
     sourceName: String,
     novelList: List<Novel>,
-    onClick: (String) -> Unit = {}
+    onClick: (String) -> Unit,
+    onLongPress: (Novel)->Unit
 ) {
     Scaffold(topBar = {
         BackButtonTitleBar(
@@ -34,7 +35,11 @@ fun AllTitlesScreenView(
         } else {
             LazyColumn(modifier = Modifier.padding(padding)) {
                 items(novelList) { novel ->
-                    NovelItem(novel = novel, onClick = onClick)
+                    NovelItem(
+                        novel = novel,
+                        onClick = onClick,
+                        onLongPress = onLongPress
+                    )
                 }
             }
         }
@@ -56,7 +61,9 @@ private fun AllTitlesScreenPreview() {
             )
             AllTitlesScreenView(
                 sourceName = "Nazwa",
-                novelList = list
+                novelList = list,
+                onLongPress = {},
+                onClick = {}
             )
         }
     }
