@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.novelreader.model.Novel
+import com.example.novelreader.database.model.Novel
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.view.BackButtonTitleBar
 import com.example.novelreader.view.NovelItem

@@ -1,7 +1,7 @@
 package com.example.novelreader.source
 
-import com.example.novelreader.model.Chapter
-import com.example.novelreader.model.Novel
+import com.example.novelreader.database.model.Chapter
+import com.example.novelreader.database.model.Novel
 
 interface SourceInterface {
 

@@ -9,9 +9,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import com.example.novelreader.ApiService
 import com.example.novelreader.HtmlConverter
-import com.example.novelreader.model.Chapter
-import com.example.novelreader.model.Novel
-import com.example.novelreader.model.Paragraph
+import com.example.novelreader.database.model.Chapter
+import com.example.novelreader.database.model.Novel
+import com.example.novelreader.database.model.Paragraph
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element

@@ -10,7 +10,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.novelreader.model.Chapter
+import com.example.novelreader.database.model.Chapter
 
 @Composable
 fun ChapterItem(

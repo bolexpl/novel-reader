@@ -1,20 +1,29 @@
 package com.example.novelreader.viewmodel
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.*
-import com.example.novelreader.model.Chapter
-import com.example.novelreader.model.Novel
+import com.example.novelreader.database.model.Chapter
+import com.example.novelreader.database.model.Novel
 import com.example.novelreader.source.SourceInterface
 import com.example.novelreader.source.SadsTranslatesSource
+import com.example.novelreader.test.NameDatabase
+import com.example.novelreader.test.NameItem
+import com.example.novelreader.test.NameRepository
+import com.example.novelreader.test.NameViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    val repos: MutableMap<Int, SourceInterface> = mutableMapOf()
+    val readAllData: LiveData<List<NameItem>>
+    private val repository: NameRepository
+
+    val sources: MutableMap<Int, SourceInterface> = mutableMapOf()
 
     var sourceName by mutableStateOf("")
 
@@ -26,38 +35,42 @@ class MainViewModel : ViewModel() {
 
     var chapter: Chapter? by mutableStateOf(null)
 
-    private var currentRepo: SourceInterface? by mutableStateOf(null)
+    private var currentSource: SourceInterface? by mutableStateOf(null)
 
     init {
+        val nameDao = NameDatabase.getInstance(application).nameDao()
+        repository = NameRepository(nameDao)
+        readAllData = repository.readAllData
+
         addRepo(SadsTranslatesSource())
     }
 
     private fun addRepo(r: SourceInterface) {
-        repos[r.id] = r
+        sources[r.id] = r
     }
 
     fun setCurrentRepo(index: Int) {
-        currentRepo = repos[index]
+        currentSource = sources[index]
     }
 
     fun updateSourceName() {
         sourceName = ""
-        currentRepo?.let {
+        currentSource?.let {
             sourceName = it.name
         }
     }
 
     fun refreshNovelList(newest: Boolean) {
         novelList = mutableStateListOf()
-        val curr = currentRepo
+        val curr = currentSource
         curr?.let {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 novelList.clear()
-                if(newest){
+                if (newest) {
                     novelList.addAll(curr.getNewNovelList())
                     val nn = novelList
                     Log.d("myk", nn.toString())
-                }else{
+                } else {
                     novelList.addAll(curr.getAllNovelList())
                 }
             }
@@ -66,9 +79,9 @@ class MainViewModel : ViewModel() {
 
     fun refreshNovelDetails(novelUrl: String) {
         chapterList = mutableStateListOf()
-        val curr = currentRepo
+        val curr = currentSource
         curr?.let {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 novel = curr.getNovelDetails(novelUrl)
                 chapterList = novel!!.chapterList
             }
@@ -77,11 +90,25 @@ class MainViewModel : ViewModel() {
 
     fun refreshChapterContent(chapterUrl: String) {
         chapter = null
-        val curr = currentRepo
+        val curr = currentSource
         curr?.let {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 chapter = curr.getChapterContent(chapterUrl)
             }
         }
+    }
+}
+
+class MainViewModelFactory(
+    private val application: Application
+) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return MainViewModel(application) as T
+        }
+
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

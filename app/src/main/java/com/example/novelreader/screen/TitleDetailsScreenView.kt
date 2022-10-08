@@ -26,9 +26,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.novelreader.HtmlConverter
 import com.example.novelreader.MainNavItem
 import com.example.novelreader.R
-import com.example.novelreader.model.Chapter
-import com.example.novelreader.model.Novel
-import com.example.novelreader.model.Paragraph
+import com.example.novelreader.database.model.Chapter
+import com.example.novelreader.database.model.Novel
+import com.example.novelreader.database.model.Paragraph
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.view.BackButtonTitleBar
 import com.example.novelreader.view.ChapterItem
