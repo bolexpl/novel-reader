@@ -16,10 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.novelreader.test.NameViewModel
-import com.example.novelreader.test.NameViewModelFactory
 import com.example.novelreader.ui.theme.NovelReaderTheme
-import com.wajahatkarim3.roomexplorer.RoomExplorer
 
 class TestActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,20 +45,7 @@ class TestActivity : ComponentActivity() {
 fun NamesList(viewModel: NameViewModel) {
     val list = viewModel.readAllData.observeAsState(listOf()).value
 
-    val context = LocalContext.current
-
     LazyColumn {
-        item {
-            Button(onClick = {
-                RoomExplorer.show(
-                    context,
-                    NameDatabase::class.java,
-                    "name_database"
-                )
-            }) {
-                Text(text = "Baza")
-            }
-        }
         items(list) { el ->
             val name by remember { mutableStateOf(el.text) }
 
