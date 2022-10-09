@@ -20,6 +20,11 @@ data class Novel(
     @ColumnInfo(name = "cover_filename")
     var coverFileName: String? = null,
 
+    @ColumnInfo(name= "source_id")
+    var sourceId: Int = 0,
+    @ColumnInfo(name= "source_name")
+    var sourceName: String = "",
+
     @Ignore
     var inDatabase: Boolean = true,
     @Ignore

@@ -18,8 +18,6 @@ import org.jsoup.nodes.TextNode
 
 class SadsTranslatesSource : SourceInterface {
 
-    private val baseUrl = "https://sads07.wordpress.com"
-
     private val projectListPath = "/projects/"
     private val latestChaptersPath = "/"
 
@@ -30,6 +28,9 @@ class SadsTranslatesSource : SourceInterface {
 
     override val name: String
         get() = "Sads Translates"
+
+    override val baseUrl: String
+        get() = "https://sads07.wordpress.com"
 
     override suspend fun getAllNovelList(): List<Novel> {
         val jsoup: Document = Jsoup.parse(apiService.getFromUrl(projectListPath))
@@ -44,7 +45,7 @@ class SadsTranslatesSource : SourceInterface {
 
         for (el in links) {
             val url = el.attr("href")
-            val n = Novel(title=  el.text(), url= url, inDatabase = false)
+            val n = Novel(title = el.text(), url = url, inDatabase = false, sourceId = id)
             n.coverUrl = getCover(n.url)
             list.add(n)
         }

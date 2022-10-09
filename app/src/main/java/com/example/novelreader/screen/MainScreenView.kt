@@ -19,6 +19,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.novelreader.BottomNavItem
+import com.example.novelreader.MainNavItem
 import com.example.novelreader.viewmodel.MainViewModel
 
 @Composable
@@ -51,7 +52,14 @@ private fun NavigationGraph(
     ) {
         composable(BottomNavItem.Library.screen_route) {
             LibraryScreen(
-                mainViewModel.localList
+                novelList = mainViewModel.localList,
+                onClick = { url ->
+                    mainViewModel.refreshLibraryNovelDetails(url)
+                    mainNavController.navigate(MainNavItem.DetailScreen)
+                },
+                onLongPress = {
+                    // TODO confirm and delete novel from database
+                }
             )
         }
         composable(BottomNavItem.Updates.screen_route) {
@@ -61,11 +69,14 @@ private fun NavigationGraph(
             HistoryScreen()
         }
         composable(BottomNavItem.Explore.screen_route) {
-            SourcesScreen(mainNavController, mainViewModel.sources, onSourceClick = { index, newest ->
-                mainViewModel.setCurrentRepo(index)
-                mainViewModel.updateSourceName()
-                mainViewModel.refreshNovelList(newest)
-            })
+            SourcesScreen(
+                mainNavController,
+                mainViewModel.sources,
+                onSourceClick = { index, newest ->
+                    mainViewModel.setCurrentSource(index)
+                    mainViewModel.updateSourceName()
+                    mainViewModel.refreshNovelList(newest)
+                })
         }
         composable(BottomNavItem.Others.screen_route) {
             OthersScreen()

@@ -19,7 +19,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     val localList: LiveData<List<Novel>>
 
-    private val repository: NovelRepository
+    private val novelRepository: NovelRepository
 
     val sources: MutableMap<Int, SourceInterface> = mutableMapOf()
 
@@ -37,17 +37,17 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         val novelDao = NovelDatabase.getInstance(application).novelDao()
-        repository = NovelRepository(novelDao = novelDao)
-        localList = repository.readAllData
+        novelRepository = NovelRepository(novelDao = novelDao)
+        localList = novelRepository.readAllData
 
-        addRepo(SadsTranslatesSource())
+        addSource(SadsTranslatesSource())
     }
 
-    private fun addRepo(r: SourceInterface) {
+    private fun addSource(r: SourceInterface) {
         sources[r.id] = r
     }
 
-    fun setCurrentRepo(index: Int) {
+    fun setCurrentSource(index: Int) {
         currentSource = sources[index]
     }
 
@@ -58,9 +58,18 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun refreshNovelList(newest: Boolean) {
+    fun getSourceFromUrl(url: String): Int {
+        for (source in sources.values) {
+            if (url.contains(source.baseUrl)) {
+                return source.id
+            }
+        }
+        return 0
+    }
+
+    fun refreshNovelList(newest: Boolean, source: SourceInterface? = null) {
         novelList = mutableStateListOf()
-        val curr = currentSource
+        val curr = source ?: currentSource
         curr?.let {
             viewModelScope.launch(Dispatchers.IO) {
                 novelList.clear()
@@ -69,7 +78,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 } else {
                     novelList.addAll(curr.getAllNovelList())
                 }
-                repository.checkInDb(novelList)
+                novelRepository.checkInDb(novelList)
             }
         }
     }
@@ -97,12 +106,21 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun addNovelToLibrary(novel: Novel) {
         viewModelScope.launch(Dispatchers.IO) {
-            val n = repository.getByUrl(novel.url)
+            val n = novelRepository.getByUrl(novel.url)
             if (n != null) {
-                repository.delete(novel)
+                novelRepository.delete(novel)
             } else {
-                repository.add(novel)
+                novelRepository.add(novel)
+                // TODO add cover
+                // TODO add description
+                // TODO add chapters
             }
+        }
+    }
+
+    fun refreshLibraryNovelDetails(novelUrl: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            novel = novelRepository.getByUrl(novelUrl)
         }
     }
 }

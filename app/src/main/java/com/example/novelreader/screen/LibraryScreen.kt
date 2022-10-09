@@ -22,12 +22,17 @@ import androidx.lifecycle.LiveData
 import com.example.novelreader.MainNavItem
 import com.example.novelreader.database.model.Novel
 import com.example.novelreader.view.NovelItem
+import com.example.novelreader.view.ProgressSpinner
 import com.example.novelreader.view.TopBar
 
 @Composable
 fun LibraryScreen(
-    novelList: LiveData<List<Novel>>
+    novelList: LiveData<List<Novel>>,
+    onClick: (String) -> Unit,
+    onLongPress: (Novel) -> Unit
 ) {
+    val l = novelList.observeAsState().value
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -35,32 +40,29 @@ fun LibraryScreen(
             .wrapContentSize(Alignment.Center)
     ) {
         Scaffold(topBar = { TopBar("My library") }) {
-            val l = novelList.observeAsState().value
 
-            if (l != null && l.isNotEmpty()) {
-                LazyColumn(modifier = Modifier.padding(it)) {
-                    items(l) { novel ->
-                        NovelItem(
-                            novel = novel,
-                            onClick = {
-                                // TODO
-                            },
-                            onLongPress = {
-                                // TODO
-                            },
-                            showFavouriteIcon = false
-                        )
-                    }
-                }
-            } else {
+            if (l == null) {
+                ProgressSpinner()
+            } else if (l.isEmpty()) {
                 Text(
-                    text = "Emtpy Library",
+                    text = "Empty Library",
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colors.primary,
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp
                 )
+            } else {
+                LazyColumn(modifier = Modifier.padding(it)) {
+                    items(l) { novel ->
+                        NovelItem(
+                            novel = novel,
+                            onClick = onClick,
+                            onLongPress = onLongPress,
+                            showFavouriteIcon = false
+                        )
+                    }
+                }
             }
         }
     }

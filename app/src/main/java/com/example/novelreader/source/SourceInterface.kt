@@ -9,6 +9,8 @@ interface SourceInterface {
 
     val name: String
 
+    val baseUrl: String
+
     suspend fun getAllNovelList(): List<Novel>
 
     suspend fun getNewNovelList(): List<Novel>
