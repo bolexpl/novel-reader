@@ -1,7 +1,9 @@
 package com.example.novelreader.source
 
+import androidx.compose.ui.text.AnnotatedString
 import com.example.novelreader.database.model.Chapter
 import com.example.novelreader.database.model.Novel
+import com.example.novelreader.database.model.Paragraph
 
 interface SourceInterface {
 
@@ -22,4 +24,6 @@ interface SourceInterface {
     suspend fun getCover(novelUrl: String): String
 
     suspend fun getChapterContent(chapterUrl: String): Chapter
+
+    suspend fun parseChapterContent(html: String): MutableList<Paragraph>
 }

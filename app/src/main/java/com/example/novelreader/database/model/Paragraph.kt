@@ -14,11 +14,17 @@ data class Paragraph(
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
 
-    @ColumnInfo(name = "number")
-    var number: Int = 0,
+    @ColumnInfo(name = "order_no")
+    var orderNo: Int = 0,
 
     @ColumnInfo(name = "html")
     var html: String = "",
+
+    @ColumnInfo(name = "novel_id")
+    var novelId: Int = 0,
+
+    @ColumnInfo(name = "chapter_id")
+    var chapterId: Int = 0,
 
     @Ignore
     var annotatedString: AnnotatedString = AnnotatedString("")

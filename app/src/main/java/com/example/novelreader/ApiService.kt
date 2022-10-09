@@ -6,13 +6,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface ApiService {
-
-    // library view model
-    @GET("/2020/06/27/forbidden-master-part-3-chapter-64/")
-    suspend fun getChapter(): String
 
     @GET("{url}")
     suspend fun getFromUrl(@Path("url", encoded = true) url: String): String

@@ -25,6 +25,9 @@ data class Novel(
     @ColumnInfo(name= "source_name")
     var sourceName: String = "",
 
+    @ColumnInfo(name= "description_html")
+    var descriptionHtml: String = "",
+
     @Ignore
     var inDatabase: Boolean = true,
     @Ignore

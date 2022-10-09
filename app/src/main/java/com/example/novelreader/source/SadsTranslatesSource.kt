@@ -93,30 +93,26 @@ class SadsTranslatesSource : SourceInterface {
 
     override suspend fun getNovelDetails(novelUrl: String): Novel {
         val jsoup: Document = Jsoup.parse(apiService.getFromUrl(novelUrl.replace(baseUrl, "")))
+        val html = jsoup.select(".entry-title").text()
         return Novel(
-            title = jsoup.select(".entry-title").text(),
+            title = html,
             url = novelUrl,
             chapterList = getChaptersFromHtml(jsoup),
             coverUrl = jsoup.select("figure.size-large>img").attr("src"),
-            description = getDescriptionFromHtml(jsoup)
+            description = getDescriptionFromHtml(jsoup),
+            descriptionHtml = jsoup.select(".entry-content>p.has-drop-cap").html()
         )
     }
 
     override suspend fun getChapters(novelUrl: String): List<Chapter> {
         return getChaptersFromHtml(
             Jsoup.parse(
-                apiService.getFromUrl(
-                    novelUrl.replace(
-                        baseUrl,
-                        ""
-                    )
-                )
+                apiService.getFromUrl(novelUrl.replace(baseUrl, ""))
             )
         )
     }
 
     override suspend fun getChapterContent(chapterUrl: String): Chapter {
-        // change url
         val response = apiService.getFromUrl(chapterUrl.replace(baseUrl, ""))
 
         val jsoup: Document = Jsoup.parse(response)
@@ -131,13 +127,13 @@ class SadsTranslatesSource : SourceInterface {
 
         val title = t.toString()
 
-        val list = parseParagraphs(content.toString())
+        val list = parseChapterContent(content.toString())
 
         return Chapter(
             title = title,
             url = chapterUrl,
             content = list,
-            number = 1
+            orderNo = 1
         )
     }
 
@@ -161,7 +157,7 @@ class SadsTranslatesSource : SourceInterface {
             if (el is TextNode) {
                 list.add(
                     Paragraph(
-                        number = i,
+                        orderNo = i+1,
                         html = el.text(),
                         annotatedString = AnnotatedString(el.text())
                     )
@@ -169,7 +165,7 @@ class SadsTranslatesSource : SourceInterface {
             } else if (el is Element) {
                 list.add(
                     Paragraph(
-                        number = i,
+                        orderNo = i+1,
                         html = el.text(),
                         annotatedString = HtmlConverter.paragraphToAnnotatedString(el)
                     )
@@ -187,14 +183,20 @@ class SadsTranslatesSource : SourceInterface {
 
         elements.forEachIndexed { index, el ->
             if (el.attr("href").contains(baseUrl)) {
-                list.add(Chapter(title = el.text(), url = el.attr("href"), number = index))
+                list.add(
+                    Chapter(
+                        title = el.text(),
+                        url = el.attr("href"),
+                        orderNo = index + 1
+                    )
+                )
             }
         }
 
         return list
     }
 
-    private fun parseParagraphs(html: String): MutableList<Paragraph> {
+    override suspend fun parseChapterContent(html: String): MutableList<Paragraph> {
         val list = mutableStateListOf<Paragraph>()
         val jsoup = Jsoup.parse(html)
 
@@ -203,7 +205,7 @@ class SadsTranslatesSource : SourceInterface {
             list.add(
                 Paragraph(
                     id = 0,
-                    number = 0,
+                    orderNo = 0,
                     html = title.html(),
                     annotatedString = buildAnnotatedString {
                         withStyle(style = SpanStyle(fontSize = 27.sp)) {
@@ -220,7 +222,7 @@ class SadsTranslatesSource : SourceInterface {
             list.add(
                 Paragraph(
                     id = 0,
-                    number = i + 1,
+                    orderNo = i + 1,
                     html = p.html(),
                     annotatedString = HtmlConverter.paragraphToAnnotatedString(p)
                 )

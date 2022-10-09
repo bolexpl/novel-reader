@@ -9,7 +9,9 @@ import androidx.lifecycle.*
 import com.example.novelreader.database.NovelDatabase
 import com.example.novelreader.database.model.Chapter
 import com.example.novelreader.database.model.Novel
+import com.example.novelreader.database.repository.ChapterRepository
 import com.example.novelreader.database.repository.NovelRepository
+import com.example.novelreader.database.repository.ParagraphRepository
 import com.example.novelreader.source.SourceInterface
 import com.example.novelreader.source.SadsTranslatesSource
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +22,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val localList: LiveData<List<Novel>>
 
     private val novelRepository: NovelRepository
+    private val chapterRepository: ChapterRepository
+    private val paragraphRepository: ParagraphRepository
 
     val sources: MutableMap<Int, SourceInterface> = mutableMapOf()
 
@@ -37,7 +41,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         val novelDao = NovelDatabase.getInstance(application).novelDao()
+        val chapterDao = NovelDatabase.getInstance(application).chapterDao()
+        val paragraphDao = NovelDatabase.getInstance(application).paragraphDao()
+
         novelRepository = NovelRepository(novelDao = novelDao)
+        chapterRepository = ChapterRepository(chapterDao = chapterDao)
+        paragraphRepository = ParagraphRepository(paragraphDao = paragraphDao)
+
         localList = novelRepository.readAllData
 
         addSource(SadsTranslatesSource())
@@ -56,15 +66,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         currentSource?.let {
             sourceName = it.name
         }
-    }
-
-    fun getSourceFromUrl(url: String): Int {
-        for (source in sources.values) {
-            if (url.contains(source.baseUrl)) {
-                return source.id
-            }
-        }
-        return 0
     }
 
     fun refreshNovelList(newest: Boolean, source: SourceInterface? = null) {
@@ -110,9 +111,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             if (n != null) {
                 novelRepository.delete(novel)
             } else {
-                novelRepository.add(novel)
                 // TODO add cover
                 // TODO add description
+                novelRepository.add(novel)
                 // TODO add chapters
             }
         }

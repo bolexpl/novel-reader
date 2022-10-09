@@ -11,14 +11,17 @@ data class Chapter(
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
 
-    @ColumnInfo(name = "number")
-    var number: Int = 0,
+    @ColumnInfo(name = "order_no")
+    var orderNo: Int = 0,
 
     @ColumnInfo(name = "title")
     var title: String = "",
 
     @ColumnInfo(name = "url")
     var url: String = "",
+
+    @ColumnInfo(name = "novel_id")
+    var novelId: Int = 0,
 
     @Ignore
     var content: MutableList<Paragraph> = mutableStateListOf()
