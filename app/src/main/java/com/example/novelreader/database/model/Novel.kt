@@ -9,10 +9,11 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "novel")
 data class Novel(
 
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
+    var id: Long = 0,
+
     @ColumnInfo(name = "url")
     var url: String = "",
-
     @ColumnInfo(name = "title")
     var title: String = "",
     @ColumnInfo(name = "coverUrl")
@@ -24,9 +25,6 @@ data class Novel(
     var sourceId: Int = 0,
     @ColumnInfo(name= "source_name")
     var sourceName: String = "",
-
-    @ColumnInfo(name= "description_html")
-    var descriptionHtml: String = "",
 
     @Ignore
     var inDatabase: Boolean = true,

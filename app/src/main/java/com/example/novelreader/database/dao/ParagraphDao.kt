@@ -6,11 +6,14 @@ import com.example.novelreader.database.model.Paragraph
 
 @Dao
 interface ParagraphDao {
-    @Query("SELECT * from paragraph")
+    @Query("select * from paragraph")
     fun getAll(): LiveData<List<Paragraph>>
 
-    @Insert
-    suspend fun insert(item: Paragraph)
+    @Query("select * from paragraph where novel_id = :novelId order by order_no asc")
+    fun getByNovelId(novelId: Long): List<Paragraph>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(item: Paragraph): Long
 
     @Update
     suspend fun update(item: Paragraph)

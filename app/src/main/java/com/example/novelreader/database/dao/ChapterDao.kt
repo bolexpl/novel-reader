@@ -13,7 +13,7 @@ interface ChapterDao {
     fun getByUrl(url: String): LiveData<Chapter>
 
     @Insert
-    suspend fun insert(item: Chapter)
+    suspend fun insert(item: Chapter): Long
 
     @Update
     suspend fun update(item: Chapter)

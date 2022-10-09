@@ -14,9 +14,9 @@ class NovelRepository(private val novelDao: NovelDao) {
         return n
     }
 
-    suspend fun add(item: Novel) {
+    suspend fun add(item: Novel):Long {
         item.inDatabase=true
-        novelDao.insert(item)
+        return novelDao.insert(item)
     }
 
     suspend fun update(item: Novel) {
@@ -29,7 +29,7 @@ class NovelRepository(private val novelDao: NovelDao) {
         novelDao.delete(item)
     }
 
-    suspend fun checkInDb(list: List<Novel>){
+    fun checkInDb(list: List<Novel>){
         val dbList = novelDao.getListByUrls(list.map { it.url })
 
         list.forEach {

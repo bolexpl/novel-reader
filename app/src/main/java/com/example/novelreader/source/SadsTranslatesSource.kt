@@ -99,8 +99,7 @@ class SadsTranslatesSource : SourceInterface {
             url = novelUrl,
             chapterList = getChaptersFromHtml(jsoup),
             coverUrl = jsoup.select("figure.size-large>img").attr("src"),
-            description = getDescriptionFromHtml(jsoup),
-            descriptionHtml = jsoup.select(".entry-content>p.has-drop-cap").html()
+            description = getDescriptionFromHtml(jsoup)
         )
     }
 

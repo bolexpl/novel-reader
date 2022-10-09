@@ -4,7 +4,26 @@ import com.example.novelreader.database.dao.ParagraphDao
 import com.example.novelreader.database.model.Paragraph
 
 class ParagraphRepository(private val paragraphDao: ParagraphDao) {
-    suspend fun add(item: Paragraph){
+
+    fun getDesciption(novelId: Long): List<Paragraph> {
+        return paragraphDao.getByNovelId(novelId)
+    }
+
+    suspend fun addDescription(novelId: Long, description: List<Paragraph>) {
+        for (p in description) {
+            p.novelId = novelId
+            paragraphDao.insert(p)
+        }
+    }
+
+    suspend fun updateDescription(novelId: Long, description: List<Paragraph>) {
+        for (p in description) {
+            p.novelId = novelId
+            paragraphDao.update(p)
+        }
+    }
+
+    suspend fun add(item: Paragraph) {
         paragraphDao.insert(item)
     }
 

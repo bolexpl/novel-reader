@@ -16,7 +16,7 @@ interface NovelDao {
     fun getListByUrls(urls: List<String>): List<String>
 
     @Insert
-    suspend fun insert(item: Novel)
+    suspend fun insert(item: Novel): Long
 
     @Update
     suspend fun update(item: Novel)

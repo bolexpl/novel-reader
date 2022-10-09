@@ -56,9 +56,9 @@ private fun AllTitlesScreenPreview() {
             color = MaterialTheme.colors.background
         ) {
             val list = listOf(
-                Novel("0", "Forbidden Master", ""),
-                Novel("1", "Classroom of the Elite", ""),
-                Novel("2", "Kakegurui", "")
+                Novel(0, "", "Forbidden Master", ""),
+                Novel(1, "", "Classroom of the Elite", ""),
+                Novel(2, "", "Kakegurui", "")
             )
             AllTitlesScreenView(
                 sourceName = "Nazwa",

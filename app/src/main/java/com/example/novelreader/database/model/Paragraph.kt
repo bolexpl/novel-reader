@@ -12,7 +12,7 @@ import org.jsoup.nodes.Element
 @Entity(tableName = "paragraph")
 data class Paragraph(
     @PrimaryKey(autoGenerate = true)
-    var id: Int = 0,
+    var id: Long = 0,
 
     @ColumnInfo(name = "order_no")
     var orderNo: Int = 0,
@@ -21,10 +21,10 @@ data class Paragraph(
     var html: String = "",
 
     @ColumnInfo(name = "novel_id")
-    var novelId: Int = 0,
+    var novelId: Long = 0,
 
     @ColumnInfo(name = "chapter_id")
-    var chapterId: Int = 0,
+    var chapterId: Long = 0,
 
     @Ignore
     var annotatedString: AnnotatedString = AnnotatedString("")

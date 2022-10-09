@@ -231,7 +231,7 @@ private fun TitleDetailsScreenPreview() {
                 if (el is TextNode) {
                     list.add(
                         Paragraph(
-                            number = i,
+                            orderNo = i,
                             html = el.text(),
                             annotatedString = AnnotatedString(el.text())
                         )
@@ -239,7 +239,7 @@ private fun TitleDetailsScreenPreview() {
                 } else if (el is Element) {
                     list.add(
                         Paragraph(
-                            number = i,
+                            orderNo = i,
                             html = el.text(),
                             annotatedString = HtmlConverter.paragraphToAnnotatedString(el)
                         )

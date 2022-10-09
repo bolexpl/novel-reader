@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "chapter")
 data class Chapter(
     @PrimaryKey(autoGenerate = true)
-    var id: Int = 0,
+    var id: Long = 0,
 
     @ColumnInfo(name = "order_no")
     var orderNo: Int = 0,
@@ -21,7 +21,7 @@ data class Chapter(
     var url: String = "",
 
     @ColumnInfo(name = "novel_id")
-    var novelId: Int = 0,
+    var novelId: Long = 0,
 
     @Ignore
     var content: MutableList<Paragraph> = mutableStateListOf()

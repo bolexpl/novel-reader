@@ -1,10 +1,7 @@
 package com.example.novelreader.viewmodel
 
 import android.app.Application
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.lifecycle.*
 import com.example.novelreader.database.NovelDatabase
 import com.example.novelreader.database.model.Chapter
@@ -32,8 +29,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     var novelList: MutableList<Novel> = mutableStateListOf()
 
     var novel by mutableStateOf<Novel?>(null)
-
-    var chapterList: MutableList<Chapter> = mutableStateListOf()
 
     var chapter: Chapter? by mutableStateOf(null)
 
@@ -85,12 +80,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun refreshNovelDetails(novelUrl: String) {
-        chapterList = mutableStateListOf()
         val curr = currentSource
         curr?.let {
             viewModelScope.launch(Dispatchers.IO) {
                 novel = curr.getNovelDetails(novelUrl)
-                chapterList = novel!!.chapterList
             }
         }
     }
@@ -112,8 +105,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 novelRepository.delete(novel)
             } else {
                 // TODO add cover
-                // TODO add description
                 novelRepository.add(novel)
+                paragraphRepository.addDescription(novel.id, novel.description)
                 // TODO add chapters
             }
         }
@@ -121,7 +114,26 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun refreshLibraryNovelDetails(novelUrl: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            novel = novelRepository.getByUrl(novelUrl)
+            val n = novelRepository.getByUrl(novelUrl)
+            if (n != null) {
+
+                n.description = paragraphRepository
+                    .getDesciption(n.id)
+                    .toMutableList()
+
+                if (n.description.size == 0 || n.chapterList.size == 0) {
+                    setCurrentSource(n.sourceId)
+                    val curr = currentSource
+                    curr?.let {
+                        val n2 = curr.getNovelDetails(novelUrl)
+                        n2.id = n.id
+                        paragraphRepository.addDescription(n2.id, n2.description)
+                        novel = n2
+                    }
+                } else {
+                    novel = n
+                }
+            }
         }
     }
 }
