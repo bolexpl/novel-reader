@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    val readAllData: LiveData<List<Novel>>
+    val localList: LiveData<List<Novel>>
 
     private val repository: NovelRepository
 
@@ -38,7 +38,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     init {
         val novelDao = NovelDatabase.getInstance(application).novelDao()
         repository = NovelRepository(novelDao = novelDao)
-        readAllData = repository.readAllData
+        localList = repository.readAllData
 
         addRepo(SadsTranslatesSource())
     }

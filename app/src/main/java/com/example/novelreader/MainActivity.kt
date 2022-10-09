@@ -66,12 +66,7 @@ private fun MainNavigationGraph(
         composable(MainNavItem.MainScreen) {
             MainScreenView(
                 mainNavController = mainNavController,
-                repos = mainViewModel.sources,
-                onSourceClick = { index, newest ->
-                    mainViewModel.setCurrentRepo(index)
-                    mainViewModel.updateSourceName()
-                    mainViewModel.refreshNovelList(newest)
-                }
+                mainViewModel = mainViewModel
             )
         }
         composable(MainNavItem.AllTitlesScreen) {

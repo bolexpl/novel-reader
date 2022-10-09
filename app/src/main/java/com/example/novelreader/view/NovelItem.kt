@@ -36,7 +36,8 @@ import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 fun NovelItem(
     novel: Novel,
     onClick: (String) -> Unit,
-    onLongPress: (Novel) -> Unit
+    onLongPress: (Novel) -> Unit,
+    showFavouriteIcon: Boolean = true
 ) {
     var inDatabase: Boolean by remember { mutableStateOf(novel.inDatabase) }
     val context = LocalContext.current
@@ -90,7 +91,7 @@ fun NovelItem(
             }
         )
 
-        if (inDatabase) {
+        if (inDatabase && showFavouriteIcon) {
             Icon(
                 imageVector = Icons.Filled.Favorite,
                 contentDescription = "Favourite",
