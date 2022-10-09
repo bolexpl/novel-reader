@@ -20,7 +20,9 @@ import com.example.novelreader.view.ProgressSpinner
 fun LatestTitlesScreenView(
     mainNavController: NavController = rememberNavController(),
     sourceName: String,
-    novelList: List<Novel>
+    novelList: List<Novel>,
+    onClick: (String) -> Unit,
+    onLongPress: (Novel) -> Unit
 ) {
     Scaffold(topBar = {
         BackButtonTitleBar(
@@ -36,9 +38,9 @@ fun LatestTitlesScreenView(
                     NovelItem(
                         novel = novel,
                         onClick = {
-                            // TODO
+                            onClick(it)
                         }, onLongPress = {
-                            // TODO
+                            onLongPress(it)
                         })
                 }
             }
@@ -55,13 +57,15 @@ private fun LatestTitlesScreenPreview() {
             color = MaterialTheme.colors.background
         ) {
             val list = listOf(
-                Novel(0, "Forbidden Master", ""),
-                Novel(1, "Classroom of the Elite", ""),
-                Novel(2, "Kakegurui", "")
+                Novel("0", "Forbidden Master", ""),
+                Novel("1", "Classroom of the Elite", ""),
+                Novel("2", "Kakegurui", "")
             )
             LatestTitlesScreenView(
                 sourceName = "Nazwa",
-                novelList = list
+                novelList = list,
+                onClick = {},
+                onLongPress = {}
             )
         }
     }

@@ -5,11 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.novelreader.database.dao.ChapterDao
+import com.example.novelreader.database.dao.NovelDao
 import com.example.novelreader.database.dao.ParagraphDao
 import com.example.novelreader.database.model.Chapter
 import com.example.novelreader.database.model.Novel
 import com.example.novelreader.database.model.Paragraph
-import com.example.novelreader.test.NameDao
 
 @Database(
     entities = [Novel::class, Chapter::class, Paragraph::class],
@@ -18,7 +18,7 @@ import com.example.novelreader.test.NameDao
 )
 abstract class NovelDatabase : RoomDatabase() {
 
-    abstract fun novelDao(): NameDao
+    abstract fun novelDao(): NovelDao
 
     abstract fun chapterDao(): ChapterDao
 

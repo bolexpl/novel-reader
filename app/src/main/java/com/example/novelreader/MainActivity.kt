@@ -84,8 +84,8 @@ private fun MainNavigationGraph(
                     mainViewModel.novel = null
                     mainViewModel.refreshNovelDetails(url)
                 },
-                onLongPress = {
-                    mainViewModel.addNovelToLibrary(it)
+                onLongPress = { n ->
+                    mainViewModel.addNovelToLibrary(n)
                 }
             )
         }
@@ -93,7 +93,15 @@ private fun MainNavigationGraph(
             LatestTitlesScreenView(
                 mainNavController = mainNavController,
                 sourceName = mainViewModel.sourceName,
-                novelList = mainViewModel.novelList
+                novelList = mainViewModel.novelList,
+                onClick = { url ->
+                    mainNavController.navigate(MainNavItem.DetailScreen)
+                    mainViewModel.novel = null
+                    mainViewModel.refreshNovelDetails(url)
+                },
+                onLongPress = { n ->
+                    mainViewModel.addNovelToLibrary(n)
+                }
             )
         }
         composable(MainNavItem.DetailScreen) {

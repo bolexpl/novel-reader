@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,7 +23,7 @@ fun AllTitlesScreenView(
     sourceName: String,
     novelList: List<Novel>,
     onClick: (String) -> Unit,
-    onLongPress: (Novel)->Unit
+    onLongPress: (Novel) -> Unit
 ) {
     Scaffold(topBar = {
         BackButtonTitleBar(
@@ -55,14 +56,14 @@ private fun AllTitlesScreenPreview() {
             color = MaterialTheme.colors.background
         ) {
             val list = listOf(
-                Novel(0, "Forbidden Master", ""),
-                Novel(1, "Classroom of the Elite", ""),
-                Novel(2, "Kakegurui", "")
+                Novel("0", "Forbidden Master", ""),
+                Novel("1", "Classroom of the Elite", ""),
+                Novel("2", "Kakegurui", "")
             )
             AllTitlesScreenView(
                 sourceName = "Nazwa",
                 novelList = list,
-                onLongPress = {},
+                onLongPress = {  },
                 onClick = {}
             )
         }

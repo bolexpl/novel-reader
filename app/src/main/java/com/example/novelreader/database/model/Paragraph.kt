@@ -9,19 +9,19 @@ import androidx.room.PrimaryKey
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 
-@Entity
+@Entity(tableName = "paragraph")
 data class Paragraph(
     @PrimaryKey(autoGenerate = true)
-    var id: Long = 0L,
+    var id: Int = 0,
 
     @ColumnInfo(name = "number")
-    val number: Int,
+    var number: Int = 0,
 
     @ColumnInfo(name = "html")
-    val html: String = "",
+    var html: String = "",
 
     @Ignore
-    val annotatedString: AnnotatedString = AnnotatedString("")
+    var annotatedString: AnnotatedString = AnnotatedString("")
 )
 
 

@@ -229,9 +229,21 @@ private fun TitleDetailsScreenPreview() {
 
             for ((i, el) in content.childNodes().withIndex()) {
                 if (el is TextNode) {
-                    list.add(Paragraph(i, el.text(), AnnotatedString(el.text())))
+                    list.add(
+                        Paragraph(
+                            number = i,
+                            html = el.text(),
+                            annotatedString = AnnotatedString(el.text())
+                        )
+                    )
                 } else if (el is Element) {
-                    list.add(Paragraph(i, el.text(), HtmlConverter.paragraphToAnnotatedString(el)))
+                    list.add(
+                        Paragraph(
+                            number = i,
+                            html = el.text(),
+                            annotatedString = HtmlConverter.paragraphToAnnotatedString(el)
+                        )
+                    )
                 }
             }
 
@@ -249,7 +261,6 @@ private fun TitleDetailsScreenPreview() {
             TitleDetailsScreenView(
                 mainNavController = rememberNavController(),
                 novel = Novel(
-                    id = 0,
                     title = "Forbidden master",
                     url = "https://sads07.wordpress.com/projects/forbidden-master/",
                     coverUrl = "https://sads07.files.wordpress.com/2019/11/818ay2fgbal._ac_sl1500_.jpg?w=720",

@@ -2,7 +2,6 @@ package com.example.novelreader.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.novelreader.database.model.Novel
 import com.example.novelreader.database.model.Paragraph
 
 @Dao

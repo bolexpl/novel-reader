@@ -42,9 +42,9 @@ class SadsTranslatesSource : SourceInterface {
 
         val list = mutableListOf<Novel>()
 
-        for ((i, el) in links.withIndex()) {
+        for (el in links) {
             val url = el.attr("href")
-            val n = Novel(i, el.text(), url)
+            val n = Novel(title=  el.text(), url= url, inDatabase = false)
             n.coverUrl = getCover(n.url)
             list.add(n)
         }
@@ -93,7 +93,6 @@ class SadsTranslatesSource : SourceInterface {
     override suspend fun getNovelDetails(novelUrl: String): Novel {
         val jsoup: Document = Jsoup.parse(apiService.getFromUrl(novelUrl.replace(baseUrl, "")))
         return Novel(
-            id = 1,
             title = jsoup.select(".entry-title").text(),
             url = novelUrl,
             chapterList = getChaptersFromHtml(jsoup),

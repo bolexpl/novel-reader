@@ -9,10 +9,10 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "chapter")
 data class Chapter(
     @PrimaryKey(autoGenerate = true)
-    var id: Long = 0L,
+    var id: Int = 0,
 
     @ColumnInfo(name = "number")
-    var number: Int,
+    var number: Int = 0,
 
     @ColumnInfo(name = "title")
     var title: String = "",

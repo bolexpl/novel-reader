@@ -2,7 +2,6 @@ package com.example.novelreader.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.novelreader.database.model.Chapter
 import com.example.novelreader.database.model.Novel
 
 @Dao
@@ -11,7 +10,10 @@ interface NovelDao {
     fun getAll(): LiveData<List<Novel>>
 
     @Query("SELECT * FROM novel where url = :url")
-    fun getByUrl(url: String): LiveData<Novel>
+    fun getByUrl(url: String): Novel?
+
+    @Query("select url from novel where url in (:urls)")
+    fun getListByUrls(urls: List<String>): List<String>
 
     @Insert
     suspend fun insert(item: Novel)
