@@ -8,28 +8,30 @@ class NovelRepository(private val novelDao: NovelDao) {
 
     val readAllData: LiveData<List<Novel>> = novelDao.getAll()
 
-    fun getByUrl(url: String): Novel?{
+    fun getByUrl(url: String): Novel? {
         val n = novelDao.getByUrl(url)
         n?.inDatabase = true
         return n
     }
 
-    suspend fun add(item: Novel):Long {
-        item.inDatabase=true
-        return novelDao.insert(item)
+    suspend fun add(item: Novel): Long {
+        item.inDatabase = true
+        val id = novelDao.insert(item)
+        item.id = id
+        return id
     }
 
     suspend fun update(item: Novel) {
-        item.inDatabase=true
+        item.inDatabase = true
         novelDao.update(item)
     }
 
     suspend fun delete(item: Novel) {
-        item.inDatabase=false
+        item.inDatabase = false
         novelDao.delete(item)
     }
 
-    fun checkInDb(list: List<Novel>){
+    fun checkInDb(list: List<Novel>) {
         val dbList = novelDao.getListByUrls(list.map { it.url })
 
         list.forEach {

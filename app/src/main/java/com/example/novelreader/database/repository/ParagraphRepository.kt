@@ -23,8 +23,10 @@ class ParagraphRepository(private val paragraphDao: ParagraphDao) {
         }
     }
 
-    suspend fun add(item: Paragraph) {
-        paragraphDao.insert(item)
+    suspend fun add(item: Paragraph): Long {
+        val id = paragraphDao.insert(item)
+        item.id = id
+        return id
     }
 
     suspend fun update(item: Paragraph) {

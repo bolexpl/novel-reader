@@ -79,13 +79,31 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun refreshNovelDetails(novelUrl: String) {
+    fun refreshNovelDetailsFromWeb(novelUrl: String) {
+//        fetch novel:
+//          if in database:
+//              get from database
+//        else:
+//          get from web
+//          if favourited
+//              save to database
         val curr = currentSource
         curr?.let {
             viewModelScope.launch(Dispatchers.IO) {
                 novel = curr.getNovelDetails(novelUrl)
             }
         }
+    }
+
+    fun refreshNovelDetailsFromDb(novelUrl: String) {
+//        fetch novel:
+//          if in database:
+//              get from database
+//        else:
+//          get from web
+//          if favourited
+//              save to database
+        // TODO("not yet")
     }
 
     fun refreshChapterContent(chapterUrl: String) {
