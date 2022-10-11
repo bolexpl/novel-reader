@@ -170,13 +170,13 @@ private fun TitleDetailsButtons(
         ) {
             if (added) {
                 Icon(
-                    imageVector = Icons.Filled.FavoriteBorder,
+                    imageVector = Icons.Filled.Favorite,
                     contentDescription = "Favorite",
                     modifier = Modifier.size(40.dp)
                 )
             } else {
                 Icon(
-                    imageVector = Icons.Filled.Favorite,
+                    imageVector = Icons.Filled.FavoriteBorder,
                     contentDescription = "Favorite",
                     modifier = Modifier.size(40.dp)
                 )
