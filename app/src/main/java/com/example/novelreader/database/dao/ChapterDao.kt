@@ -12,6 +12,9 @@ interface ChapterDao {
     @Query("SELECT * FROM chapter where url = :url")
     fun getByUrl(url: String): LiveData<Chapter>
 
+    @Query("delete from chapter where novel_id = :novelId")
+    fun deleteByNovelId(novelId: Long)
+
     @Insert
     suspend fun insert(item: Chapter): Long
 

@@ -12,6 +12,9 @@ interface ParagraphDao {
     @Query("select * from paragraph where novel_id = :novelId order by order_no asc")
     fun getByNovelId(novelId: Long): List<Paragraph>
 
+    @Query("delete from paragraph where novel_id = :novelId")
+    fun deleteByNovelId(novelId: Long)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(item: Paragraph): Long
 

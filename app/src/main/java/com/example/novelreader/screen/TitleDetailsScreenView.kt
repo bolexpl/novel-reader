@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -49,8 +50,9 @@ fun TitleDetailsScreenView(
     mainNavController: NavController,
     novel: Novel?,
     onRefresh: (String) -> Unit = {},
-    onFavourite: (String) -> Unit = {},
+    onDownload: (String) -> Unit = {},
     onItemClick: (String) -> Unit = {},
+    onAddToLibrary: (Novel) -> Unit
 ) {
     var descExpanded: Boolean by remember { mutableStateOf(false) }
     var refreshing by remember { mutableStateOf(false) }
@@ -95,7 +97,7 @@ fun TitleDetailsScreenView(
 
                 // button
                 item {
-                    TitleDetailsButtons()
+                    TitleDetailsButtons(novel = novel, onAddToLibrary = onAddToLibrary)
                 }
 
                 // description
@@ -135,8 +137,8 @@ fun TitleDetailsScreenView(
                     ChapterItem(item = el, onItemClick = {
                         onItemClick(el.url)
                         mainNavController.navigate(MainNavItem.ReaderScreen)
-                    }, onFavourite = {
-                        onFavourite(el.url)
+                    }, onDownload = {
+                        onDownload(el.url)
                     })
                 }
 
@@ -149,22 +151,36 @@ fun TitleDetailsScreenView(
 }
 
 @Composable
-private fun TitleDetailsButtons() {
+private fun TitleDetailsButtons(
+    novel: Novel,
+    onAddToLibrary: (Novel) -> Unit
+) {
+    var added: Boolean by remember { mutableStateOf(novel.inDatabase) }
+
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
         IconButton(
             onClick = {
-                /* TODO add to library */
+                onAddToLibrary(novel)
+                added = !added
             },
             modifier = Modifier.padding(20.dp)
         ) {
-            Icon(
-                imageVector = Icons.Filled.Favorite,
-                contentDescription = "Favorite",
-                modifier = Modifier.size(40.dp)
-            )
+            if (added) {
+                Icon(
+                    imageVector = Icons.Filled.FavoriteBorder,
+                    contentDescription = "Favorite",
+                    modifier = Modifier.size(40.dp)
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Filled.Favorite,
+                    contentDescription = "Favorite",
+                    modifier = Modifier.size(40.dp)
+                )
+            }
         }
         IconButton(
             onClick = {
@@ -266,7 +282,8 @@ private fun TitleDetailsScreenPreview() {
                     coverUrl = "https://sads07.files.wordpress.com/2019/11/818ay2fgbal._ac_sl1500_.jpg?w=720",
                     description = list,
                     chapterList = chapterList
-                )
+                ),
+                onAddToLibrary = {}
             )
         }
     }

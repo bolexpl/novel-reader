@@ -5,6 +5,10 @@ import com.example.novelreader.database.model.Chapter
 
 class ChapterRepository(private val chapterDao: ChapterDao) {
 
+    suspend fun deleteByNovelId(novelId: Long) {
+        chapterDao.deleteByNovelId(novelId)
+    }
+
     suspend fun add(item: Chapter): Long{
         val id = chapterDao.insert(item)
         item.id = id

@@ -1,6 +1,5 @@
 package com.example.novelreader
 
-import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,8 +17,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.novelreader.screen.*
-import com.example.novelreader.test.NameViewModel
-import com.example.novelreader.test.NameViewModelFactory
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.viewmodel.MainViewModel
 import com.example.novelreader.viewmodel.MainViewModelFactory
@@ -108,6 +105,9 @@ private fun MainNavigationGraph(
                 },
                 onItemClick = { chapterUrl ->
                     mainViewModel.refreshChapterContent(chapterUrl = chapterUrl)
+                },
+                onAddToLibrary = { n ->
+                    mainViewModel.addNovelToLibrary(n)
                 }
             )
         }

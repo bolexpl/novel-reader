@@ -99,7 +99,8 @@ class SadsTranslatesSource : SourceInterface {
             url = novelUrl,
             chapterList = getChaptersFromHtml(jsoup),
             coverUrl = jsoup.select("figure.size-large>img").attr("src"),
-            description = getDescriptionFromHtml(jsoup)
+            description = getDescriptionFromHtml(jsoup),
+            inDatabase = false
         )
     }
 
@@ -180,13 +181,14 @@ class SadsTranslatesSource : SourceInterface {
         val list = mutableStateListOf<Chapter>()
         val elements = jsoup.select("details>p>a, .entry-content > p > a")
 
-        elements.forEachIndexed { index, el ->
+        var i = 1
+        elements.forEach { el ->
             if (el.attr("href").contains(baseUrl)) {
                 list.add(
                     Chapter(
                         title = el.text(),
                         url = el.attr("href"),
-                        orderNo = index + 1
+                        orderNo = i++
                     )
                 )
             }

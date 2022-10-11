@@ -80,13 +80,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun refreshNovelDetailsFromWeb(novelUrl: String) {
-//        fetch novel:
-//          if in database:
-//              get from database
-//        else:
-//          get from web
-//          if favourited
-//              save to database
         val curr = currentSource
         curr?.let {
             viewModelScope.launch(Dispatchers.IO) {
@@ -118,14 +111,22 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun addNovelToLibrary(novel: Novel) {
         viewModelScope.launch(Dispatchers.IO) {
-            val n = novelRepository.getByUrl(novel.url)
-            if (n != null) {
+            if (novel.inDatabase) {
+                novel.inDatabase = false
                 novelRepository.delete(novel)
+                paragraphRepository.deleteByNovelId(novel.id)
+                chapterRepository.deleteByNovelId(novel.id)
             } else {
-                // TODO add cover
+                novel.inDatabase = true
                 novelRepository.add(novel)
                 paragraphRepository.addDescription(novel.id, novel.description)
-                // TODO add chapters
+
+                novel.chapterList.forEach { ch ->
+                    ch.novelId = novel.id
+                    ch.id = chapterRepository.add(ch)
+                }
+
+                // TODO add cover
             }
         }
     }

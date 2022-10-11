@@ -16,7 +16,7 @@ import com.example.novelreader.database.model.Chapter
 fun ChapterItem(
     item: Chapter,
     onItemClick: () -> Unit = {},
-    onFavourite: ()->Unit = {}
+    onDownload: ()->Unit = {}
 ) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
@@ -54,7 +54,7 @@ fun ChapterItem(
             contentAlignment = Alignment.Center,
         ) {
             Button(
-                onClick = onFavourite,
+                onClick = onDownload,
                 modifier = Modifier.size(40.dp)
             ) {
                 Text(text = "p")
