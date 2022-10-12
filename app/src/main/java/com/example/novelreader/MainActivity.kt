@@ -74,7 +74,7 @@ private fun MainNavigationGraph(
                 onClick = { url ->
                     mainNavController.navigate(MainNavItem.DetailScreen)
                     mainViewModel.novel = null
-                    mainViewModel.refreshNovelDetailsFromWeb(url)
+                    mainViewModel.refreshNovelDetailsFromDb(url)
                 },
                 onLongPress = { n ->
                     mainViewModel.addNovelToLibrary(n)
@@ -89,7 +89,7 @@ private fun MainNavigationGraph(
                 onClick = { url ->
                     mainNavController.navigate(MainNavItem.DetailScreen)
                     mainViewModel.novel = null
-                    mainViewModel.refreshNovelDetailsFromWeb(url)
+                    mainViewModel.refreshNovelDetailsFromDb(url)
                 },
                 onLongPress = { n ->
                     mainViewModel.addNovelToLibrary(n)

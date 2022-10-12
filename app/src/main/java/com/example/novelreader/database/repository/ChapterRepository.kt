@@ -5,7 +5,11 @@ import com.example.novelreader.database.model.Chapter
 
 class ChapterRepository(private val chapterDao: ChapterDao) {
 
-    suspend fun deleteByNovelId(novelId: Long) {
+    fun getByNovelId(novelId: Long): List<Chapter>{
+        return chapterDao.getByNovelId(novelId)
+    }
+
+    fun deleteByNovelId(novelId: Long) {
         chapterDao.deleteByNovelId(novelId)
     }
 

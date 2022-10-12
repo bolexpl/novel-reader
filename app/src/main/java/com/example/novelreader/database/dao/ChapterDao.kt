@@ -6,11 +6,14 @@ import com.example.novelreader.database.model.Chapter
 
 @Dao
 interface ChapterDao {
-    @Query("SELECT * from chapter")
+    @Query("select * from chapter")
     fun getAll(): LiveData<List<Chapter>>
 
-    @Query("SELECT * FROM chapter where url = :url")
+    @Query("select * from chapter where url = :url")
     fun getByUrl(url: String): LiveData<Chapter>
+
+    @Query("select * from chapter where novel_id = :novelId")
+    fun getByNovelId(novelId: Long): List<Chapter>
 
     @Query("delete from chapter where novel_id = :novelId")
     fun deleteByNovelId(novelId: Long)

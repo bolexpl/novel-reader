@@ -23,7 +23,7 @@ class ParagraphRepository(private val paragraphDao: ParagraphDao) {
         }
     }
 
-    suspend fun deleteByNovelId(novelId: Long) {
+    fun deleteByNovelId(novelId: Long) {
         paragraphDao.deleteByNovelId(novelId)
     }
 

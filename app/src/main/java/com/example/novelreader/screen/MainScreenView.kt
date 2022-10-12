@@ -54,7 +54,7 @@ private fun NavigationGraph(
             LibraryScreen(
                 novelList = mainViewModel.localList,
                 onClick = { url ->
-                    mainViewModel.refreshLibraryNovelDetails(url)
+                    mainViewModel.refreshNovelDetailsFromDb(url)
                     mainNavController.navigate(MainNavItem.DetailScreen)
                 },
                 onLongPress = {

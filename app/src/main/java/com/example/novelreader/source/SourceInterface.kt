@@ -16,7 +16,7 @@ interface SourceInterface {
 
     suspend fun getNewNovelList(): List<Novel>
 
-    suspend fun getNovelDetails(novelUrl: String): Novel
+    suspend fun getNovelDetails(novelUrl: String, inDatabase: Boolean = false): Novel
 
     suspend fun getChapters(novelUrl: String): List<Chapter>
 

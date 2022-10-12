@@ -91,7 +91,7 @@ class SadsTranslatesSource : SourceInterface {
             .attr("src")
     }
 
-    override suspend fun getNovelDetails(novelUrl: String): Novel {
+    override suspend fun getNovelDetails(novelUrl: String, inDatabase: Boolean): Novel {
         val jsoup: Document = Jsoup.parse(apiService.getFromUrl(novelUrl.replace(baseUrl, "")))
         val html = jsoup.select(".entry-title").text()
         return Novel(
@@ -100,7 +100,7 @@ class SadsTranslatesSource : SourceInterface {
             chapterList = getChaptersFromHtml(jsoup),
             coverUrl = jsoup.select("figure.size-large>img").attr("src"),
             description = getDescriptionFromHtml(jsoup),
-            inDatabase = false
+            inDatabase = inDatabase
         )
     }
 

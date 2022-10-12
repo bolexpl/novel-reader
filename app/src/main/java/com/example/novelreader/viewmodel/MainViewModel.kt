@@ -89,14 +89,43 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun refreshNovelDetailsFromDb(novelUrl: String) {
-//        fetch novel:
-//          if in database:
-//              get from database
-//        else:
-//          get from web
-//          if favourited
-//              save to database
-        // TODO("not yet")
+        val curr = currentSource
+        curr?.let {
+            viewModelScope.launch(Dispatchers.IO) {
+                var n = novelRepository.getByUrl(novelUrl)
+                if (n == null) {
+                    novel = curr.getNovelDetails(novelUrl)
+                    return@launch
+                }
+
+                n.description = paragraphRepository
+                    .getDesciption(n.id)
+                    .toMutableList()
+
+                n.chapterList = chapterRepository
+                    .getByNovelId(n.id)
+                    .toMutableList()
+
+                if (n.description.size == 0 || n.chapterList.size == 0) {
+                    n = curr.getNovelDetails(novelUrl, true)
+
+                    paragraphRepository.addDescription(n.id, n.description)
+
+                    n.chapterList.forEach { ch ->
+                        ch.novelId = n.id
+                        ch.id = chapterRepository.add(ch)
+                    }
+                }
+
+//                  TODO if cover in database
+//                      get cover from database
+//                    else
+//                      get cover from web
+//                      add cover to database
+
+                novel = n
+            }
+        }
     }
 
     fun refreshChapterContent(chapterUrl: String) {
@@ -111,7 +140,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun addNovelToLibrary(novel: Novel) {
         viewModelScope.launch(Dispatchers.IO) {
-            if (novel.inDatabase) {
+            val n = novelRepository.getByUrl(novel.url)
+            if (n != null) {
                 novel.inDatabase = false
                 novelRepository.delete(novel)
                 paragraphRepository.deleteByNovelId(novel.id)
