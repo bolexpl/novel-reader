@@ -1,6 +1,8 @@
 package com.example.novelreader.screen
 
+import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,19 +11,19 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.novelreader.HtmlConverter
@@ -156,6 +158,8 @@ private fun TitleDetailsButtons(
     onAddToLibrary: (Novel) -> Unit
 ) {
     var added: Boolean by remember { mutableStateOf(novel.inDatabase) }
+    val context = LocalContext.current
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(novel.url))
 
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -182,14 +186,27 @@ private fun TitleDetailsButtons(
                 )
             }
         }
+
         IconButton(
             onClick = {
-                /* TODO open in browser */
             },
             modifier = Modifier.padding(20.dp)
         ) {
             Icon(
-                imageVector = Icons.Filled.Info,
+                imageVector = Icons.Filled.Share,
+                contentDescription = "Favorite",
+                modifier = Modifier.size(40.dp)
+            )
+        }
+
+        IconButton(
+            onClick = {
+                startActivity(context, intent, null)
+            },
+            modifier = Modifier.padding(20.dp)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_internet),
                 contentDescription = "Browser",
                 modifier = Modifier.size(40.dp)
             )
