@@ -1,6 +1,5 @@
 package com.example.novelreader.screen
 
-import android.content.res.Configuration
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -11,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -21,43 +19,21 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.novelreader.BottomNavItem
-import com.example.novelreader.source.SourceInterface
-import com.example.novelreader.source.SadsTranslatesSource
-import com.example.novelreader.ui.theme.EBookReaderTheme
-
-@Preview(name = "Light", showBackground = true)
-@Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun DefaultPreview() {
-    EBookReaderTheme {
-        Surface(
-            color = MaterialTheme.colors.background
-        ) {
-            MainScreenView(
-                NavController(LocalContext.current),
-                mapOf(
-                    Pair(1, SadsTranslatesSource())
-                ),
-                onSourceClick = { _,_-> }
-            )
-        }
-    }
-}
+import com.example.novelreader.MainNavItem
+import com.example.novelreader.viewmodel.MainViewModel
 
 @Composable
 fun MainScreenView(
     mainNavController: NavController,
-    repos: Map<Int, SourceInterface>,
-    onSourceClick: (Int, Boolean) -> Unit
+    mainViewModel: MainViewModel
 ) {
     val navController = rememberNavController()
     Scaffold(bottomBar = { BottomNavigation(navController = navController) }) {
         NavigationGraph(
             navController = navController,
             mainNavController = mainNavController,
-            repos = repos,
             padding = it,
-            onSourceClick = onSourceClick
+            mainViewModel = mainViewModel
         )
     }
 }
@@ -66,9 +42,8 @@ fun MainScreenView(
 private fun NavigationGraph(
     mainNavController: NavController,
     navController: NavHostController,
-    repos: Map<Int, SourceInterface>,
     padding: PaddingValues,
-    onSourceClick: (Int, Boolean) -> Unit
+    mainViewModel: MainViewModel
 ) {
     NavHost(
         navController = navController,
@@ -76,7 +51,16 @@ private fun NavigationGraph(
         modifier = Modifier.padding(padding)
     ) {
         composable(BottomNavItem.Library.screen_route) {
-            LibraryScreen()
+            LibraryScreen(
+                novelList = mainViewModel.localList,
+                onClick = { url ->
+                    mainViewModel.refreshNovelDetailsFromDb(url)
+                    mainNavController.navigate(MainNavItem.DetailScreen)
+                },
+                onLongPress = {
+                    // TODO confirm and delete novel from database
+                }
+            )
         }
         composable(BottomNavItem.Updates.screen_route) {
             UpdatesScreen()
@@ -85,7 +69,14 @@ private fun NavigationGraph(
             HistoryScreen()
         }
         composable(BottomNavItem.Explore.screen_route) {
-            SourcesScreen(mainNavController, repos, onSourceClick)
+            SourcesScreen(
+                mainNavController,
+                mainViewModel.sources,
+                onSourceClick = { index, newest ->
+                    mainViewModel.setCurrentSource(index)
+                    mainViewModel.updateSourceName()
+                    mainViewModel.refreshNovelList(newest)
+                })
         }
         composable(BottomNavItem.Others.screen_route) {
             OthersScreen()

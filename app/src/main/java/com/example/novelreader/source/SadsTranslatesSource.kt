@@ -1,6 +1,5 @@
 package com.example.novelreader.source
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -9,17 +8,15 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import com.example.novelreader.ApiService
 import com.example.novelreader.HtmlConverter
-import com.example.novelreader.model.Chapter
-import com.example.novelreader.model.Novel
-import com.example.novelreader.model.Paragraph
+import com.example.novelreader.database.model.Chapter
+import com.example.novelreader.database.model.Novel
+import com.example.novelreader.database.model.Paragraph
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.TextNode
 
 class SadsTranslatesSource : SourceInterface {
-
-    private val baseUrl = "https://sads07.wordpress.com"
 
     private val projectListPath = "/projects/"
     private val latestChaptersPath = "/"
@@ -32,6 +29,9 @@ class SadsTranslatesSource : SourceInterface {
     override val name: String
         get() = "Sads Translates"
 
+    override val baseUrl: String
+        get() = "https://sads07.wordpress.com"
+
     override suspend fun getAllNovelList(): List<Novel> {
         val jsoup: Document = Jsoup.parse(apiService.getFromUrl(projectListPath))
 
@@ -43,9 +43,9 @@ class SadsTranslatesSource : SourceInterface {
 
         val list = mutableListOf<Novel>()
 
-        for ((i, el) in links.withIndex()) {
+        for (el in links) {
             val url = el.attr("href")
-            val n = Novel(i, el.text(), url)
+            val n = Novel(title = el.text(), url = url, inDatabase = false, sourceId = id)
             n.coverUrl = getCover(n.url)
             list.add(n)
         }
@@ -91,33 +91,28 @@ class SadsTranslatesSource : SourceInterface {
             .attr("src")
     }
 
-    override suspend fun getNovelDetails(novelUrl: String): Novel {
+    override suspend fun getNovelDetails(novelUrl: String, inDatabase: Boolean): Novel {
         val jsoup: Document = Jsoup.parse(apiService.getFromUrl(novelUrl.replace(baseUrl, "")))
+        val html = jsoup.select(".entry-title").text()
         return Novel(
-            id = 1,
-            title = jsoup.select(".entry-title").text(),
+            title = html,
             url = novelUrl,
             chapterList = getChaptersFromHtml(jsoup),
             coverUrl = jsoup.select("figure.size-large>img").attr("src"),
-            description = getDescriptionFromHtml(jsoup)
+            description = getDescriptionFromHtml(jsoup),
+            inDatabase = inDatabase
         )
     }
 
     override suspend fun getChapters(novelUrl: String): List<Chapter> {
         return getChaptersFromHtml(
             Jsoup.parse(
-                apiService.getFromUrl(
-                    novelUrl.replace(
-                        baseUrl,
-                        ""
-                    )
-                )
+                apiService.getFromUrl(novelUrl.replace(baseUrl, ""))
             )
         )
     }
 
     override suspend fun getChapterContent(chapterUrl: String): Chapter {
-        // change url
         val response = apiService.getFromUrl(chapterUrl.replace(baseUrl, ""))
 
         val jsoup: Document = Jsoup.parse(response)
@@ -132,18 +127,17 @@ class SadsTranslatesSource : SourceInterface {
 
         val title = t.toString()
 
-        val list = parseParagraphs(content.toString())
+        val list = parseChapterContent(content.toString())
 
         return Chapter(
             title = title,
             url = chapterUrl,
-            content = list
+            content = list,
+            orderNo = 1
         )
     }
 
     private suspend fun getProjectUrlFromChapterUrl(chapterFullUrl: String): String {
-
-        Log.d("", chapterFullUrl)
 
         val jsoup: Document = Jsoup.parse(
             apiService.getFromUrl(chapterFullUrl.replace(baseUrl, ""))
@@ -161,9 +155,21 @@ class SadsTranslatesSource : SourceInterface {
 
         for ((i, el) in content.childNodes().withIndex()) {
             if (el is TextNode) {
-                list.add(Paragraph(i, el.text(), AnnotatedString(el.text())))
+                list.add(
+                    Paragraph(
+                        orderNo = i+1,
+                        html = el.text(),
+                        annotatedString = AnnotatedString(el.text())
+                    )
+                )
             } else if (el is Element) {
-                list.add(Paragraph(i, el.text(), HtmlConverter.paragraphToAnnotatedString(el)))
+                list.add(
+                    Paragraph(
+                        orderNo = i+1,
+                        html = el.text(),
+                        annotatedString = HtmlConverter.paragraphToAnnotatedString(el)
+                    )
+                )
             }
         }
 
@@ -175,16 +181,23 @@ class SadsTranslatesSource : SourceInterface {
         val list = mutableStateListOf<Chapter>()
         val elements = jsoup.select("details>p>a, .entry-content > p > a")
 
+        var i = 1
         elements.forEach { el ->
             if (el.attr("href").contains(baseUrl)) {
-                list.add(Chapter(el.text(), el.attr("href")))
+                list.add(
+                    Chapter(
+                        title = el.text(),
+                        url = el.attr("href"),
+                        orderNo = i++
+                    )
+                )
             }
         }
 
         return list
     }
 
-    private fun parseParagraphs(html: String): MutableList<Paragraph> {
+    override suspend fun parseChapterContent(html: String): MutableList<Paragraph> {
         val list = mutableStateListOf<Paragraph>()
         val jsoup = Jsoup.parse(html)
 
@@ -192,9 +205,10 @@ class SadsTranslatesSource : SourceInterface {
         if (title != null)
             list.add(
                 Paragraph(
-                    0,
-                    title.html(),
-                    buildAnnotatedString {
+                    id = 0,
+                    orderNo = 0,
+                    html = title.html(),
+                    annotatedString = buildAnnotatedString {
                         withStyle(style = SpanStyle(fontSize = 27.sp)) {
                             append(HtmlConverter.paragraphToAnnotatedString(title))
                         }
@@ -208,9 +222,10 @@ class SadsTranslatesSource : SourceInterface {
 
             list.add(
                 Paragraph(
-                    i,
-                    p.html(),
-                    HtmlConverter.paragraphToAnnotatedString(p)
+                    id = 0,
+                    orderNo = i + 1,
+                    html = p.html(),
+                    annotatedString = HtmlConverter.paragraphToAnnotatedString(p)
                 )
             )
         }

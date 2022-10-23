@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.novelreader.model.Novel
+import com.example.novelreader.database.model.Novel
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.view.BackButtonTitleBar
 import com.example.novelreader.view.NovelItem
@@ -20,7 +20,9 @@ import com.example.novelreader.view.ProgressSpinner
 fun LatestTitlesScreenView(
     mainNavController: NavController = rememberNavController(),
     sourceName: String,
-    novelList: List<Novel>
+    novelList: List<Novel>,
+    onClick: (String) -> Unit,
+    onLongPress: (Novel) -> Unit
 ) {
     Scaffold(topBar = {
         BackButtonTitleBar(
@@ -33,7 +35,13 @@ fun LatestTitlesScreenView(
         } else {
             LazyColumn(modifier = Modifier.padding(padding)) {
                 items(novelList) { novel ->
-                    NovelItem(novel = novel)
+                    NovelItem(
+                        novel = novel,
+                        onClick = {
+                            onClick(it)
+                        }, onLongPress = {
+                            onLongPress(it)
+                        })
                 }
             }
         }
@@ -49,13 +57,15 @@ private fun LatestTitlesScreenPreview() {
             color = MaterialTheme.colors.background
         ) {
             val list = listOf(
-                Novel(0, "Forbidden Master", ""),
-                Novel(1, "Classroom of the Elite", ""),
-                Novel(2, "Kakegurui", "")
+                Novel(0,"", "Forbidden Master", ""),
+                Novel(1,"", "Classroom of the Elite", ""),
+                Novel(2,"", "Kakegurui", "")
             )
             LatestTitlesScreenView(
                 sourceName = "Nazwa",
-                novelList = list
+                novelList = list,
+                onClick = {},
+                onLongPress = {}
             )
         }
     }

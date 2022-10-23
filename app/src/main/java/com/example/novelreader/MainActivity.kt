@@ -19,20 +19,29 @@ import androidx.navigation.compose.rememberNavController
 import com.example.novelreader.screen.*
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.viewmodel.MainViewModel
+import com.example.novelreader.viewmodel.MainViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
+            val mainViewModel: MainViewModel = viewModel(
+                factory = MainViewModelFactory(application = application)
+            )
+            val mainNavController = rememberNavController()
+
             EBookReaderTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    val mainNavController = rememberNavController()
                     Scaffold {
-                        MainNavigationGraph(mainNavController = mainNavController, padding = it)
+                        MainNavigationGraph(
+                            mainNavController = mainNavController,
+                            padding = it,
+                            mainViewModel = mainViewModel
+                        )
                     }
                 }
             }
@@ -43,7 +52,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun MainNavigationGraph(
     mainNavController: NavHostController,
-    mainViewModel: MainViewModel = viewModel(),
+    mainViewModel: MainViewModel,
     padding: PaddingValues
 ) {
     NavHost(
@@ -54,12 +63,7 @@ private fun MainNavigationGraph(
         composable(MainNavItem.MainScreen) {
             MainScreenView(
                 mainNavController = mainNavController,
-                repos = mainViewModel.repos,
-                onSourceClick = { index, newest ->
-                    mainViewModel.setCurrentRepo(index)
-                    mainViewModel.updateSourceName()
-                    mainViewModel.refreshNovelList(newest)
-                }
+                mainViewModel = mainViewModel
             )
         }
         composable(MainNavItem.AllTitlesScreen) {
@@ -70,7 +74,10 @@ private fun MainNavigationGraph(
                 onClick = { url ->
                     mainNavController.navigate(MainNavItem.DetailScreen)
                     mainViewModel.novel = null
-                    mainViewModel.refreshNovelDetails(url)
+                    mainViewModel.refreshNovelDetailsFromDb(url)
+                },
+                onLongPress = { n ->
+                    mainViewModel.addNovelToLibrary(n)
                 }
             )
         }
@@ -78,7 +85,15 @@ private fun MainNavigationGraph(
             LatestTitlesScreenView(
                 mainNavController = mainNavController,
                 sourceName = mainViewModel.sourceName,
-                novelList = mainViewModel.novelList
+                novelList = mainViewModel.novelList,
+                onClick = { url ->
+                    mainNavController.navigate(MainNavItem.DetailScreen)
+                    mainViewModel.novel = null
+                    mainViewModel.refreshNovelDetailsFromDb(url)
+                },
+                onLongPress = { n ->
+                    mainViewModel.addNovelToLibrary(n)
+                }
             )
         }
         composable(MainNavItem.DetailScreen) {
@@ -86,10 +101,13 @@ private fun MainNavigationGraph(
                 mainNavController = mainNavController,
                 novel = mainViewModel.novel,
                 onRefresh = { url ->
-                    mainViewModel.refreshNovelDetails(url)
+                    mainViewModel.refreshNovelDetailsFromWeb(url)
                 },
                 onItemClick = { chapterUrl ->
                     mainViewModel.refreshChapterContent(chapterUrl = chapterUrl)
+                },
+                onAddToLibrary = { n ->
+                    mainViewModel.addNovelToLibrary(n)
                 }
             )
         }

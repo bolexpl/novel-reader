@@ -1,6 +1,8 @@
 package com.example.novelreader.screen
 
+import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,26 +11,27 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.novelreader.HtmlConverter
 import com.example.novelreader.MainNavItem
 import com.example.novelreader.R
-import com.example.novelreader.model.Chapter
-import com.example.novelreader.model.Novel
-import com.example.novelreader.model.Paragraph
+import com.example.novelreader.database.model.Chapter
+import com.example.novelreader.database.model.Novel
+import com.example.novelreader.database.model.Paragraph
 import com.example.novelreader.ui.theme.EBookReaderTheme
 import com.example.novelreader.view.BackButtonTitleBar
 import com.example.novelreader.view.ChapterItem
@@ -49,8 +52,9 @@ fun TitleDetailsScreenView(
     mainNavController: NavController,
     novel: Novel?,
     onRefresh: (String) -> Unit = {},
-    onFavourite: (String) -> Unit = {},
+    onDownload: (String) -> Unit = {},
     onItemClick: (String) -> Unit = {},
+    onAddToLibrary: (Novel) -> Unit
 ) {
     var descExpanded: Boolean by remember { mutableStateOf(false) }
     var refreshing by remember { mutableStateOf(false) }
@@ -95,7 +99,7 @@ fun TitleDetailsScreenView(
 
                 // button
                 item {
-                    TitleDetailsButtons()
+                    TitleDetailsButtons(novel = novel, onAddToLibrary = onAddToLibrary)
                 }
 
                 // description
@@ -135,8 +139,8 @@ fun TitleDetailsScreenView(
                     ChapterItem(item = el, onItemClick = {
                         onItemClick(el.url)
                         mainNavController.navigate(MainNavItem.ReaderScreen)
-                    }, onFavourite = {
-                        onFavourite(el.url)
+                    }, onDownload = {
+                        onDownload(el.url)
                     })
                 }
 
@@ -149,31 +153,60 @@ fun TitleDetailsScreenView(
 }
 
 @Composable
-private fun TitleDetailsButtons() {
+private fun TitleDetailsButtons(
+    novel: Novel,
+    onAddToLibrary: (Novel) -> Unit
+) {
+    var added: Boolean by remember { mutableStateOf(novel.inDatabase) }
+    val context = LocalContext.current
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(novel.url))
+
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
     ) {
         IconButton(
             onClick = {
-                /* TODO add to library */
+                onAddToLibrary(novel)
+                added = !added
+            },
+            modifier = Modifier.padding(20.dp)
+        ) {
+            if (added) {
+                Icon(
+                    imageVector = Icons.Filled.Favorite,
+                    contentDescription = "Favorite",
+                    modifier = Modifier.size(40.dp)
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Filled.FavoriteBorder,
+                    contentDescription = "Favorite",
+                    modifier = Modifier.size(40.dp)
+                )
+            }
+        }
+
+        IconButton(
+            onClick = {
             },
             modifier = Modifier.padding(20.dp)
         ) {
             Icon(
-                imageVector = Icons.Filled.Favorite,
+                imageVector = Icons.Filled.Share,
                 contentDescription = "Favorite",
                 modifier = Modifier.size(40.dp)
             )
         }
+
         IconButton(
             onClick = {
-                /* TODO open in browser */
+                startActivity(context, intent, null)
             },
             modifier = Modifier.padding(20.dp)
         ) {
             Icon(
-                imageVector = Icons.Filled.Info,
+                painter = painterResource(id = R.drawable.ic_internet),
                 contentDescription = "Browser",
                 modifier = Modifier.size(40.dp)
             )
@@ -229,9 +262,21 @@ private fun TitleDetailsScreenPreview() {
 
             for ((i, el) in content.childNodes().withIndex()) {
                 if (el is TextNode) {
-                    list.add(Paragraph(i, el.text(), AnnotatedString(el.text())))
+                    list.add(
+                        Paragraph(
+                            orderNo = i,
+                            html = el.text(),
+                            annotatedString = AnnotatedString(el.text())
+                        )
+                    )
                 } else if (el is Element) {
-                    list.add(Paragraph(i, el.text(), HtmlConverter.paragraphToAnnotatedString(el)))
+                    list.add(
+                        Paragraph(
+                            orderNo = i,
+                            html = el.text(),
+                            annotatedString = HtmlConverter.paragraphToAnnotatedString(el)
+                        )
+                    )
                 }
             }
 
@@ -249,13 +294,13 @@ private fun TitleDetailsScreenPreview() {
             TitleDetailsScreenView(
                 mainNavController = rememberNavController(),
                 novel = Novel(
-                    id = 0,
                     title = "Forbidden master",
                     url = "https://sads07.wordpress.com/projects/forbidden-master/",
                     coverUrl = "https://sads07.files.wordpress.com/2019/11/818ay2fgbal._ac_sl1500_.jpg?w=720",
                     description = list,
                     chapterList = chapterList
-                )
+                ),
+                onAddToLibrary = {}
             )
         }
     }

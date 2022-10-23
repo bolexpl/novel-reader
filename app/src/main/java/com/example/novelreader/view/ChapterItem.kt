@@ -10,13 +10,13 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.novelreader.model.Chapter
+import com.example.novelreader.database.model.Chapter
 
 @Composable
 fun ChapterItem(
     item: Chapter,
     onItemClick: () -> Unit = {},
-    onFavourite: ()->Unit = {}
+    onDownload: ()->Unit = {}
 ) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
@@ -54,7 +54,7 @@ fun ChapterItem(
             contentAlignment = Alignment.Center,
         ) {
             Button(
-                onClick = onFavourite,
+                onClick = onDownload,
                 modifier = Modifier.size(40.dp)
             ) {
                 Text(text = "p")
