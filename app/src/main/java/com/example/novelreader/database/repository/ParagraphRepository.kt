@@ -1,12 +1,18 @@
 package com.example.novelreader.database.repository
 
+import com.example.novelreader.HtmlConverter
 import com.example.novelreader.database.dao.ParagraphDao
 import com.example.novelreader.database.model.Paragraph
+import org.jsoup.Jsoup
 
 class ParagraphRepository(private val paragraphDao: ParagraphDao) {
 
     fun getDesciption(novelId: Long): List<Paragraph> {
-        return paragraphDao.getByNovelId(novelId)
+        val result = paragraphDao.getByNovelId(novelId)
+        result.forEach {
+            it.annotatedString = HtmlConverter.paragraphToAnnotatedString(Jsoup.parse(it.html))
+        }
+        return result
     }
 
     suspend fun addDescription(novelId: Long, description: List<Paragraph>) {

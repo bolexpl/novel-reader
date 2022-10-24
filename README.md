@@ -2,8 +2,7 @@
 Android app for reading novels.
 
 TODO:
-fix save description to database
-fix favourite icon (sources screen, unfavourite)
+fix favourite icon (details, not updating list)
 save covers to database
 read novel list from database
 read chapter list from database
