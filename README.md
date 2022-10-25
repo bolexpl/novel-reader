@@ -25,3 +25,12 @@ get all titles
 get novel details
 get chapter list
 get chapter
+
+NovelUpdates
+login
+settings
+get latest chapters
+get all titles
+get novel details
+get chapter list
+get chapter
