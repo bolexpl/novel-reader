@@ -178,7 +178,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getSourceFromUrl(url: String): SourceInterface? {
+    private fun getSourceFromUrl(url: String): SourceInterface? {
         for (source in sources.values) {
             if (url.contains(source.baseUrl)) {
                 return source
