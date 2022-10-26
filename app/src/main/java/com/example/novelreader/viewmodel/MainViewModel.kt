@@ -12,6 +12,7 @@ import com.example.novelreader.database.repository.NovelRepository
 import com.example.novelreader.database.repository.ParagraphRepository
 import com.example.novelreader.source.SourceInterface
 import com.example.novelreader.source.SadsTranslatesSource
+import com.example.novelreader.utility.ImageUtility
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -152,6 +153,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 novelRepository.delete(n)
             } else {
                 novel.inDatabase = true
+                // TODO add cover
+                ImageUtility.saveCover(novel.coverUrl)
                 novelRepository.add(novel)
                 paragraphRepository.addDescription(novel.id, novel.description)
 
@@ -159,11 +162,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     ch.novelId = novel.id
                     ch.id = chapterRepository.add(ch)
                 }
-
-                // TODO add cover
             }
 
-            // TODO update list
             var index = -1
             for (item in novelList.withIndex()) {
                 if (item.value.url == novel.url) {
@@ -172,7 +172,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
 
-            if(index > -1){
+            if (index > -1) {
                 novelList[index] = novel
             }
         }

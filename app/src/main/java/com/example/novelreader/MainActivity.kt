@@ -18,6 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.novelreader.screen.*
 import com.example.novelreader.ui.theme.EBookReaderTheme
+import com.example.novelreader.utility.ImageUtility
 import com.example.novelreader.viewmodel.MainViewModel
 import com.example.novelreader.viewmodel.MainViewModelFactory
 
@@ -75,6 +76,7 @@ private fun MainNavigationGraph(
                     mainNavController.navigate(MainNavItem.DetailScreen)
                     mainViewModel.novel = null
                     mainViewModel.refreshNovelDetailsFromDb(url)
+                    // TODO download
                 },
                 onLongPress = { n ->
                     mainViewModel.addNovelToLibrary(n)
