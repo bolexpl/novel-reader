@@ -1,6 +1,7 @@
 package com.example.novelreader.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.*
 import com.example.novelreader.database.NovelDatabase
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
+    // database
     val localList: LiveData<List<Novel>>
 
     private val novelRepository: NovelRepository
@@ -89,7 +91,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun refreshNovelDetailsFromDb(novelUrl: String) {
-        val curr = currentSource
+        val curr = getSourceFromUrl(novelUrl)
         curr?.let {
             viewModelScope.launch(Dispatchers.IO) {
                 var n = novelRepository.getByUrl(novelUrl)
@@ -101,6 +103,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 n.description = paragraphRepository
                     .getDesciption(n.id)
                     .toMutableList()
+
+                // HtmlConverter.paragraphToAnnotatedString(el)
 
                 n.chapterList = chapterRepository
                     .getByNovelId(n.id)
@@ -143,9 +147,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             val n = novelRepository.getByUrl(novel.url)
             if (n != null) {
                 novel.inDatabase = false
-                novelRepository.delete(novel)
-                paragraphRepository.deleteByNovelId(novel.id)
-                chapterRepository.deleteByNovelId(novel.id)
+                paragraphRepository.deleteByNovelId(n.id)
+                chapterRepository.deleteByNovelId(n.id)
+                novelRepository.delete(n)
             } else {
                 novel.inDatabase = true
                 novelRepository.add(novel)
@@ -158,31 +162,29 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
                 // TODO add cover
             }
+
+            // TODO update list
+            var index = -1
+            for (item in novelList.withIndex()) {
+                if (item.value.url == novel.url) {
+                    index = item.index
+                    break
+                }
+            }
+
+            if(index > -1){
+                novelList[index] = novel
+            }
         }
     }
 
-    fun refreshLibraryNovelDetails(novelUrl: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val n = novelRepository.getByUrl(novelUrl)
-            if (n != null) {
-
-                n.description = paragraphRepository
-                    .getDesciption(n.id)
-                    .toMutableList()
-
-                if (n.description.size == 0 || n.chapterList.size == 0) {
-                    setCurrentSource(n.sourceId)
-                    val curr = currentSource
-                    curr?.let {
-                        val n2 = curr.getNovelDetails(novelUrl)
-                        n2.id = n.id
-                        paragraphRepository.addDescription(n2.id, n2.description)
-                        novel = n2
-                    }
-                } else {
-                    novel = n
-                }
+    private fun getSourceFromUrl(url: String): SourceInterface? {
+        for (source in sources.values) {
+            if (url.contains(source.baseUrl)) {
+                return source
             }
         }
+
+        return null
     }
 }

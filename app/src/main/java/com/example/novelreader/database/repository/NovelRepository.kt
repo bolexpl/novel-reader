@@ -27,8 +27,8 @@ class NovelRepository(private val novelDao: NovelDao) {
     }
 
     suspend fun delete(item: Novel) {
-        item.inDatabase = false
         novelDao.delete(item)
+        item.inDatabase = false
     }
 
     fun checkInDb(list: List<Novel>) {
