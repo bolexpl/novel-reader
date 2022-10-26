@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.novelreader.HtmlConverter
+import com.example.novelreader.utility.HtmlConverter
 import com.example.novelreader.MainNavItem
 import com.example.novelreader.R
 import com.example.novelreader.database.model.Chapter
