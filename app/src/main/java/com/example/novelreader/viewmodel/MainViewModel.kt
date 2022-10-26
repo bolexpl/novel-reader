@@ -162,30 +162,18 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
                 // TODO add cover
             }
-        }
-    }
 
-    fun refreshLibraryNovelDetails(novelUrl: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val n = novelRepository.getByUrl(novelUrl)
-            if (n != null) {
-
-                n.description = paragraphRepository
-                    .getDesciption(n.id)
-                    .toMutableList()
-
-                if (n.description.size == 0 || n.chapterList.size == 0) {
-                    setCurrentSource(n.sourceId)
-                    val curr = currentSource
-                    curr?.let {
-                        val n2 = curr.getNovelDetails(novelUrl)
-                        n2.id = n.id
-                        paragraphRepository.addDescription(n2.id, n2.description)
-                        novel = n2
-                    }
-                } else {
-                    novel = n
+            // TODO update list
+            var index = -1
+            for (item in novelList.withIndex()) {
+                if (item.value.url == novel.url) {
+                    index = item.index
+                    break
                 }
+            }
+
+            if(index > -1){
+                novelList[index] = novel
             }
         }
     }
