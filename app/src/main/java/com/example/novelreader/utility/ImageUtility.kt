@@ -9,8 +9,6 @@ object ImageUtility {
 
     fun saveCover(imageUrl: String, context: Context) {
         // TODO save cover
-
-
     }
 
     fun saveIllustration() {
