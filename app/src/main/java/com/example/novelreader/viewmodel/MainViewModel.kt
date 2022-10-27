@@ -1,8 +1,10 @@
 package com.example.novelreader.viewmodel
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.*
 import com.example.novelreader.database.NovelDatabase
 import com.example.novelreader.database.model.Chapter
@@ -143,7 +145,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun addNovelToLibrary(novel: Novel) {
+    fun addNovelToLibrary(novel: Novel, context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             val n = novelRepository.getByUrl(novel.url)
             if (n != null) {
@@ -154,7 +156,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             } else {
                 novel.inDatabase = true
                 // TODO add cover
-                ImageUtility.saveCover(novel.coverUrl)
+                ImageUtility.saveCover(novel.coverUrl, context)
                 novelRepository.add(novel)
                 paragraphRepository.addDescription(novel.id, novel.description)
 
