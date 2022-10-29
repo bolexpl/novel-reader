@@ -1,85 +1,28 @@
 package com.example.novelreader.utility
 
-import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.os.Build
-import android.provider.MediaStore
+import android.os.Environment
 import android.util.Log
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import java.io.BufferedOutputStream
+import java.io.File
 import java.io.FileOutputStream
+
 
 object ImageUtility {
 
-    // TODO save image
-    // TODO read image
+    fun saveCover(imageUrl: String, title: String, context: Context): String {
+        val mediaStorageDir = context.filesDir
+        val dirName = "${mediaStorageDir!!.absoluteFile}/$title"
+        val fileName = "cover.png"
 
-    fun saveCover(imageUrl: String, context: Context) {
-        // TODO save cover
+        saveImage(imageUrl, dirName, fileName, context)
 
-        Glide.with(context)
-            .asBitmap()
-            .load(imageUrl)
-            .into(object : CustomTarget<Bitmap>(){
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    Log.d("MYK", resource.toString())
-                }
-                override fun onLoadCleared(placeholder: Drawable?) {
-                    // this is called when imageView is cleared on lifecycle call or for
-                    // some other reason.
-                    // if you are referencing the bitmap somewhere else too other than this imageView
-                    // clear it here as you can no longer have the bitmap
-                }
-            })
-
-//        // Add a specific media item.
-//        val resolver = context.contentResolver
-//
-//        // Find all audio files on the primary external storage device.
-//        val imageCollection =
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//                MediaStore.Images.Media.getContentUri(
-//                    MediaStore.VOLUME_EXTERNAL_PRIMARY
-//                )
-//            } else {
-//                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-//            }
-//
-//        // Publish a new image.
-//        val imageDetails = ContentValues().apply {
-//            put(MediaStore.Images.Media.DISPLAY_NAME, "cover.txt")
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//                put(MediaStore.Images.Media.IS_PENDING, 1)
-////                put(MediaStore.Images.Media.RELATIVE_PATH, "NovelReader/covers")
-//            }
-//        }
-//
-//        // Keeps a handle to the new image's URI in case we need to modify it
-//        // later.
-//        val imageContentUri = resolver.insert(imageCollection, imageDetails)
-//
-//        imageContentUri?.let {
-//            resolver
-//                .openFileDescriptor(imageContentUri, "w", null)
-//                .use { parcelFileDescriptor ->
-//                    // Write data into the pending image file.
-//                    parcelFileDescriptor?.let {
-//
-//                    }
-//                }
-//
-//            // Now that we're finished, release the "pending" status, and allow other apps
-//            // to read the image.
-//            imageDetails.clear()
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//                imageDetails.put(MediaStore.Audio.Media.IS_PENDING, 0)
-//            }
-//            resolver.update(imageContentUri, imageDetails, null, null)
-//        }
+        return getCoverPath(title, context)
     }
 
     fun saveIllustration() {
@@ -92,5 +35,69 @@ object ImageUtility {
 
     fun readIllustration() {
         TODO("Not yet implemented")
+    }
+
+    fun getCoverPath(title: String, context: Context): String {
+        val dirName = getTitlePath(title, context)
+        val fileName = "cover.png"
+        return "$dirName/$fileName"
+    }
+
+    fun getTitlePath(title: String, context: Context): String {
+        val mediaStorageDir = context.filesDir
+        return "${mediaStorageDir!!.absoluteFile}/$title"
+    }
+
+    fun removeDir(dirPath: String) {
+        val dir = File(dirPath)
+        val files = dir.listFiles() ?: emptyArray()
+        for (f in files) {
+            if (f.isDirectory)
+                removeDir(f.absolutePath)
+            else
+                f.delete()
+        }
+        dir.delete()
+    }
+
+    private fun saveImage(imageUrl: String, dirName: String, fileName: String, context: Context) {
+        Glide.with(context)
+            .asBitmap()
+            .load(imageUrl)
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(bitmap: Bitmap, transition: Transition<in Bitmap>?) {
+                    if (isExternalStorageWritable()) {
+                        val myDir = File(dirName)
+                        if (!myDir.exists()) myDir.mkdirs()
+
+                        val file = File(myDir, fileName)
+                        if (file.exists()) file.delete()
+
+                        try {
+                            val out = FileOutputStream(file)
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                            out.flush()
+                            out.close()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    } else {
+                        Toast.makeText(context, "Błąd", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    // this is called when imageView is cleared on lifecycle call or for
+                    // some other reason.
+                    // if you are referencing the bitmap somewhere else too other than this imageView
+                    // clear it here as you can no longer have the bitmap
+                }
+            })
+    }
+
+    /* Checks if external storage is available for read and write */
+    private fun isExternalStorageWritable(): Boolean {
+        val state = Environment.getExternalStorageState()
+        return Environment.MEDIA_MOUNTED == state
     }
 }

@@ -33,6 +33,7 @@ import com.example.novelreader.database.model.Chapter
 import com.example.novelreader.database.model.Novel
 import com.example.novelreader.database.model.Paragraph
 import com.example.novelreader.ui.theme.EBookReaderTheme
+import com.example.novelreader.utility.ImageUtility
 import com.example.novelreader.view.BackButtonTitleBar
 import com.example.novelreader.view.ChapterItem
 import com.example.novelreader.view.ProgressSpinner
@@ -88,7 +89,7 @@ fun TitleDetailsScreenView(
                 // cover
                 item {
                     Row {
-                        TitleDetailCover(coverUrl = novel.coverUrl)
+                        TitleDetailCover(novel = novel)
                         Text(
                             text = novel.title,
                             fontSize = 30.sp,
@@ -215,15 +216,18 @@ private fun TitleDetailsButtons(
 }
 
 @Composable
-private fun TitleDetailCover(coverUrl: String) {
-    if (coverUrl == "") {
+private fun TitleDetailCover(novel: Novel) {
+    val context = LocalContext.current
+    if (novel.coverUrl.isBlank()) {
         Image(
             painter = painterResource(id = R.drawable.novel_no_cover),
             contentDescription = "No cover"
         )
     } else {
         GlideImage(
-            imageModel = coverUrl,
+            imageModel =
+            if (novel.coverName.isBlank()) novel.coverUrl
+            else ImageUtility.getCoverPath(novel.title, context),
             imageOptions = ImageOptions(
                 contentScale = ContentScale.FillWidth,
                 alignment = Alignment.Center

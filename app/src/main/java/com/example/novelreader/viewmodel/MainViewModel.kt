@@ -150,13 +150,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             val n = novelRepository.getByUrl(novel.url)
             if (n != null) {
                 novel.inDatabase = false
+                ImageUtility.removeDir(ImageUtility.getTitlePath(novel.title, context))
                 paragraphRepository.deleteByNovelId(n.id)
                 chapterRepository.deleteByNovelId(n.id)
                 novelRepository.delete(n)
             } else {
                 novel.inDatabase = true
-                // TODO add cover
-                ImageUtility.saveCover(novel.coverUrl, context)
+                val coverName = ImageUtility.saveCover(novel.coverUrl, novel.title, context)
+                novel.coverName = coverName
                 novelRepository.add(novel)
                 paragraphRepository.addDescription(novel.id, novel.description)
 
