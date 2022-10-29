@@ -2,13 +2,9 @@
 Android app for reading novels.
 
 TODO:
-save covers to database
-read novel list from database
-read chapter list from database
 read chapter from database
 reader illustrations
 settings screen
-read from source and database
 save history
 expanding list after scrolling
 
