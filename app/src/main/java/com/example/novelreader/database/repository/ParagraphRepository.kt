@@ -1,6 +1,6 @@
 package com.example.novelreader.database.repository
 
-import com.example.novelreader.HtmlConverter
+import com.example.novelreader.utility.HtmlConverter
 import com.example.novelreader.database.dao.ParagraphDao
 import com.example.novelreader.database.model.Paragraph
 import org.jsoup.Jsoup

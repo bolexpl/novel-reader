@@ -1,8 +1,10 @@
 package com.example.novelreader.viewmodel
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.*
 import com.example.novelreader.database.NovelDatabase
 import com.example.novelreader.database.model.Chapter
@@ -12,6 +14,7 @@ import com.example.novelreader.database.repository.NovelRepository
 import com.example.novelreader.database.repository.ParagraphRepository
 import com.example.novelreader.source.SourceInterface
 import com.example.novelreader.source.SadsTranslatesSource
+import com.example.novelreader.utility.ImageUtility
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -142,16 +145,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun addNovelToLibrary(novel: Novel) {
+    fun addNovelToLibrary(novel: Novel, context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             val n = novelRepository.getByUrl(novel.url)
             if (n != null) {
                 novel.inDatabase = false
+                ImageUtility.removeDir(ImageUtility.getTitlePath(novel.title, context))
                 paragraphRepository.deleteByNovelId(n.id)
                 chapterRepository.deleteByNovelId(n.id)
                 novelRepository.delete(n)
             } else {
                 novel.inDatabase = true
+                val coverName = ImageUtility.saveCover(novel.coverUrl, novel.title, context)
+                novel.coverName = coverName
                 novelRepository.add(novel)
                 paragraphRepository.addDescription(novel.id, novel.description)
 
@@ -159,11 +165,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     ch.novelId = novel.id
                     ch.id = chapterRepository.add(ch)
                 }
-
-                // TODO add cover
             }
 
-            // TODO update list
             var index = -1
             for (item in novelList.withIndex()) {
                 if (item.value.url == novel.url) {
@@ -172,7 +175,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
 
-            if(index > -1){
+            if (index > -1) {
                 novelList[index] = novel
             }
         }

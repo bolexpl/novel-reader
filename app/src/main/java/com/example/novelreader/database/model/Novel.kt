@@ -18,8 +18,8 @@ data class Novel(
     var title: String = "",
     @ColumnInfo(name = "coverUrl")
     var coverUrl: String = "",
-    @ColumnInfo(name = "cover_filename")
-    var coverFileName: String? = null,
+    @ColumnInfo(name = "coverName")
+    var coverName: String = "",
 
     @ColumnInfo(name= "source_id")
     var sourceId: Int = 0,

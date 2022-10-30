@@ -1,4 +1,4 @@
-package com.example.novelreader
+package com.example.novelreader.utility
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString

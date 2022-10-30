@@ -7,7 +7,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import com.example.novelreader.ApiService
-import com.example.novelreader.HtmlConverter
+import com.example.novelreader.utility.HtmlConverter
 import com.example.novelreader.database.model.Chapter
 import com.example.novelreader.database.model.Novel
 import com.example.novelreader.database.model.Paragraph
