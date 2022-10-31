@@ -114,8 +114,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 if (n.description.size == 0 || n.chapterList.size == 0) {
                     val n2 = curr.getNovelDetails(novelUrl, true)
 
-                    n.sourceId = curr.id
-                    n.sourceName = curr.name
                     n.description = n2.description
                     n.chapterList = n2.chapterList
 
@@ -128,6 +126,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         ch.id = chapterRepository.add(ch)
                     }
                 }
+
+                chapterRepository.checkInDb(n.chapterList)
 
                 novel = n
             }
@@ -167,12 +167,27 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         paragraphRepository.add(it)
                     }
                 }
-
-                // TODO add chapter
-                // TODO add paragraphs
             }
 
             // TODO update chapterList
+            if(novel == null) return@launch
+
+            val n = novel!!
+            val list = n.chapterList
+
+            var index = -1
+            for (item in list.withIndex()) {
+                if (item.value.url == n.url) {
+                    index = item.index
+                    break
+                }
+            }
+
+            if (index > -1) {
+                list[index] = chapter
+            }
+
+            novel?.chapterList = list
         }
     }
 

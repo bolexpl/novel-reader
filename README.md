@@ -2,7 +2,7 @@
 Android app for reading novels.
 
 TODO:
-save chapter to database
+fix change icon for chapter
 read chapter from database
 reader illustrations
 settings screen

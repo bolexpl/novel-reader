@@ -2,6 +2,7 @@ package com.example.novelreader.database.repository
 
 import com.example.novelreader.database.dao.ChapterDao
 import com.example.novelreader.database.model.Chapter
+import com.example.novelreader.database.model.Novel
 
 class ChapterRepository(private val chapterDao: ChapterDao) {
 
@@ -10,9 +11,7 @@ class ChapterRepository(private val chapterDao: ChapterDao) {
     }
 
     fun getByUrl(chapterUrl: String): Chapter? {
-        val ch = chapterDao.getByUrl(chapterUrl)
-        ch?.inDatabase = true
-        return ch
+        return chapterDao.getByUrl(chapterUrl)
     }
 
     fun deleteByNovelId(novelId: Long) {
@@ -21,6 +20,7 @@ class ChapterRepository(private val chapterDao: ChapterDao) {
 
     suspend fun add(item: Chapter): Long {
         val id = chapterDao.insert(item)
+        item.inDatabase = true
         item.id = id
         return id
     }
@@ -31,5 +31,14 @@ class ChapterRepository(private val chapterDao: ChapterDao) {
 
     suspend fun delete(item: Chapter) {
         chapterDao.delete(item)
+        item.inDatabase = false
+    }
+
+    fun checkInDb(list: List<Chapter>) {
+        val dbList = chapterDao.getListByChapterIds(list.map { it.id })
+
+        list.forEach {
+            it.inDatabase = dbList.contains(it.id)
+        }
     }
 }

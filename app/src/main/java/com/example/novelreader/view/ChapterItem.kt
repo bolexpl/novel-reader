@@ -1,5 +1,6 @@
 package com.example.novelreader.view
 
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -82,7 +83,8 @@ fun ChapterItem(
     }
 }
 
-@Preview
+@Preview(name="From Web", showBackground = true)
+@Preview(name = "From Web Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun ChapterItemPreview() {
     EBookReaderTheme {
@@ -91,11 +93,41 @@ private fun ChapterItemPreview() {
             color = MaterialTheme.colors.background
         ) {
             ChapterItem(
-                item = Chapter(0, 0, "Chapter 1 - titel", "www", 0),
+                item = Chapter(
+                    0,
+                    0,
+                    "Chapter 1 - titel",
+                    "www",
+                    0,
+                    inDatabase = false
+                ),
                 onItemClick = {},
                 onDownload = {}
             )
         }
     }
-
+}
+@Preview(name="From DB", showBackground = true)
+@Preview(name = "From DB Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun ChapterItemPreview2() {
+    EBookReaderTheme {
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colors.background
+        ) {
+            ChapterItem(
+                item = Chapter(
+                    0,
+                    0,
+                    "Chapter 1 - titel",
+                    "www",
+                    0,
+                    inDatabase = true
+                ),
+                onItemClick = {},
+                onDownload = {}
+            )
+        }
+    }
 }

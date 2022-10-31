@@ -15,6 +15,9 @@ interface ChapterDao {
     @Query("select * from chapter where novel_id = :novelId")
     fun getByNovelId(novelId: Long): List<Chapter>
 
+    @Query("select distinct chapter_id from paragraph where chapter_id in (:chapterIds)")
+    fun getListByChapterIds(chapterIds: List<Long>): List<Long>
+
     @Query("delete from chapter where novel_id = :novelId")
     fun deleteByNovelId(novelId: Long)
 
