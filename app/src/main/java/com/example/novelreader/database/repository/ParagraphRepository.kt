@@ -33,6 +33,10 @@ class ParagraphRepository(private val paragraphDao: ParagraphDao) {
         paragraphDao.deleteByNovelId(novelId)
     }
 
+    fun deleteByChapterId(chapterId: Long) {
+        paragraphDao.deleteByChapterId(chapterId)
+    }
+
     suspend fun add(item: Paragraph): Long {
         val id = paragraphDao.insert(item)
         item.id = id

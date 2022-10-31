@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.novelreader.database.model.Novel
@@ -32,7 +33,7 @@ fun AllTitlesScreenView(
         )
     }) { padding ->
         if (novelList.isEmpty()) {
-            ProgressSpinner()
+            ProgressSpinner(modifier = Modifier.fillMaxWidth().padding(top = 20.dp))
         } else {
             LazyColumn(modifier = Modifier.padding(padding)) {
                 items(novelList) { novel ->

@@ -10,9 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ProgressSpinner(){
+fun ProgressSpinner(modifier: Modifier = Modifier) {
     Row(
-        horizontalArrangement = Arrangement.Center, modifier = Modifier
+        horizontalArrangement = Arrangement.Center,
+        modifier = modifier
             .fillMaxWidth()
             .padding(top = 20.dp)
     ) {

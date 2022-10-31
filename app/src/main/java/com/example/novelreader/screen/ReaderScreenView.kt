@@ -2,10 +2,7 @@ package com.example.novelreader.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -33,7 +30,7 @@ fun ReaderScreenView(
 
         Column {
             BackButtonTitleBar(mainNavController = mainNavController, height = 50.dp)
-            ProgressSpinner()
+            ProgressSpinner(modifier = Modifier.fillMaxWidth().padding(top = 20.dp))
         }
 
     } else {

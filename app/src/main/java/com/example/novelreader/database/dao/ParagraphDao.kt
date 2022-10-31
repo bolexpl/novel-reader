@@ -15,6 +15,9 @@ interface ParagraphDao {
     @Query("delete from paragraph where novel_id = :novelId")
     fun deleteByNovelId(novelId: Long)
 
+    @Query("delete from paragraph where chapter_id = :chapterId")
+    fun deleteByChapterId(chapterId: Long)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(item: Paragraph): Long
 

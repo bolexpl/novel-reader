@@ -1,10 +1,7 @@
 package com.example.novelreader.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
@@ -17,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LiveData
 import com.example.novelreader.MainNavItem
@@ -42,7 +40,7 @@ fun LibraryScreen(
         Scaffold(topBar = { TopBar("My library") }) {
 
             if (l == null) {
-                ProgressSpinner()
+                ProgressSpinner(modifier = Modifier.fillMaxWidth().padding(top = 20.dp))
             } else if (l.isEmpty()) {
                 Text(
                     text = "Empty Library",

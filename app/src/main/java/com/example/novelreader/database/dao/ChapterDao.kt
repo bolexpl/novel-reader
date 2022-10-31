@@ -10,7 +10,7 @@ interface ChapterDao {
     fun getAll(): LiveData<List<Chapter>>
 
     @Query("select * from chapter where url = :url")
-    fun getByUrl(url: String): LiveData<Chapter>
+    fun getByUrl(url: String): Chapter?
 
     @Query("select * from chapter where novel_id = :novelId")
     fun getByNovelId(novelId: Long): List<Chapter>

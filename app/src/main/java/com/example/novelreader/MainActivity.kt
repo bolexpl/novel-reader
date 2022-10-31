@@ -155,10 +155,13 @@ private fun MainNavigationGraph(
                     mainViewModel.refreshNovelDetailsFromWeb(url)
                 },
                 onItemClick = { chapterUrl ->
-                    mainViewModel.refreshChapterContent(chapterUrl = chapterUrl)
+                    mainViewModel.refreshChapterContentFromDb(chapterUrl = chapterUrl)
                 },
-                onAddToLibrary = { n ->
-                    mainViewModel.addNovelToLibrary(n, context)
+                onAddToLibrary = { novel ->
+                    mainViewModel.addNovelToLibrary(novel, context)
+                },
+                onDownload = { chapter ->
+                    mainViewModel.addChapterToLibrary(chapter, context)
                 }
             )
         }

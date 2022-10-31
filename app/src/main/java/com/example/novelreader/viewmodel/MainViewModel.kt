@@ -74,11 +74,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         curr?.let {
             viewModelScope.launch(Dispatchers.IO) {
                 novelList.clear()
-                if (newest) {
-                    novelList.addAll(curr.getNewNovelList())
-                } else {
-                    novelList.addAll(curr.getAllNovelList())
-                }
+                val list = if (newest) curr.getNewNovelList() else curr.getAllNovelList()
+
+                novelList.addAll(list)
                 novelRepository.checkInDb(novelList)
             }
         }
@@ -89,15 +87,17 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         curr?.let {
             viewModelScope.launch(Dispatchers.IO) {
                 novel = curr.getNovelDetails(novelUrl)
+                // TODO update db
             }
         }
     }
 
     fun refreshNovelDetailsFromDb(novelUrl: String) {
+        novel = null
         val curr = getSourceFromUrl(novelUrl)
         curr?.let {
             viewModelScope.launch(Dispatchers.IO) {
-                var n = novelRepository.getByUrl(novelUrl)
+                val n = novelRepository.getByUrl(novelUrl)
                 if (n == null) {
                     novel = curr.getNovelDetails(novelUrl)
                     return@launch
@@ -107,14 +107,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     .getDesciption(n.id)
                     .toMutableList()
 
-                // HtmlConverter.paragraphToAnnotatedString(el)
-
                 n.chapterList = chapterRepository
                     .getByNovelId(n.id)
                     .toMutableList()
 
                 if (n.description.size == 0 || n.chapterList.size == 0) {
-                    n = curr.getNovelDetails(novelUrl, true)
+                    val n2 = curr.getNovelDetails(novelUrl, true)
+
+                    n.sourceId = curr.id
+                    n.sourceName = curr.name
+                    n.description = n2.description
+                    n.chapterList = n2.chapterList
+
+                    novelRepository.update(n)
 
                     paragraphRepository.addDescription(n.id, n.description)
 
@@ -124,24 +129,50 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     }
                 }
 
-//                  TODO if cover in database
-//                      get cover from database
-//                    else
-//                      get cover from web
-//                      add cover to database
-
                 novel = n
             }
         }
     }
 
-    fun refreshChapterContent(chapterUrl: String) {
+    fun refreshChapterContentFromDb(chapterUrl: String) {
         chapter = null
         val curr = currentSource
         curr?.let {
             viewModelScope.launch(Dispatchers.IO) {
+                // TODO load from db
                 chapter = curr.getChapterContent(chapterUrl)
             }
+        }
+    }
+
+    fun addChapterToLibrary(chapter: Chapter, context: Context) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val dbChapter = chapterRepository.getByUrl(chapter.url)
+
+            if (dbChapter != null && dbChapter.content.isNotEmpty()) {
+                chapter.inDatabase = false
+                paragraphRepository.deleteByChapterId(dbChapter.id)
+                chapterRepository.delete(dbChapter)
+            } else {
+                chapter.inDatabase = true
+                val novel = novelRepository.getById(chapter.novelId) ?: return@launch
+
+                val curr = sources[novel.sourceId]
+                curr?.let {
+                    val newChapter = curr.getChapterContent(chapter.url)
+
+                    newChapter.content.forEach {
+                        it.chapterId = chapter.id
+                        it.novelId = chapter.novelId
+                        paragraphRepository.add(it)
+                    }
+                }
+
+                // TODO add chapter
+                // TODO add paragraphs
+            }
+
+            // TODO update chapterList
         }
     }
 

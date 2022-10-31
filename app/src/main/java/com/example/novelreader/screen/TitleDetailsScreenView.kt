@@ -53,7 +53,7 @@ fun TitleDetailsScreenView(
     mainNavController: NavController,
     novel: Novel?,
     onRefresh: (String) -> Unit = {},
-    onDownload: (String) -> Unit = {},
+    onDownload: (Chapter) -> Unit = {},
     onItemClick: (String) -> Unit = {},
     onAddToLibrary: (Novel) -> Unit
 ) {
@@ -70,7 +70,11 @@ fun TitleDetailsScreenView(
     if (novel == null) {
         Column {
             BackButtonTitleBar(mainNavController = mainNavController, height = 50.dp)
-            ProgressSpinner()
+            ProgressSpinner(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp)
+            )
         }
 
     } else {
@@ -137,12 +141,15 @@ fun TitleDetailsScreenView(
 
                 // chapters
                 items(novel.chapterList) { el ->
-                    ChapterItem(item = el, onItemClick = {
-                        onItemClick(el.url)
-                        mainNavController.navigate(MainNavItem.ReaderScreen)
-                    }, onDownload = {
-                        onDownload(el.url)
-                    })
+                    ChapterItem(
+                        item = el,
+                        onItemClick = {
+                            onItemClick(el.url)
+                            mainNavController.navigate(MainNavItem.ReaderScreen)
+                        }, onDownload = {
+                            onDownload(el)
+                        }
+                    )
                 }
 
                 item {

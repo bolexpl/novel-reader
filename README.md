@@ -2,6 +2,7 @@
 Android app for reading novels.
 
 TODO:
+save chapter to database
 read chapter from database
 reader illustrations
 settings screen

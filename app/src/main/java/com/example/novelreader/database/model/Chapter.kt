@@ -24,5 +24,9 @@ data class Chapter(
     var novelId: Long = 0,
 
     @Ignore
-    var content: MutableList<Paragraph> = mutableStateListOf()
+    var content: MutableList<Paragraph> = mutableStateListOf(),
+    @Ignore
+    var inDatabase: Boolean = false,
+    @Ignore
+    var inProgress: Boolean = false,
 )

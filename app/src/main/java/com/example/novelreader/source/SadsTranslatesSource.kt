@@ -50,6 +50,11 @@ class SadsTranslatesSource : SourceInterface {
             list.add(n)
         }
 
+        list.forEach {
+            it.sourceId = id
+            it.sourceName = name
+        }
+
         return list
     }
 
@@ -79,6 +84,11 @@ class SadsTranslatesSource : SourceInterface {
             }
         }
 
+        result.forEach {
+            it.sourceId = id
+            it.sourceName = name
+        }
+
         return result
     }
 
@@ -100,7 +110,9 @@ class SadsTranslatesSource : SourceInterface {
             chapterList = getChaptersFromHtml(jsoup),
             coverUrl = jsoup.select("figure.size-large>img").attr("src"),
             description = getDescriptionFromHtml(jsoup),
-            inDatabase = inDatabase
+            inDatabase = inDatabase,
+            sourceId = id,
+            sourceName = name
         )
     }
 
@@ -223,7 +235,7 @@ class SadsTranslatesSource : SourceInterface {
             list.add(
                 Paragraph(
                     id = 0,
-                    orderNo = i + 1,
+                    orderNo = i,
                     html = p.html(),
                     annotatedString = HtmlConverter.paragraphToAnnotatedString(p)
                 )

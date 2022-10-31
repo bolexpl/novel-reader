@@ -14,6 +14,12 @@ class NovelRepository(private val novelDao: NovelDao) {
         return n
     }
 
+    fun getById(novelId: Long): Novel?{
+        val n = novelDao.getById(novelId)
+        n?.inDatabase = true
+        return n
+    }
+
     suspend fun add(item: Novel): Long {
         item.inDatabase = true
         val id = novelDao.insert(item)

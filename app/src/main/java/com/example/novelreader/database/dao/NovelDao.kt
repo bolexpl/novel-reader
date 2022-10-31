@@ -9,6 +9,9 @@ interface NovelDao {
     @Query("SELECT * from novel")
     fun getAll(): LiveData<List<Novel>>
 
+    @Query("select * from novel where id = :novelId")
+    fun getById(novelId: Long): Novel?
+
     @Query("SELECT * FROM novel where url = :url")
     fun getByUrl(url: String): Novel?
 
