@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -23,10 +23,12 @@ import com.example.novelreader.ui.theme.EBookReaderTheme
 fun ChapterItem(
     item: Chapter,
     onItemClick: () -> Unit = {},
-    onDownload: () -> Unit = {}
+    onDownload: () -> Unit = {},
+    onRemove: () -> Unit = {},
 ) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
+    var added: Boolean by remember { mutableStateOf(item.inDatabase) }
 
     Row(
         modifier = Modifier
@@ -60,8 +62,15 @@ fun ChapterItem(
                 .padding(end = 10.dp),
             contentAlignment = Alignment.Center,
         ) {
-            IconButton(onClick = onDownload) {
-                if (item.inDatabase) {
+            IconButton(onClick = {
+                added = !added
+                if (added)
+                    onRemove()
+                else
+                    onDownload()
+            }
+            ) {
+                if (added) {
                     Icon(
                         imageVector = Icons.Default.Done,
                         contentDescription = "",
@@ -83,7 +92,7 @@ fun ChapterItem(
     }
 }
 
-@Preview(name="From Web", showBackground = true)
+@Preview(name = "From Web", showBackground = true)
 @Preview(name = "From Web Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun ChapterItemPreview() {
@@ -107,7 +116,8 @@ private fun ChapterItemPreview() {
         }
     }
 }
-@Preview(name="From DB", showBackground = true)
+
+@Preview(name = "From DB", showBackground = true)
 @Preview(name = "From DB Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun ChapterItemPreview2() {

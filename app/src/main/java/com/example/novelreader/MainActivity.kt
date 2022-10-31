@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
@@ -41,10 +42,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        permissionsLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            readPermissionGranted = permissions[READ_EXTERNAL_STORAGE] ?: readPermissionGranted
-            writePermissionGranted = permissions[WRITE_EXTERNAL_STORAGE] ?: writePermissionGranted
-        }
+        permissionsLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+                readPermissionGranted = permissions[READ_EXTERNAL_STORAGE] ?: readPermissionGranted
+                writePermissionGranted =
+                    permissions[WRITE_EXTERNAL_STORAGE] ?: writePermissionGranted
+            }
 
         requestPermissions()
 
@@ -125,7 +128,6 @@ private fun MainNavigationGraph(
                     mainNavController.navigate(MainNavItem.DetailScreen)
                     mainViewModel.novel = null
                     mainViewModel.refreshNovelDetailsFromDb(url)
-                    // TODO download
                 },
                 onLongPress = { n ->
                     mainViewModel.addNovelToLibrary(n, context)
@@ -151,6 +153,7 @@ private fun MainNavigationGraph(
             TitleDetailsScreenView(
                 mainNavController = mainNavController,
                 novel = mainViewModel.novel,
+                chapterList = mainViewModel.chapterList,
                 onRefresh = { url ->
                     mainViewModel.refreshNovelDetailsFromWeb(url)
                 },
@@ -161,7 +164,10 @@ private fun MainNavigationGraph(
                     mainViewModel.addNovelToLibrary(novel, context)
                 },
                 onDownload = { chapter ->
-                    mainViewModel.addChapterToLibrary(chapter, context)
+                    mainViewModel.addChapterContentToLibrary(chapter, context)
+                },
+                onRemove = { chapter ->
+                    mainViewModel.removeChapterContentFromLibrary(chapter, context)
                 }
             )
         }

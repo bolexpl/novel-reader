@@ -32,6 +32,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     var sourceName by mutableStateOf("")
 
     var novelList: MutableList<Novel> = mutableStateListOf()
+    var chapterList: MutableList<Chapter> = mutableStateListOf()
 
     var novel by mutableStateOf<Novel?>(null)
 
@@ -86,7 +87,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val curr = currentSource
         curr?.let {
             viewModelScope.launch(Dispatchers.IO) {
-                novel = curr.getNovelDetails(novelUrl)
+                val n = curr.getNovelDetails(novelUrl)
+                novel = n
+                chapterList = n.chapterList
                 // TODO update db
             }
         }
@@ -130,6 +133,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 chapterRepository.checkInDb(n.chapterList)
 
                 novel = n
+                chapterList = n.chapterList
             }
         }
     }
@@ -145,49 +149,53 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun addChapterToLibrary(chapter: Chapter, context: Context) {
+    fun addChapterContentToLibrary(chapter: Chapter, context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
-            val dbChapter = chapterRepository.getByUrl(chapter.url)
+            chapter.inDatabase = true
+            val n = novelRepository.getById(chapter.novelId) ?: return@launch
 
-            if (dbChapter != null && dbChapter.content.isNotEmpty()) {
-                chapter.inDatabase = false
-                paragraphRepository.deleteByChapterId(dbChapter.id)
-                chapterRepository.delete(dbChapter)
-            } else {
-                chapter.inDatabase = true
-                val novel = novelRepository.getById(chapter.novelId) ?: return@launch
+            val curr = sources[n.sourceId]
+            curr?.let {
+                val newChapter = curr.getChapterContent(chapter.url)
 
-                val curr = sources[novel.sourceId]
-                curr?.let {
-                    val newChapter = curr.getChapterContent(chapter.url)
-
-                    newChapter.content.forEach {
-                        it.chapterId = chapter.id
-                        it.novelId = chapter.novelId
-                        paragraphRepository.add(it)
-                    }
+                newChapter.content.forEach {
+                    it.chapterId = chapter.id
+                    it.novelId = chapter.novelId
+                    paragraphRepository.add(it)
                 }
             }
 
             // TODO update chapterList
-            if(novel == null) return@launch
-
-            val n = novel!!
-            val list = n.chapterList
-
             var index = -1
-            for (item in list.withIndex()) {
-                if (item.value.url == n.url) {
+            for (item in chapterList.withIndex()) {
+                if (item.value.url == chapter.url) {
                     index = item.index
                     break
                 }
             }
 
             if (index > -1) {
-                list[index] = chapter
+                chapterList[index] = chapter.copy()
+            }
+        }
+    }
+
+    fun removeChapterContentFromLibrary(chapter: Chapter, context: Context) {
+        viewModelScope.launch(Dispatchers.IO) {
+            chapter.inDatabase = false
+            paragraphRepository.deleteByChapterId(chapter.id)
+
+            var index = -1
+            for (item in chapterList.withIndex()) {
+                if (item.value.url == chapter.url) {
+                    index = item.index
+                    break
+                }
             }
 
-            novel?.chapterList = list
+            if (index > -1) {
+                chapterList[index] = chapter
+            }
         }
     }
 
