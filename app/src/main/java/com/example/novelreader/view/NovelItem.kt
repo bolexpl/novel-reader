@@ -53,16 +53,16 @@ fun NovelItem(
                     onTap = { onClick(novel.url) },
                     onLongPress = {
                         onLongPress(novel)
-                        inDatabase = !inDatabase
                         if (inDatabase) {
-                            Toast
-                                .makeText(context, "Added", Toast.LENGTH_SHORT)
-                                .show()
-                        } else {
                             Toast
                                 .makeText(context, "Removed", Toast.LENGTH_SHORT)
                                 .show()
+                        } else {
+                            Toast
+                                .makeText(context, "Added", Toast.LENGTH_SHORT)
+                                .show()
                         }
+                        inDatabase = !inDatabase
 
                     }
                 )

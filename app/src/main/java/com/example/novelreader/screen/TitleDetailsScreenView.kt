@@ -52,7 +52,6 @@ import org.jsoup.nodes.TextNode
 fun TitleDetailsScreenView(
     mainNavController: NavController,
     novel: Novel?,
-    chapterList: List<Chapter>,
     onRefresh: (String) -> Unit = {},
     onDownload: (Chapter) -> Unit = {},
     onRemove: (Chapter) -> Unit = {},
@@ -134,7 +133,7 @@ fun TitleDetailsScreenView(
 
                 // chapters label
                 item {
-                    Text(text = "Rozdziały: ${chapterList.size}", fontSize = 25.sp)
+                    Text(text = "Rozdziały: ${novel.chapterList.size}", fontSize = 25.sp)
                 }
 
                 item {
@@ -142,7 +141,7 @@ fun TitleDetailsScreenView(
                 }
 
                 // chapters
-                items(chapterList) { el ->
+                items(novel.chapterList) { el ->
                     ChapterItem(
                         item = el,
                         onItemClick = {
@@ -315,8 +314,7 @@ private fun TitleDetailsScreenPreview() {
                     description = list,
                     chapterList = chapterList
                 ),
-                onAddToLibrary = {},
-                chapterList = chapterList
+                onAddToLibrary = {}
             )
         }
     }

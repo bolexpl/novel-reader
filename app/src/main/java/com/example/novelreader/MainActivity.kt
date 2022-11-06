@@ -153,7 +153,6 @@ private fun MainNavigationGraph(
             TitleDetailsScreenView(
                 mainNavController = mainNavController,
                 novel = mainViewModel.novel,
-                chapterList = mainViewModel.chapterList,
                 onRefresh = { url ->
                     mainViewModel.refreshNovelDetailsFromWeb(url)
                 },

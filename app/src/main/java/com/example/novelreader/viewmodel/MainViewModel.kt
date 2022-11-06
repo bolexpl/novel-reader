@@ -32,7 +32,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     var sourceName by mutableStateOf("")
 
     var novelList: MutableList<Novel> = mutableStateListOf()
-    var chapterList: MutableList<Chapter> = mutableStateListOf()
 
     var novel by mutableStateOf<Novel?>(null)
 
@@ -89,7 +88,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             viewModelScope.launch(Dispatchers.IO) {
                 val n = curr.getNovelDetails(novelUrl)
                 novel = n
-                chapterList = n.chapterList
                 // TODO update db
             }
         }
@@ -133,7 +131,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 chapterRepository.checkInDb(n.chapterList)
 
                 novel = n
-                chapterList = n.chapterList
             }
         }
     }
@@ -164,19 +161,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     paragraphRepository.add(it)
                 }
             }
-
-            // TODO update chapterList
-            var index = -1
-            for (item in chapterList.withIndex()) {
-                if (item.value.url == chapter.url) {
-                    index = item.index
-                    break
-                }
-            }
-
-            if (index > -1) {
-                chapterList[index] = chapter.copy()
-            }
         }
     }
 
@@ -184,18 +168,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
             chapter.inDatabase = false
             paragraphRepository.deleteByChapterId(chapter.id)
-
-            var index = -1
-            for (item in chapterList.withIndex()) {
-                if (item.value.url == chapter.url) {
-                    index = item.index
-                    break
-                }
-            }
-
-            if (index > -1) {
-                chapterList[index] = chapter
-            }
         }
     }
 

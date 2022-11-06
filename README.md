@@ -2,7 +2,6 @@
 Android app for reading novels.
 
 TODO:
-fix change icon for chapter
 read chapter from database
 reader illustrations
 settings screen

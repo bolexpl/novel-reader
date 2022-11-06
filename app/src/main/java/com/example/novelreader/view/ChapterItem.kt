@@ -28,7 +28,7 @@ fun ChapterItem(
 ) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
-    var added: Boolean by remember { mutableStateOf(item.inDatabase) }
+    var inDatabase: Boolean by remember { mutableStateOf(item.inDatabase) }
 
     Row(
         modifier = Modifier
@@ -63,14 +63,14 @@ fun ChapterItem(
             contentAlignment = Alignment.Center,
         ) {
             IconButton(onClick = {
-                added = !added
-                if (added)
+                if (inDatabase)
                     onRemove()
                 else
                     onDownload()
+                inDatabase = !inDatabase
             }
             ) {
-                if (added) {
+                if (inDatabase) {
                     Icon(
                         imageVector = Icons.Default.Done,
                         contentDescription = "",
